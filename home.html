@@ -154,6 +154,8 @@ window.MARCAS.jornadaDS.certModeloFinal = 'certificado-jornada-final.png';
 window.MARCAS.jornadaDS.certCor = '#00630F';
 window.MARCAS.jornadaDS.certCampos = { nome: { y: 0.53 }, subtitulo: { y: 0.655 }, dia: { y: 0.815 }, ano: { y: 0.815 } };   // posições verticais do modelo padrão (o resto usa os valores de sempre)
 window.MARCAS.jornadaDS.certForcar = true;
+window.MARCAS.jornadaDS.ocultarCategoriasVazias = true;   // true = categoria sem nenhum curso pra essa pessoa não vira botão
+window.MARCAS.jornada.ocultarCategoriasVazias = true;
 window.MARCAS.jornadaDS.ocultarSecoes = ['categorias', 'cursos'];   // ids das seções da home a esconder (e o link delas no menu). Pra mostrar de novo: tire o id daqui. 'categorias' = Explore por tema · 'cursos' = Pra conhecer primeiro   // true = todos os cursos usam o modelo padrão (ignora o modelo/posições salvos no curso). false = só usa quando o curso não tem modelo próprio
 window.modeloCert = function(url, tipo){ var M = window.MARCA || {}; var padrao = tipo === 'final' ? M.certModeloFinal : M.certModelo; if (!padrao) return url; return (M.certForcar || !url) ? padrao : url; };
 window.camposCertMarca = function(campos){ var M = window.MARCA || {}; return (M.certForcar && M.certModelo) ? (M.certCampos || null) : campos; };
@@ -2153,6 +2155,10 @@ function renderCards(lista){
     ? dados.map(c => cardHTML(c)).join('')
     : `<p style="font-size:13.5px; color:var(--ink-soft);">${t('nenhum_curso_publicado')}</p>`;
   renderObrigatorios();
+  if (window.MARCA && window.MARCA.ocultarCategoriasVazias) {
+    const chave = trilhasVisiveis().map(function(tr){ return tr.nome; }).join('|');
+    if (chave !== window.__chaveChipsCategoria) { window.__chaveChipsCategoria = chave; renderCategoryChips(); }
+  }
 }
 window.renderCards = renderCards;
 renderCards();
@@ -2358,7 +2364,8 @@ function filterBib(cat){
 }
 function openBiblioteca(cat){
   const emojisBib = window.EMOJIS_BIB || {};
-  const cats = ['Todos', ...Object.keys(emojisBib)];
+  const ocultarVazias = !!(window.MARCA && window.MARCA.ocultarCategoriasVazias);
+  const cats = ['Todos', ...Object.keys(emojisBib).filter(function(k){ return !ocultarVazias || DOCS.some(function(d){ return d.categoria === k; }); })];
   document.getElementById('bibFilters').innerHTML = cats.map(c=>
     `<button class="bib-chip" data-cat="${c}" onclick="filterBib('${c}')">${c==='Todos' ? t('lib_todos') : (emojisBib[c] || '') + ' ' + c}</button>`
   ).join('');
@@ -2367,16 +2374,22 @@ function openBiblioteca(cat){
 }
 
 /* ===== renderização dinâmica das categorias (permite criar categoria nova pelo Admin) ===== */
+// categorias que têm pelo menos um curso visível pra pessoa (CURSOS já vem filtrado por público-alvo); só vale quando a marca pede
+function trilhasVisiveis(){
+  if (!(window.MARCA && window.MARCA.ocultarCategoriasVazias)) return TRILHAS;
+  if (!cursosCarregados) return [];
+  return TRILHAS.filter(function(tr){ return CURSOS.some(function(c){ return c.categoria === tr.nome; }); });
+}
 function renderCategoryChips(){
   const heroChips = document.getElementById('heroChips');
   const catRail = document.getElementById('catRail');
   if(heroChips){
-    heroChips.innerHTML = TRILHAS.map(t=>
+    heroChips.innerHTML = trilhasVisiveis().map(t=>
       `<button onclick="openTrilha('${t.nome.replace(/'/g,"\\'")}')">${t.emoji} ${t.nome}</button>`
     ).join('');
   }
   if(catRail){
-    catRail.innerHTML = TRILHAS.map(t=>
+    catRail.innerHTML = trilhasVisiveis().map(t=>
       `<button class="cat-chip" onclick="openTrilha('${t.nome.replace(/'/g,"\\'")}')"><span class="em">${t.emoji}</span> ${t.nome}</button>`
     ).join('');
   }
