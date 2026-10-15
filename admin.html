@@ -230,6 +230,18 @@ window.MARCA_ATIVA = 'jornada';
     .rep-grid{ grid-template-columns:1fr; }
     main{ padding:20px; }
   }
+  /* reordenar cursos */
+  .reord-grupo{ margin-bottom:18px; }
+  .reord-grupo > b{ display:block; font-size:12.5px; margin-bottom:8px; color:var(--ink); }
+  .reord-item{ display:flex; align-items:center; gap:10px; background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:9px 12px; margin-bottom:6px; }
+  .reord-item.arrastando{ opacity:.45; }
+  .reord-item.alvo{ border-color:var(--green); box-shadow:0 0 0 2px rgba(0,0,0,.06); }
+  .reord-alca{ cursor:grab; color:var(--ink-soft); font-size:18px; line-height:1; user-select:none; }
+  .reord-num{ width:24px; height:24px; border-radius:50%; background:var(--green); color:#fff; font-size:11.5px; font-weight:800; display:flex; align-items:center; justify-content:center; flex:none; }
+  .reord-nome{ flex:1; min-width:0; font-size:13.5px; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .reord-setas{ display:flex; gap:4px; }
+  .reord-setas button{ border:1px solid var(--line); background:#fff; border-radius:8px; width:28px; height:28px; font-size:12px; cursor:pointer; }
+  .reord-setas button:disabled{ opacity:.35; cursor:default; }
 </style>
 </head>
 <body>
@@ -279,7 +291,10 @@ window.MARCA_ATIVA = 'jornada';
           <div class="crumb">Admin / Conteúdo</div>
           <h1>Cursos</h1>
         </div>
-        <button class="new-btn" onclick="abrirNovoCurso()">+ Novo curso</button>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="ghost-btn" onclick="abrirReordenarCursos()">↕ Reordenar cursos</button>
+          <button class="new-btn" onclick="abrirNovoCurso()">+ Novo curso</button>
+        </div>
       </div>
 
       <div class="stat-row">
@@ -1406,6 +1421,21 @@ window.MARCA_ATIVA = 'jornada';
     <div class="modal-foot">
       <button class="btn-secondary" onclick="closeModal('modalCargo')">Cancelar</button>
       <button class="btn-primary" onclick="salvarCargo()">Criar cargo →</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: reordenar cursos (ordem de exibição na home) -->
+<div class="overlay" id="modalReordenar" style="display:none;">
+  <div class="modal" style="width:560px;">
+    <div class="modal-head"><h3>Reordenar cursos</h3><button onclick="closeModal('modalReordenar')">✕</button></div>
+    <div class="modal-body">
+      <small class="hint" style="display:block; margin-bottom:14px;">Arraste pelo ⠿ (ou use as setas) pra definir a ordem em que os cursos aparecem na home. A ordem vale pra todo mundo. Cursos obrigatórios aparecem nos primeiros passos; os demais, logo abaixo. Quem já concluiu um curso opcional continua vendo ele mais pra baixo.</small>
+      <div id="reordenarListas"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-secondary" onclick="closeModal('modalReordenar')">Cancelar</button>
+      <button class="btn-primary" id="reordenarSalvarBtn" onclick="salvarOrdemCursos()">Salvar ordem</button>
     </div>
   </div>
 </div>
@@ -3560,6 +3590,79 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     document.querySelectorAll('#seloToggle button').forEach((b,i)=>b.classList.toggle('on', i===0));
     window.__cursoCamposCertificado = null;
   }
+
+  // ===== reordenar cursos (campo Ordem de cada curso, usado pela home em "Primeiros passos" e "Pra conhecer primeiro") =====
+  let reordenarGrupos = { obrig: [], demais: [] };
+  let reordenarOriginal = {};
+  function ordemEfetiva(c){ return c.Ordem || 999; }
+  function rotuloCurso(c){ return (c.Titulo || '(sem título)'); }
+  window.abrirReordenarCursos = function(){
+    const publicados = cursosCache.filter(c => c.Status === 'publicado')
+      .sort((a, b) => (ordemEfetiva(a) - ordemEfetiva(b)) || rotuloCurso(a).localeCompare(rotuloCurso(b)));
+    reordenarGrupos = { obrig: publicados.filter(c => c.Obrigatorio), demais: publicados.filter(c => !c.Obrigatorio) };
+    reordenarOriginal = {}; publicados.forEach(c => { reordenarOriginal[c.id] = c.Ordem || null; });
+    renderReordenar();
+    openModal('modalReordenar');
+  };
+  function renderReordenar(){
+    const box = document.getElementById('reordenarListas');
+    const bloco = (chave, titulo) => {
+      const lista = reordenarGrupos[chave];
+      if (!lista.length) return '';
+      return `<div class="reord-grupo"><b>${titulo}</b>` + lista.map((c, i) => `
+        <div class="reord-item" draggable="true" data-g="${chave}" data-i="${i}">
+          <span class="reord-alca" title="Arrastar">⠿</span>
+          <span class="reord-num">${i + 1}</span>
+          <span class="reord-nome" title="${rotuloCurso(c).replace(/"/g, '&quot;')}">${rotuloCurso(c)}</span>
+          <span class="reord-setas">
+            <button type="button" onclick="moverCursoOrdem('${chave}',${i},-1)" ${i === 0 ? 'disabled' : ''} aria-label="Subir">▲</button>
+            <button type="button" onclick="moverCursoOrdem('${chave}',${i},1)" ${i === lista.length - 1 ? 'disabled' : ''} aria-label="Descer">▼</button>
+          </span>
+        </div>`).join('') + '</div>';
+    };
+    box.innerHTML = bloco('obrig', 'Primeiros passos (obrigatórios)') + bloco('demais', 'Demais cursos') ||
+      '<small class="hint">Nenhum curso publicado ainda.</small>';
+    let origem = null;
+    box.querySelectorAll('.reord-item').forEach(el => {
+      el.addEventListener('dragstart', e => { origem = { g: el.dataset.g, i: +el.dataset.i }; el.classList.add('arrastando'); e.dataTransfer.effectAllowed = 'move'; try { e.dataTransfer.setData('text/plain', ''); } catch (_) {} });
+      el.addEventListener('dragend', () => { el.classList.remove('arrastando'); box.querySelectorAll('.alvo').forEach(x => x.classList.remove('alvo')); });
+      el.addEventListener('dragover', e => { if (origem && origem.g === el.dataset.g) { e.preventDefault(); el.classList.add('alvo'); } });
+      el.addEventListener('dragleave', () => el.classList.remove('alvo'));
+      el.addEventListener('drop', e => {
+        e.preventDefault();
+        if (!origem || origem.g !== el.dataset.g) return;
+        const lista = reordenarGrupos[origem.g], para = +el.dataset.i;
+        const [mov] = lista.splice(origem.i, 1); lista.splice(para, 0, mov);
+        origem = null; renderReordenar();
+      });
+    });
+  }
+  window.moverCursoOrdem = function(chave, i, delta){
+    const lista = reordenarGrupos[chave], j = i + delta;
+    if (j < 0 || j >= lista.length) return;
+    [lista[i], lista[j]] = [lista[j], lista[i]];
+    renderReordenar();
+  };
+  window.salvarOrdemCursos = async function(){
+    const btn = document.getElementById('reordenarSalvarBtn');
+    const todos = [...reordenarGrupos.obrig, ...reordenarGrupos.demais];
+    const mudancas = todos.map((c, i) => ({ id: c.id, ordem: i + 1 })).filter(x => reordenarOriginal[x.id] !== x.ordem);
+    if (!mudancas.length) { closeModal('modalReordenar'); return; }
+    btn.disabled = true; btn.textContent = 'Salvando…';
+    try {
+      for (let k = 0; k < mudancas.length; k += 400) {
+        const batch = writeBatch(db);
+        mudancas.slice(k, k + 400).forEach(x => batch.update(doc(db, 'cursos', x.id), { Ordem: x.ordem }));
+        await batch.commit();
+      }
+      closeModal('modalReordenar');
+    } catch (err) {
+      console.error('Erro ao salvar a ordem dos cursos:', err);
+      alert('Não foi possível salvar a ordem agora. Tenta de novo em instantes.');
+    } finally {
+      btn.disabled = false; btn.textContent = 'Salvar ordem';
+    }
+  };
 
   window.abrirNovoCurso = function(){
     limparModalCurso();
