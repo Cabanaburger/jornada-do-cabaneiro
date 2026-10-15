@@ -153,7 +153,8 @@ window.MARCAS.jornadaDS.certModelo = 'certificado-jornada.png';
 window.MARCAS.jornadaDS.certModeloFinal = 'certificado-jornada-final.png';
 window.MARCAS.jornadaDS.certCor = '#00630F';
 window.MARCAS.jornadaDS.certCampos = { nome: { y: 0.53 }, subtitulo: { y: 0.655 }, dia: { y: 0.815 }, ano: { y: 0.815 } };   // posições verticais do modelo padrão (o resto usa os valores de sempre)
-window.MARCAS.jornadaDS.certForcar = true;   // true = todos os cursos usam o modelo padrão (ignora o modelo/posições salvos no curso). false = só usa quando o curso não tem modelo próprio
+window.MARCAS.jornadaDS.certForcar = true;
+window.MARCAS.jornadaDS.ocultarSecoes = ['categorias', 'cursos'];   // ids das seções da home a esconder (e o link delas no menu). Pra mostrar de novo: tire o id daqui. 'categorias' = Explore por tema · 'cursos' = Pra conhecer primeiro   // true = todos os cursos usam o modelo padrão (ignora o modelo/posições salvos no curso). false = só usa quando o curso não tem modelo próprio
 window.modeloCert = function(url, tipo){ var M = window.MARCA || {}; var padrao = tipo === 'final' ? M.certModeloFinal : M.certModelo; if (!padrao) return url; return (M.certForcar || !url) ? padrao : url; };
 window.camposCertMarca = function(campos){ var M = window.MARCA || {}; return (M.certForcar && M.certModelo) ? (M.certCampos || null) : campos; };
 window.MARCAS.jornadaDS.certCarga = true;   // desenha a "pílula" de carga horária no certificado
@@ -196,6 +197,10 @@ window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && S
     if (M.semRanking) {
       document.querySelectorAll('.ranking-block, #modalRanking, [onclick*="abrirRanking"]').forEach(function(e){ e.remove(); });
     }
+    (M.ocultarSecoes || []).forEach(function(id){
+      document.documentElement.classList.add('oculta-' + id);
+      document.querySelectorAll('nav.mainnav a[href="#' + id + '"], .footer-col a[data-i18n="nav_' + id + '"]').forEach(function(a){ a.remove(); });
+    });
     if (M.layout === 'ds') {
       var pi = document.querySelector('.progress-card .progress-head img'); if (pi) pi.src = M.pic.esquilo;
       document.querySelectorAll('.level-node img').forEach(function(img, i){ var n = M.nivelPics[i]; if (n) img.src = M.pic[n] || M.picM[n] || img.src; });
@@ -1058,6 +1063,10 @@ window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && S
   html.ds .level-node.current span{ color:var(--flor); }
   html.ds .block-head h2{ position:relative; }
   html.ds .lib-card .em{ filter:none; }
+
+  /* seções ocultas por perfil (MARCA.ocultarSecoes) */
+  html.oculta-categorias #categorias{ display:none; }
+  html.oculta-cursos #cursos:not(.mostrar){ display:none; }
 </style>
 </head>
 <body>
@@ -2171,6 +2180,12 @@ document.getElementById('heroSearch').addEventListener('input', (e)=>{
     c.titulo.toLowerCase().includes(q) || c.categoria.toLowerCase().includes(q)
   );
   renderCards(filtered.length ? filtered : CURSOS);
+  const secCursos = document.getElementById('cursos');
+  if (secCursos && document.documentElement.classList.contains('oculta-cursos')) {
+    const abrir = q.trim().length > 0, jaVisivel = secCursos.classList.contains('mostrar');
+    secCursos.classList.toggle('mostrar', abrir);
+    if (abrir && !jaVisivel) secCursos.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 });
 
 /* ===== 'Sua jornada' (card do hero) e nível Cabana (level-block), ambos calculados a partir de CURSOS + progresso real ===== */
@@ -2227,7 +2242,7 @@ function renderJornada(){
     if (ringCopySpan) ringCopySpan.textContent = t('voce_concluiu_tudo');
     if (continueBtn){
       continueBtn.textContent = t('ver_cursos') + ' →';
-      continueBtn.onclick = function(){ document.getElementById('cursos').scrollIntoView({behavior:'smooth'}); };
+      continueBtn.onclick = function(){ const alvo = ['cursos','categorias','heroChips'].map(function(id){ return document.getElementById(id); }).find(function(e){ return e && e.offsetParent !== null; }); if (alvo) alvo.scrollIntoView({behavior:'smooth'}); };
     }
   }
 
