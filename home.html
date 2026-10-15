@@ -199,6 +199,8 @@ window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && S
     if (M.semRanking) {
       document.querySelectorAll('.ranking-block, #modalRanking, [onclick*="abrirRanking"]').forEach(function(e){ e.remove(); });
     }
+    var campoBusca = document.getElementById('heroSearch');
+    if (campoBusca && (M.ocultarSecoes || []).length) { campoBusca.setAttribute('autocomplete', 'off'); campoBusca.setAttribute('name', 'busca-jornada'); campoBusca.value = ''; campoBusca.readOnly = true; campoBusca.addEventListener('focus', function(){ campoBusca.readOnly = false; }); }
     (M.ocultarSecoes || []).forEach(function(id){
       document.documentElement.classList.add('oculta-' + id);
       document.querySelectorAll('nav.mainnav a[href="#' + id + '"], .footer-col a[data-i18n="nav_' + id + '"]').forEach(function(a){ a.remove(); });
@@ -2181,11 +2183,19 @@ window.addEventListener('pageshow', () => {
   if (campo) campo.value = '';
 });
 document.getElementById('heroSearch').addEventListener('input', (e)=>{
+  if (window.MARCA && (window.MARCA.ocultarSecoes || []).length && (document.activeElement !== e.target || e.isTrusted === false)) { e.target.value = ''; return; }
   const q = e.target.value.toLowerCase();
   const filtered = CURSOS.filter(c =>
     c.titulo.toLowerCase().includes(q) || c.categoria.toLowerCase().includes(q)
   );
-  renderCards(filtered.length ? filtered : CURSOS);
+  if (document.documentElement.classList.contains('oculta-cursos')) {
+    // com "Pra conhecer primeiro" oculta, esta seção só serve pra mostrar resultado de busca: nada digitado = nada aparece; sem resultado = aviso (nunca a lista inteira de novo)
+    if (!q.trim()) renderCards();
+    else if (filtered.length) renderCards(filtered);
+    else document.getElementById('cardGrid').innerHTML = `<p style="font-size:13.5px; color:var(--ink-soft);">${IDIOMA === 'es' ? 'No encontramos nada con esa búsqueda.' : 'Não encontramos nada com essa busca.'}</p>`;
+  } else {
+    renderCards(filtered.length ? filtered : CURSOS);
+  }
   const secCursos = document.getElementById('cursos');
   if (secCursos && document.documentElement.classList.contains('oculta-cursos')) {
     const abrir = q.trim().length > 0, jaVisivel = secCursos.classList.contains('mostrar');
