@@ -149,6 +149,15 @@ window.MARCAS.jornadaDS = Object.assign({}, window.MARCAS.jornada, {
 });
 // categorias/materiais cadastrados no admin guardam a cor escolhida na época (o verde do School);
 // no perfil da Jornada esse verde exato é trocado pela cor da marca — outras cores escolhidas ficam como estão
+window.MARCAS.jornadaDS.certModelo = 'certificado-jornada.png';
+window.MARCAS.jornadaDS.certModeloFinal = 'certificado-jornada-final.png';
+window.MARCAS.jornadaDS.certCor = '#00630F';
+window.MARCAS.jornadaDS.certCampos = { nome: { y: 0.53 }, subtitulo: { y: 0.655 }, dia: { y: 0.815 }, ano: { y: 0.815 } };   // posições verticais do modelo padrão (o resto usa os valores de sempre)
+window.MARCAS.jornadaDS.certForcar = true;   // true = todos os cursos usam o modelo padrão (ignora o modelo/posições salvos no curso). false = só usa quando o curso não tem modelo próprio
+window.modeloCert = function(url, tipo){ var M = window.MARCA || {}; var padrao = tipo === 'final' ? M.certModeloFinal : M.certModelo; if (!padrao) return url; return (M.certForcar || !url) ? padrao : url; };
+window.camposCertMarca = function(campos){ var M = window.MARCA || {}; return (M.certForcar && M.certModelo) ? (M.certCampos || null) : campos; };
+window.MARCAS.jornadaDS.certCarga = true;   // desenha a "pílula" de carga horária no certificado
+window.corTextoCert = function(){ return (window.MARCA && window.MARCA.certCor) || '#1E1A14'; };
 window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && String(c).toUpperCase() === '#4F9C40') ? window.MARCA.cor : c; };
 (function(){
   var M = window.MARCAS[window.MARCA_ATIVA] || window.MARCAS.school;
@@ -2930,7 +2939,7 @@ function configurarGateConclusao(c){
       tipo: TIPOS_CONHECIDOS.includes(tipoNormalizado) ? tipoNormalizado : 'link',
       capa: data.CapaURL || '',
       link: data.Link || '',
-      certificadoModelo: data.CertificadoModeloURL || '',
+      certificadoModelo: modeloCert(data.CertificadoModeloURL) || '',
       validadeMeses: data.ValidadeMeses || null,
       obrigatorio: data.Obrigatorio === true,
       temProva: data.TemProva === true,
@@ -3435,7 +3444,7 @@ function configurarGateConclusao(c){
     const totalEncontros = encontros.length;
     const totalConfirmados = encontros.filter(e => confirmadosIds.has(e.Id)).length;
     document.getElementById('programaCertFinalBloco').style.display =
-      (totalEncontros > 0 && totalConfirmados === totalEncontros && p.CertificadoFinalModeloURL) ? 'block' : 'none';
+      (totalEncontros > 0 && totalConfirmados === totalEncontros && modeloCert(p.CertificadoFinalModeloURL, 'final')) ? 'block' : 'none';
 
     if (window.openModal) window.openModal('modalProgramaDetalhe');
   };
@@ -3474,7 +3483,7 @@ function configurarGateConclusao(c){
     document.getElementById('encontroCodigoErro').style.display = 'none';
     document.getElementById('encontroDetalheConcluido').style.display = confirmado ? 'block' : 'none';
     if (confirmado) {
-      document.getElementById('encontroDetalheCertBtn').innerHTML = e.CertificadoModeloURL
+      document.getElementById('encontroDetalheCertBtn').innerHTML = modeloCert(e.CertificadoModeloURL)
         ? `<button class="mark-btn" style="background:var(--fries);" onclick="gerarCertificadoEncontro('${programaId}','${encontroId}')">Baixar certificado do encontro</button>`
         : '';
     }
@@ -3506,7 +3515,7 @@ function configurarGateConclusao(c){
     try {
       const p = (window.MEUS_PROGRAMAS || []).find(x => x.id === programaId);
       const e = p && (p.Encontros || []).find(x => x.Id === encontroId);
-      if (!e || !e.CertificadoModeloURL) { alert('Esse encontro não tem um modelo de certificado cadastrado.'); return; }
+      if (!e || !modeloCert(e.CertificadoModeloURL)) { alert('Esse encontro não tem um modelo de certificado cadastrado.'); return; }
 
       const colabSnap = await getDoc(doc(db, 'colaboradores', currentCpf));
       const nomeColaborador = (colabSnap.exists() && colabSnap.data().Nome) || 'Colaborador(a)';
@@ -3520,14 +3529,15 @@ function configurarGateConclusao(c){
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0);
         ctx.textAlign = 'center';
-        ctx.fillStyle = '#1E1A14';
+        ctx.fillStyle = corTextoCert();
 
-        const campos = e.CamposCertificado;
+        const campos = camposCertMarca(e.CamposCertificado);
         desenharCampoCert(ctx, img, nomeColaborador, campoCert(campos, 'nome'), img.width * 0.42);
         desenharCampoCert(ctx, img, `${p.Nome || ''} — ${e.Titulo || ''}`, campoCert(campos, 'subtitulo'), img.width * 0.5);
         const diaMes = `${String(dataEncontro.getDate()).padStart(2, '0')}/${String(dataEncontro.getMonth() + 1).padStart(2, '0')}`;
         desenharCampoCert(ctx, img, diaMes, campoCert(campos, 'dia'), img.width * 0.3);
         desenharCampoCert(ctx, img, String(dataEncontro.getFullYear()), campoCert(campos, 'ano'), img.width * 0.3);
+        desenharCargaCert(ctx, img, (e.DuracaoHoras || 4) + 'h');
 
         const link = document.createElement('a');
         link.download = `certificado-${(e.Titulo || 'encontro').replace(/[^a-z0-9]+/gi, '-').toLowerCase()}.png`;
@@ -3535,7 +3545,7 @@ function configurarGateConclusao(c){
         link.click();
       };
       img.onerror = function(){ alert('Não foi possível carregar a imagem do modelo de certificado.'); };
-      img.src = e.CertificadoModeloURL;
+      img.src = modeloCert(e.CertificadoModeloURL);
     } catch (err) {
       console.error('Erro ao gerar certificado do encontro:', err);
       alert('Não foi possível gerar o certificado agora.');
@@ -3546,7 +3556,7 @@ function configurarGateConclusao(c){
     try {
       const programaId = window.__programaAbertoId;
       const p = (window.MEUS_PROGRAMAS || []).find(x => x.id === programaId);
-      if (!p || !p.CertificadoFinalModeloURL) { alert('Esse programa não tem um modelo de certificado final cadastrado.'); return; }
+      if (!p || !modeloCert(p.CertificadoFinalModeloURL, 'final')) { alert('Esse programa não tem um modelo de certificado final cadastrado.'); return; }
       const encontros = Array.isArray(p.Encontros) ? p.Encontros : [];
       const totalHoras = encontros.reduce((soma, e) => soma + (Number(e.DuracaoHoras) || 4), 0);
 
@@ -3561,9 +3571,9 @@ function configurarGateConclusao(c){
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0);
         ctx.textAlign = 'center';
-        ctx.fillStyle = '#1E1A14';
+        ctx.fillStyle = corTextoCert();
 
-        const campos = p.CamposCertificadoFinal;
+        const campos = camposCertMarca(p.CamposCertificadoFinal);
         desenharCampoCert(ctx, img, nomeColaborador, campoCert(campos, 'nome'), img.width * 0.42);
         desenharCampoCert(ctx, img, `${p.Nome || ''} — carga horária total: ${totalHoras}h`, campoCert(campos, 'subtitulo'), img.width * 0.6);
 
@@ -3582,7 +3592,7 @@ function configurarGateConclusao(c){
         link.click();
       };
       img.onerror = function(){ alert('Não foi possível carregar a imagem do modelo de certificado.'); };
-      img.src = p.CertificadoFinalModeloURL;
+      img.src = modeloCert(p.CertificadoFinalModeloURL, 'final');
     } catch (err) {
       console.error('Erro ao gerar certificado final do programa:', err);
       alert('Não foi possível gerar o certificado agora.');
@@ -4836,7 +4846,7 @@ function configurarGateConclusao(c){
           vencido = mesesEntre(concluidoEm, agora) >= validadeMeses;
           if (vencido) selo = `<span class="pill" style="background:#F3D9D0; color:#B4462B;">${t('vencido')}</span>`;
         }
-        const temModelo = cursoData && cursoData.CertificadoModeloURL;
+        const temModelo = cursoData && modeloCert(cursoData.CertificadoModeloURL);
         const btn = temModelo
           ? `<button class="ghost-btn" onclick="gerarCertificado('${item.CursoId}')">${t('baixar')}</button>`
           : `<span style="font-size:12px; color:var(--ink-soft);">${t('sem_modelo')}</span>`;
@@ -4888,10 +4898,21 @@ function configurarGateConclusao(c){
     ctx.fillText(texto, img.width * campo.x, img.height * campo.y);
   }
 
+  // carga horária: uma linha simples de texto (sem caixa), em Floresta, logo abaixo da linha do curso — só no modelo padrão da Jornada
+  function desenharCargaCert(ctx, img, valor){
+    if (!(window.MARCA && window.MARCA.certCarga) || !valor) return;
+    const W = img.width, f = Math.round(W * 0.0175);
+    ctx.save();
+    ctx.fillStyle = '#00630F'; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+    ctx.font = `700 ${f}px Poppins, 'Helvetica Neue', Arial, sans-serif`;
+    ctx.fillText('Carga horária: ' + String(valor).trim(), W * 0.5, img.height * 0.7225);
+    ctx.restore();
+  }
+
   window.gerarCertificado = async function(cursoId){
     try {
       const cSnap = await getDoc(doc(db, 'cursos', cursoId));
-      if (!cSnap.exists() || !cSnap.data().CertificadoModeloURL) {
+      if (!cSnap.exists() || !modeloCert(cSnap.data().CertificadoModeloURL)) {
         alert(t('erro_sem_modelo_certificado'));
         return;
       }
@@ -4912,15 +4933,16 @@ function configurarGateConclusao(c){
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0);
         ctx.textAlign = 'center';
-        ctx.fillStyle = '#1E1A14';
+        ctx.fillStyle = corTextoCert();
 
-        const campos = cursoData.CamposCertificado;
+        const campos = camposCertMarca(cursoData.CamposCertificado);
         desenharCampoCert(ctx, img, nomeColaborador, campoCert(campos, 'nome'), img.width * 0.42);
         desenharCampoCert(ctx, img, cursoData.Titulo || '', campoCert(campos, 'subtitulo'), img.width * 0.42);
 
         const diaMes = `${String(concluidoEm.getDate()).padStart(2, '0')}/${String(concluidoEm.getMonth() + 1).padStart(2, '0')}`;
         desenharCampoCert(ctx, img, diaMes, campoCert(campos, 'dia'), img.width * 0.3);
         desenharCampoCert(ctx, img, String(concluidoEm.getFullYear()), campoCert(campos, 'ano'), img.width * 0.3);
+        desenharCargaCert(ctx, img, cursoData.Duracao);
 
         const link = document.createElement('a');
         link.download = `certificado-${(cursoData.Titulo || 'curso').replace(/[^a-z0-9]+/gi,'-').toLowerCase()}.png`;
@@ -4930,7 +4952,7 @@ function configurarGateConclusao(c){
       img.onerror = function(){
         alert(t('erro_carregar_imagem_certificado'));
       };
-      img.src = cursoData.CertificadoModeloURL;
+      img.src = modeloCert(cursoData.CertificadoModeloURL);
     } catch (err) {
       console.error('Erro ao gerar certificado:', err);
       alert(t('erro_gerar_certificado'));
