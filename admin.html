@@ -8,10 +8,33 @@
 <link rel="icon" type="image/png" sizes="16x16" href="favicon16.png">
 <link rel="apple-touch-icon" href="icon180.png">
 <meta name="theme-color" content="#4F9C40">
+<script>
+/* MARCA (identidade visual) — mesmo interruptor do home.html: 'school' = Cabana School | 'jornada' = Jornada do Cabaneiro.
+   Mantenha igual nos dois arquivos pra o painel e o site terem a mesma cara. */
+window.MARCA_ATIVA = 'jornada';
+(function(){
+  var perfis = {
+    school:  { nome: 'Cabana School', themeColor: '#4F9C40', vars: {}, icones: null },
+    jornada: { nome: 'Jornada do Cabaneiro', themeColor: '#C4551A',
+      vars: { '--green':'#C4551A', '--green-dark':'#98400F', '--green-tint':'#FBE3D2', '--green-rgb':'196,85,26', '--green-nav':'#FFD2B0', '--cream':'#FBEFE0', '--paper':'#FFFAF4', '--bacon':'#7A4A32' },
+      icones: { f32:'favicon32-jornada.png', f16:'favicon16-jornada.png', apple:'icon180-jornada.png' } }
+  };
+  var M = perfis[window.MARCA_ATIVA] || perfis.school;
+  Object.keys(M.vars).forEach(function(k){ document.documentElement.style.setProperty(k, M.vars[k]); });
+  document.title = 'Admin · ' + M.nome;
+  var t = document.querySelector('meta[name="theme-color"]'); if (t) t.setAttribute('content', M.themeColor);
+  if (M.icones) {
+    var l;
+    if ((l = document.querySelector('link[rel="icon"][sizes="32x32"]'))) l.href = M.icones.f32;
+    if ((l = document.querySelector('link[rel="icon"][sizes="16x16"]'))) l.href = M.icones.f16;
+    if ((l = document.querySelector('link[rel="apple-touch-icon"]'))) l.href = M.icones.apple;
+  }
+})();
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
   :root{
-    --green: #4F9C40; --green-dark: #386F2D;
+    --green: #4F9C40; --green-dark: #386F2D; --green-tint: #E4F2DF; --green-rgb: 79,156,64; --green-nav: #B9E6A8;
     --cream: #FBF3D9; --paper: #FFFDF7; --ink: #1E1A14; --ink-soft: #574E3F;
     --bacon:#D9754C; --fries:#D89840; --milkshake:#D6699E;
     --line: rgba(30,26,20,0.10); --shadow: 0 12px 30px -14px rgba(30,26,20,0.28);
@@ -44,7 +67,7 @@
     font-size:13.5px; font-weight:600; opacity:.75; margin-bottom:2px; transition:.15s;
   }
   .navitem .ic{ font-size:15px; width:18px; text-align:center; }
-  .navitem.on{ background:rgba(79,156,64,0.22); color:#B9E6A8; opacity:1; }
+  .navitem.on{ background:rgba(var(--green-rgb),0.22); color:var(--green-nav); opacity:1; }
   .navitem:hover{ opacity:1; background:rgba(255,255,255,0.06); }
   .side-foot{ margin-top:auto; padding-top:16px; border-top:1px solid rgba(255,255,255,0.1); }
   .side-foot .navitem{ opacity:.55; font-size:12.5px; }
@@ -103,9 +126,9 @@
   .course-cell b{ font-weight:700; display:block; }
   .course-cell small{ color:var(--ink-soft); font-size:12px; }
   .pill{ font-size:11px; font-weight:700; padding:4px 10px; border-radius:100px; display:inline-block; }
-  .pill.pub{ background:#E4F2DF; color:var(--green-dark); }
+  .pill.pub{ background:var(--green-tint); color:var(--green-dark); }
   .pill.draft{ background:#F0E6D2; color:var(--ink-soft); }
-  .pill.ativo{ background:#E4F2DF; color:var(--green-dark); }
+  .pill.ativo{ background:var(--green-tint); color:var(--green-dark); }
   .pill.inativo{ background:#F3E1DC; color:var(--bacon); }
   .pill.admin{ background:#F1E2EC; color:#A8447A; }
   .pill.restrito{ background:#FBEFD8; color:#9C6B18; }
@@ -118,7 +141,7 @@
   /* upload block */
   .upload-block{
     display:flex; align-items:center; justify-content:space-between; gap:20px;
-    background:linear-gradient(120deg, rgba(79,156,64,0.08), rgba(216,152,64,0.08));
+    background:linear-gradient(120deg, rgba(var(--green-rgb),0.08), rgba(216,152,64,0.08));
     border:1px dashed var(--line); border-radius:var(--radius-md); padding:20px 24px; margin-bottom:22px;
   }
   .upload-block .txt b{ display:block; font-family:var(--display); font-weight:400; font-size:15px; margin-bottom:4px; }

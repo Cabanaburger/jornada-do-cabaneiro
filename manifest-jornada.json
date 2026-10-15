@@ -1,0 +1,20 @@
+{
+  "name": "Jornada do Cabaneiro",
+  "short_name": "Jornada",
+  "start_url": "./home.html",
+  "display": "standalone",
+  "background_color": "#FAF4E9",
+  "theme_color": "#00630F",
+  "icons": [
+    {
+      "src": "icon192-jornada.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon512-jornada.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
