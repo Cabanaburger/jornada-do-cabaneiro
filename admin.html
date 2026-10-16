@@ -1027,6 +1027,18 @@ window.MARCA_ATIVA = 'jornada';
         <small class="hint">Pra treinamento que vale só pra quem trabalha na loja, na cozinha central, ou na Casa Cabana (sede). Combina com as restrições acima — quem não bater todas as marcadas não vê o curso.</small>
       </div>
       <div class="field">
+        <label>Restringir por tipo de contratação (CLT ou PJ)</label>
+        <div class="status-toggle" id="visibContratacaoToggle">
+          <button class="on" onclick="setVisibContratacao(this,false)">Todos</button>
+          <button onclick="setVisibContratacao(this,true)">Tipo específico</button>
+        </div>
+        <div class="visib-chips" id="visibContratacaoChips" style="display:none;">
+          <span class="visib-chip">CLT</span>
+          <span class="visib-chip">PJ</span>
+        </div>
+        <small class="hint">Pra treinamento só de CLT ou só de PJ (por exemplo, benefícios de PJ). Quem não tem o tipo marcado na base conta como CLT. Combina com as restrições acima.</small>
+      </div>
+      <div class="field">
         <label>Selo</label>
         <div class="status-toggle" id="seloToggle">
           <button class="on" onclick="setSelo(this,'nenhum')">Nenhum</button>
@@ -1545,6 +1557,10 @@ window.MARCA_ATIVA = 'jornada';
         <label>Local</label>
         <select id="colabLocalInput" onchange="atualizarCampoLoja()"><option>Loja</option><option>Cozinha Central</option><option>Casa Cabana</option></select>
       </div>
+      <div class="field">
+        <label>Tipo de contratação</label>
+        <select id="colabContratacaoInput"><option>CLT</option><option>PJ</option></select>
+      </div>
       <div class="field-row" id="colabLojaRow">
         <div class="field">
           <label>Regional</label>
@@ -1687,6 +1703,11 @@ function setVisibLocal(btn, show){
   btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('on'));
   btn.classList.add('on');
   document.getElementById('visibLocalBlock').style.display = show ? 'block' : 'none';
+}
+function setVisibContratacao(btn, show){
+  btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('visibContratacaoChips').style.display = show ? 'flex' : 'none';
 }
 function setVisibTipoLocal(btn, show){
   btn.parentElement.querySelectorAll('button').forEach(b=>b.classList.remove('on'));
@@ -3587,6 +3608,9 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     document.querySelectorAll('#visibTipoLocalToggle button').forEach((b,i)=>b.classList.toggle('on', i===0));
     document.getElementById('visibTipoLocalChips').style.display = 'none';
     document.querySelectorAll('#visibTipoLocalChips .visib-chip').forEach(ch => ch.classList.remove('on'));
+    document.querySelectorAll('#visibContratacaoToggle button').forEach((b,i)=>b.classList.toggle('on', i===0));
+    document.getElementById('visibContratacaoChips').style.display = 'none';
+    document.querySelectorAll('#visibContratacaoChips .visib-chip').forEach(ch => ch.classList.remove('on'));
     document.querySelectorAll('#seloToggle button').forEach((b,i)=>b.classList.toggle('on', i===0));
     window.__cursoCamposCertificado = null;
   }
@@ -3732,6 +3756,17 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
         });
       }
     }
+    if (c.TipoContratacaoEspecifico) {
+      const btnsContr = document.querySelectorAll('#visibContratacaoToggle button');
+      btnsContr.forEach(b => b.classList.remove('on'));
+      if (btnsContr[1]) btnsContr[1].classList.add('on');
+      document.getElementById('visibContratacaoChips').style.display = 'flex';
+      if (Array.isArray(c.TiposContratacao)) {
+        document.querySelectorAll('#visibContratacaoChips .visib-chip').forEach(ch => {
+          ch.classList.toggle('on', c.TiposContratacao.includes(ch.textContent.trim()));
+        });
+      }
+    }
     if (c.Selo) {
       const seloMap = { nenhum: 0, novo: 1, destaque: 2 };
       const btns = document.querySelectorAll('#seloToggle button');
@@ -3800,6 +3835,10 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
       const regionaisPermitidas = localEspecifico
         ? [...document.querySelectorAll('#visibRegionaisChips .visib-chip.on')].map(ch => ch.textContent.trim())
         : [];
+      const contratacaoEspecifica = document.querySelectorAll('#visibContratacaoToggle button')[1]?.classList.contains('on') || false;
+      const tiposContratacao = contratacaoEspecifica
+        ? [...document.querySelectorAll('#visibContratacaoChips .visib-chip.on')].map(ch => ch.textContent.trim())
+        : [];
       const tipoLocalEspecifico = document.querySelectorAll('#visibTipoLocalToggle button')[1]?.classList.contains('on') || false;
       const tiposLocal = tipoLocalEspecifico
         ? [...document.querySelectorAll('#visibTipoLocalChips .visib-chip.on')].map(ch => ch.textContent.trim())
@@ -3854,6 +3893,8 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
         RegionaisPermitidas: regionaisPermitidas,
         TipoLocalEspecifico: tipoLocalEspecifico,
         TiposLocal: tiposLocal,
+        TipoContratacaoEspecifico: contratacaoEspecifica,
+        TiposContratacao: tiposContratacao,
         Selo: seloMap[seloIdx],
         Status: status,
         AtualizadoEm: serverTimestamp(),
@@ -4406,6 +4447,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     atualizarMacrocargoVisivelDoColaborador();
     document.getElementById('colabNivelInput').selectedIndex = 0;
     document.getElementById('colabLocalInput').selectedIndex = 0;
+    document.getElementById('colabContratacaoInput').value = 'CLT';
     document.getElementById('colabDiretoriaInput').value = '';
     document.getElementById('colabGestorNomeInput').value = '';
     document.getElementById('colabGestorCargoInput').value = '';
@@ -4441,6 +4483,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     atualizarMacrocargoVisivelDoColaborador();
     document.getElementById('colabNivelInput').value = c.Nivel === 'Admin' ? 'Admin' : 'Colaborador';
     document.getElementById('colabLocalInput').value = c.Local || 'Loja';
+    document.getElementById('colabContratacaoInput').value = c.TipoContratacao === 'PJ' ? 'PJ' : 'CLT';
     document.getElementById('colabDiretoriaInput').value = c.Diretoria || '';
     document.getElementById('colabGestorNomeInput').value = c.Gestor || '';
     document.getElementById('colabGestorCargoInput').value = c.CargoGestor || '';
@@ -4524,6 +4567,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
         Macrocargo: (cargoInfo && cargoInfo.macrocargo) || '',
         Nivel: document.getElementById('colabNivelInput').value,
         Local: localEscolhido,
+        TipoContratacao: document.getElementById('colabContratacaoInput').value === 'PJ' ? 'PJ' : 'CLT',
         Regional: localEscolhido === 'Loja' ? document.getElementById('colabRegionalSelect').value.trim() : '',
         Status: 'ativo',
         Diretoria: document.getElementById('colabDiretoriaInput').value.trim(),
@@ -4846,6 +4890,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
           admissao: pegarData(linha, ['data de admissão', 'data de admissao', 'admissão', 'admissao']),
           nivel: pegar(linha, ['nivel', 'nível', 'nivel de acesso']) === 'Admin' ? 'Admin' : 'Colaborador',
           local: pegar(linha, ['local', 'tipo de local', 'tipo']) || 'Loja',
+          contratacao: (function(){ const v = pegar(linha, ['tipo de contratação', 'tipo de contratacao', 'contratação', 'contratacao', 'pj']).toLowerCase(); return !v ? '' : (/(^|[^a-z])pj([^a-z]|$)|^sim$|^s$|^x$|^1$|jur/.test(v) ? 'PJ' : 'CLT'); })(),
           regional: pegar(linha, ['regional']),
           diretoria: pegar(linha, ['diretoria']),
           gestor: pegar(linha, ['gestor']),
@@ -4939,6 +4984,8 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
           Macrocargo: (cargoInfoLinha && cargoInfoLinha.macrocargo) || '',
           Nivel: l.nivel,
           Local: l.local,
+          // só grava se a planilha trouxe essa coluna preenchida — senão não mexe no que já está cadastrado
+          ...(l.contratacao ? { TipoContratacao: l.contratacao } : {}),
           Regional: l.regional,
           Status: 'ativo',
           Diretoria: l.diretoria,
@@ -5354,7 +5401,9 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
         || (Array.isArray(curso.RegionaisPermitidas) && curso.RegionaisPermitidas.includes(colab.Regional));
       const temRestricaoTipoLocal = curso.TipoLocalEspecifico === true && Array.isArray(curso.TiposLocal) && curso.TiposLocal.length > 0;
       const passaTipoLocal = !temRestricaoTipoLocal || curso.TiposLocal.includes(colab.Local || 'Loja');
-      return passaCargo && passaLocal && passaTipoLocal;
+      const temRestricaoContratacao = curso.TipoContratacaoEspecifico === true && Array.isArray(curso.TiposContratacao) && curso.TiposContratacao.length > 0;
+      const passaContratacao = !temRestricaoContratacao || curso.TiposContratacao.includes(colab.TipoContratacao === 'PJ' ? 'PJ' : 'CLT');
+      return passaCargo && passaLocal && passaTipoLocal && passaContratacao;
     }
 
     const linhasColab = ativosFiltrados.map(c => {
