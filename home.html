@@ -2849,6 +2849,7 @@ function configurarGateConclusao(c){
   let lojaColaboradorAtual = '';
   let regionalColaboradorAtual = '';
   let nomeColaboradorAtual = '';
+  let contratacaoColaboradorAtual = 'CLT'; // 'CLT' | 'PJ' — quem não tem o campo preenchido conta como CLT
   let localColaboradorAtual = ''; // 'Loja' | 'Cozinha Central' | 'Casa Cabana' — nem todo mundo trabalha numa loja
 
   // ===== gamificação: pontos, sequência de dias e ranking público (sem expor CPF) =====
@@ -2971,6 +2972,7 @@ function configurarGateConclusao(c){
     const restrito = data.CargosEspecificos === true && Array.isArray(data.Cargos) && data.Cargos.length > 0;
     const localRestrito = data.LocalEspecifico === true && ((Array.isArray(data.LojasPermitidas) && data.LojasPermitidas.length > 0) || (Array.isArray(data.RegionaisPermitidas) && data.RegionaisPermitidas.length > 0));
     const tipoLocalRestrito = data.TipoLocalEspecifico === true && Array.isArray(data.TiposLocal) && data.TiposLocal.length > 0;
+    const contratacaoRestrita = data.TipoContratacaoEspecifico === true && Array.isArray(data.TiposContratacao) && data.TiposContratacao.length > 0;
     const publico = restrito ? data.Cargos.join(', ') : 'Todos os públicos';
     return {
       id: d.id,
@@ -2997,6 +2999,8 @@ function configurarGateConclusao(c){
       lojasPermitidas: localRestrito ? (data.LojasPermitidas || []) : null,
       regionaisPermitidas: localRestrito ? (data.RegionaisPermitidas || []) : null,
       tipoLocalRestrito: tipoLocalRestrito,
+      contratacaoRestrita: contratacaoRestrita,
+      tiposContratacaoPermitidos: contratacaoRestrita ? (data.TiposContratacao || []) : null,
       tiposLocalPermitidos: tipoLocalRestrito ? (data.TiposLocal || []) : null,
       status: data.Selo || '',
       objetivo1: data.Objetivo1 || '',
@@ -3023,7 +3027,10 @@ function configurarGateConclusao(c){
     // tipo de local (Loja / Cozinha Central / Casa Cabana) — mesma ideia da restrição de trilha por local
     const passaTipoLocal = !item.tipoLocalRestrito ||
       (Array.isArray(item.tiposLocalPermitidos) && item.tiposLocalPermitidos.includes(localColaboradorAtual || 'Loja'));
-    return passaCargo && passaLocal && passaTipoLocal;
+    // tipo de contratação (CLT / PJ) — vale pra curso específico (ex.: benefícios de PJ)
+    const passaContratacao = !item.contratacaoRestrita ||
+      (Array.isArray(item.tiposContratacaoPermitidos) && item.tiposContratacaoPermitidos.includes(contratacaoColaboradorAtual || 'CLT'));
+    return passaCargo && passaLocal && passaTipoLocal && passaContratacao;
   }
 
   const CORES_BIB_PADRAO = { POP: MARCA.cor, 'Política': '#D89840', Guia: '#D6699E' };
@@ -3651,7 +3658,9 @@ function configurarGateConclusao(c){
       (Array.isArray(curso.RegionaisPermitidas) && curso.RegionaisPermitidas.includes(colab.Regional));
     const tipoLocalRestrito = curso.TipoLocalEspecifico === true && Array.isArray(curso.TiposLocal) && curso.TiposLocal.length > 0;
     const passaTipoLocal = !tipoLocalRestrito || curso.TiposLocal.includes(colab.Local || 'Loja');
-    return passaCargo && passaLocal && passaTipoLocal;
+    const contratacaoRestritaC = curso.TipoContratacaoEspecifico === true && Array.isArray(curso.TiposContratacao) && curso.TiposContratacao.length > 0;
+    const passaContratacao = !contratacaoRestritaC || curso.TiposContratacao.includes(colab.TipoContratacao === 'PJ' ? 'PJ' : 'CLT');
+    return passaCargo && passaLocal && passaTipoLocal && passaContratacao;
   }
 
   // ---- ícone único de atalhos no topbar (Minha equipe / Lojinha Cabana), setembro/2026 ----
@@ -3855,7 +3864,7 @@ function configurarGateConclusao(c){
       const pendentes = [];
       for (const c of inativos) {
         const snap = await getDoc(doc(db, 'desligamentos', c.cpf));
-        if (!snap.exists()) pendentes.push(c); // ainda não tem parecer nem foi descartado como engano
+        if (!snap.exists() && !c.Afastado) pendentes.push(c); // ainda não tem parecer nem foi descartado como engano — afastado não saiu da empresa, não pergunta
       }
       filaDesligadosPendentes = pendentes;
       mostrarProximoDesligadoPendente();
@@ -5079,6 +5088,7 @@ function configurarGateConclusao(c){
     // gamificação: sequência de dias, pontos e ranking público — roda em segundo plano, não trava o login
     nomeColaboradorAtual = nome;
     localColaboradorAtual = local;
+    contratacaoColaboradorAtual = dados.TipoContratacao === 'PJ' ? 'PJ' : 'CLT';
     atualizarPontosStreakERanking(cpf, nome, loja, cargo, local).then((resultado) => {
       if (resultado && window.renderSequenciaDias) window.renderSequenciaDias(resultado.sequenciaAtual, resultado.melhorSequencia);
       if (resultado) atualizarTeaserRanking(resultado.cursosConcluidos);
