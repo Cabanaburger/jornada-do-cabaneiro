@@ -2157,8 +2157,9 @@ function renderObrigatorios(){
   const secao = document.getElementById('obrigatorios');
   const grid = document.getElementById('obrigatoriosGrid');
   if (!secao || !grid || !cursosCarregados) return;
-  const pendentes = CURSOS.filter(c => c.obrigatorio && !c.concluido)
-    .sort((a, b) => (a.ordem || 999) - (b.ordem || 999));
+  const manterConcluidos = !!(window.MARCA && window.MARCA.fasesOnboarding);   // Jornada: o que já foi concluído continua aparecendo (pra rever)
+  const pendentes = CURSOS.filter(c => c.obrigatorio && (manterConcluidos || !c.concluido))
+    .sort((a, b) => ((a.concluido ? 1 : 0) - (b.concluido ? 1 : 0)) || ((a.ordem || 999) - (b.ordem || 999)));
   if (!pendentes.length) { secao.style.display = 'none'; return; }
   secao.style.display = 'block';
   grid.innerHTML = pendentes.map((c, i) => cardHTML(c, i + 1)).join('');
@@ -2173,7 +2174,7 @@ function renderCards(lista){
   }
   // na visão padrão (Em destaque), os obrigatórios pendentes já aparecem na seção própria acima —
   // aqui só evita duplicar. Se for uma lista filtrada (categoria, busca), mostra tudo normalmente.
-  const dados = lista || CURSOS.filter(c => !(c.obrigatorio && !c.concluido));
+  const dados = lista || CURSOS.filter(c => !(c.obrigatorio && ((window.MARCA && window.MARCA.fasesOnboarding) || !c.concluido)));
   grid.innerHTML = dados.length
     ? dados.map(c => cardHTML(c)).join('')
     : `<p style="font-size:13.5px; color:var(--ink-soft);">${t('nenhum_curso_publicado')}</p>`;
