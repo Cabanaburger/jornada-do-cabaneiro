@@ -52,10 +52,10 @@ var JORNADA_TEXTOS = {
 
   sua_jornada_cabana: { pt: 'Sua chegada ao Cabana', es: 'Tu llegada a Cabana' },
   nivel: { pt: 'Fase', es: 'Fase' },
-  nivel_novato: { pt: 'Chegando', es: 'Llegando' },
-  nivel_aprendiz: { pt: 'Pegando o jeito', es: 'Tomando el ritmo' },
-  nivel_veterano: { pt: 'Na rotina', es: 'En la rutina' },
-  nivel_referencia: { pt: 'Cabaneiro', es: 'Cabaneiro' },
+  nivel_novato: { pt: 'Gente Boa chegou', es: 'Llegó Gente Boa' },
+  nivel_aprendiz: { pt: 'Gente Boa na rotina', es: 'Gente Boa en la rutina' },
+  nivel_veterano: { pt: 'Já faz parte', es: 'Ya eres parte' },
+  nivel_referencia: { pt: 'Virou Cabana', es: 'Ya eres Cabana' },
   pra_virar: { pt: 'pra chegar na fase', es: 'para llegar a la fase' },
   nivel_maximo: { pt: 'Você chegou na última fase', es: 'Llegaste a la última fase' },
 
@@ -2346,8 +2346,8 @@ function renderJornada(){
 }
 window.renderJornada = renderJornada;
 
-// fases do onboarding (perfil Jornada): 1 Chegando (entrou) → 2 Pegando o jeito (todos os treinamentos do perfil concluídos)
-// → 3 Na rotina (marcou que respondeu a pesquisa de 45 dias) → 4 Cabaneiro (marcou a de 90 dias) = certificado.
+// fases do onboarding (perfil Jornada): 1 Gente Boa chegou (entrou) → 2 Gente Boa na rotina (todos os treinamentos do perfil concluídos)
+// → 3 Já faz parte (marcou que respondeu a pesquisa de 45 dias) → 4 Virou Cabana (marcou a de 90 dias) = certificado.
 // Os dados das pesquisas vêm de window.__fasesEstado, preenchido no script de auth (carregarEstadoFases).
 function renderFasesOnboarding(){
   const L = function(pt, es){ return IDIOMA === 'es' ? es : pt; };
@@ -2400,9 +2400,9 @@ function renderFasesOnboarding(){
       const falta = total - concl;
       hint.innerHTML = frase(concl > 0 ? t('ritmo_bomritmo') : t('ritmo_boracomecar')) + L('Faltam ','Faltan ') + '<b>' + falta + ' ' + (falta === 1 ? L('treinamento','capacitación') : L('treinamentos','capacitaciones')) + '</b> ' + L('pra chegar na fase ','para llegar a la fase ') + nomeNivel('Aprendiz Cabana');
     }
-    else if (m4) hint.innerHTML = frase(L('Você é oficialmente Cabaneiro! 💚','¡Eres oficialmente Cabaneiro! 💚')) + L('Seu certificado de boas-vindas está pronto.','Tu certificado de bienvenida está listo.');
+    else if (m4) hint.innerHTML = frase(L('Virou Cabana! 💚','¡Ya eres Cabana! 💚')) + L('Seu certificado de boas-vindas está pronto.','Tu certificado de bienvenida está listo.');
     else if (!r45) hint.innerHTML = frase(L('Treinamentos em dia! 🤝','¡Capacitaciones al día! 🤝')) + (lib45 ? L('Falta a pesquisa de 45 dias pra chegar na fase ','Falta la encuesta de 45 días para llegar a la fase ') + nomeNivel('Veterano') : L('A pesquisa de 45 dias libera em ','La encuesta de 45 días se libera en ') + '<b>' + dp(45 - dias) + '</b>');
-    else hint.innerHTML = frase(L('Tá na rotina! 🔥','¡Ya estás en la rutina! 🔥')) + (lib90 ? L('Falta a pesquisa de 90 dias pra virar ','Falta la encuesta de 90 días para ser ') + nomeNivel('Referência Cabana') : L('A pesquisa de 90 dias libera em ','La encuesta de 90 días se libera en ') + '<b>' + dp(90 - dias) + '</b>');
+    else hint.innerHTML = frase(L('Já faz parte! 🔥','¡Ya eres parte! 🔥')) + (lib90 ? L('Falta a pesquisa de 90 dias pra chegar na fase ','Falta la encuesta de 90 días para llegar a la fase ') + nomeNivel('Referência Cabana') : L('A pesquisa de 90 dias libera em ','La encuesta de 90 días se libera en ') + '<b>' + dp(90 - dias) + '</b>');
   }
 
   // lista de passos (só depois que os dados das pesquisas chegaram, pra não piscar um botão que ainda não vale)
@@ -2430,7 +2430,7 @@ function renderFasesOnboarding(){
         '<div class="fp-acoes">' + ((!m2 && primeiroPend) ? '<button class="fp-btn" onclick="abrirCurso(\'' + primeiroPend.id + '\')">' + L('Continuar','Continuar') + '</button>' : '') + '</div></div>';
       h += linhaPesq(r45, lib45, 45, E.link45, dias === null ? 0 : 45 - dias);
       h += linhaPesq(r90, lib90, 90, E.link90, dias === null ? 0 : 90 - dias);
-      if (m4) h += '<button class="fp-btn fp-cert" onclick="gerarCertificadoCabaneiro()">🏆 ' + L('Baixar meu certificado de Cabaneiro','Descargar mi certificado de Cabaneiro') + '</button>';
+      if (m4) h += '<button class="fp-btn fp-cert" onclick="gerarCertificadoCabaneiro()">🏆 ' + L('Baixar meu certificado','Descargar mi certificado') + '</button>';
       box.innerHTML = h;
       box.style.display = 'flex';
     }
@@ -3277,7 +3277,7 @@ function configurarGateConclusao(c){
   function linhaCabaneiroCert(){
     if (!(window.MARCA && window.MARCA.fasesOnboarding) || window.__faseIdx !== 3) return '';
     return `<div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 0; border-bottom:1px solid var(--line);">
-      <div><b style="font-size:14px;">${IDIOMA === 'es' ? 'Certificado de Cabaneiro · Jornada completa' : 'Certificado de Cabaneiro · Jornada completa'}</b><br>
+      <div><b style="font-size:14px;">${IDIOMA === 'es' ? 'Certificado · Virou Cabana' : 'Certificado · Virou Cabana'}</b><br>
       <small style="color:var(--ink-soft);">${IDIOMA === 'es' ? 'Onboarding y encuestas de 45 y 90 días' : 'Onboarding e pesquisas de 45 e 90 dias'}</small></div>
       <div style="display:flex; align-items:center; gap:10px;"><span class="pill" style="background:var(--green-tint); color:var(--green-dark);">${t('valido')}</span><button class="ghost-btn" onclick="gerarCertificadoCabaneiro()">${t('baixar')}</button></div>
     </div>`;
