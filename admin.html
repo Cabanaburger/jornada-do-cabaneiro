@@ -152,6 +152,53 @@ window.MARCA_ATIVA = 'jornada';
   .rep-grid{ display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:22px; }
   .rep-card{ background:var(--paper); border:1px solid var(--line); border-radius:var(--radius-md); box-shadow:var(--shadow); padding:20px; }
   .rep-card h4{ font-family:var(--display); font-weight:400; font-size:15.5px; margin:0 0 14px; }
+  /* painéis de pareceres e pontos de 30 dias */
+  .kpi-row{ display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:14px; margin-bottom:18px; }
+  .kpi{ background:var(--paper); border:1px solid var(--line); border-radius:var(--radius-md); padding:14px 16px; box-shadow:var(--shadow); }
+  .kpi small{ display:block; font-size:11.5px; color:var(--ink-soft); font-weight:700; }
+  .kpi b{ display:block; font-family:var(--display); font-weight:400; font-size:28px; margin:4px 0 2px; }
+  .kpi span{ font-size:11.5px; color:var(--ink-soft); }
+  .flt-bar{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:18px; padding:12px; background:var(--paper); border:1px solid var(--line); border-radius:var(--radius-md); }
+  .flt-bar select, .flt-bar input[type=search], .rep-card select{ padding:8px 10px; border-radius:9px; border:1px solid var(--line); background:#fff; font-size:12.5px; font-family:inherit; color:var(--ink); max-width:190px; }
+  .flt-bar input[type=search]{ min-width:170px; }
+  .flt-check{ font-size:12.5px; display:flex; align-items:center; gap:6px; color:var(--ink); }
+  .novos-banner{ display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; background:#FFF4D6; border:1px solid #E8C86A; border-radius:var(--radius-md); padding:12px 16px; margin-bottom:16px; font-size:13px; }
+  .tab-badge{ display:inline-flex; align-items:center; justify-content:center; min-width:18px; height:18px; padding:0 5px; margin-left:7px; border-radius:100px; background:#D9754C; color:#fff; font-size:10.5px; font-weight:800; }
+  .cnt-pill{ display:inline-block; min-width:22px; text-align:center; padding:1px 8px; border-radius:100px; background:var(--cream); font-size:12px; font-weight:800; margin-left:6px; }
+  .barra-l{ margin-bottom:11px; font-size:12.5px; }
+  .barra-l > div:first-child{ display:flex; justify-content:space-between; gap:10px; margin-bottom:4px; }
+  .barra-l > div:first-child span:last-child{ color:var(--ink-soft); white-space:nowrap; }
+  .barra-t{ background:var(--cream); border-radius:6px; height:8px; overflow:hidden; }
+  .barra-t i{ display:block; height:100%; border-radius:6px; }
+  .colunas{ display:flex; align-items:flex-end; gap:10px; min-height:130px; padding-top:6px; overflow-x:auto; }
+  .colunas .col{ display:flex; flex-direction:column; align-items:center; gap:4px; min-width:38px; font-size:11.5px; }
+  .colunas .col i{ width:24px; background:var(--green); border-radius:6px 6px 0 0; display:block; }
+  .colunas .col small{ color:var(--ink-soft); }
+  .muted{ color:var(--ink-soft); font-size:12px; }
+  small.muted{ display:block; margin-top:6px; }
+  .tb-base{ width:100%; border-collapse:collapse; font-size:13px; }
+  .tb-base th{ text-align:left; font-size:11.5px; color:var(--ink-soft); padding:12px 14px; border-bottom:1px solid var(--line); white-space:nowrap; }
+  .tb-base td{ padding:11px 14px; border-bottom:1px solid var(--line); vertical-align:top; }
+  .tb-base tr.lin{ cursor:pointer; }
+  .tb-base tr.lin:hover{ background:rgba(var(--green-rgb),0.06); }
+  .tb-base tr.lin.novo{ background:#FFF9E6; box-shadow:inset 4px 0 0 #D9754C; }
+  .tb-base tr.det td{ background:var(--cream); }
+  .pill-novo{ display:inline-block; font-size:10px; font-weight:800; padding:2px 7px; border-radius:100px; background:#D9754C; color:#fff; vertical-align:middle; }
+  .det-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:18px; padding:6px 4px; }
+  .det-grid h5{ margin:0 0 5px; font-size:12px; color:var(--ink-soft); }
+  .det-grid p{ margin:0 0 8px; font-size:13px; line-height:1.5; }
+  .chip-mot{ display:inline-block; padding:3px 10px; border-radius:100px; border:1.5px solid; font-size:12px; font-weight:700; }
+  .chip-pot{ display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border-radius:100px; font-size:12px; font-weight:700; white-space:nowrap; }
+  .chip-pot i{ width:8px; height:8px; border-radius:50%; }
+  .fdot{ display:inline-block; width:11px; height:11px; border-radius:50%; margin-right:3px; vertical-align:middle; }
+  .farol-cel{ white-space:nowrap; font-size:12.5px; }
+  .emp{ display:flex; height:11px; width:130px; border-radius:6px; overflow:hidden; background:#EEE6D2; }
+  .emp i{ display:block; height:100%; }
+  .emp-t{ display:block; font-size:11px; color:var(--ink-soft); margin-top:3px; }
+  .tb-comp td{ vertical-align:middle; }
+  .leg-row{ display:flex; flex-wrap:wrap; gap:14px; font-size:11.5px; color:var(--ink-soft); margin-bottom:12px; }
+  .leg-row i{ display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:5px; }
+
   .bar-item{ display:flex; align-items:center; gap:12px; margin-bottom:12px; font-size:12.5px; }
   .bar-item .lbl{ width:150px; flex:none; color:var(--ink-soft); font-weight:600; }
   .bar-item .track{ flex:1; height:9px; background:var(--line); border-radius:100px; overflow:hidden; }
@@ -611,8 +658,8 @@ window.MARCA_ATIVA = 'jornada';
           <div class="ptab" data-sub="cursos" onclick="mudarSubRelatorio('cursos', this)">Cursos</div>
           <div class="ptab" data-sub="organizacional" onclick="mudarSubRelatorio('organizacional', this)">Organizacional</div>
           <div class="ptab" data-sub="acompanhamento" onclick="mudarSubRelatorio('acompanhamento', this)">Acompanhamento</div>
-          <div class="ptab" data-sub="desligamentos" onclick="mudarSubRelatorio('desligamentos', this)">Desligamentos</div>
-          <div class="ptab" data-sub="checkin30" onclick="mudarSubRelatorio('checkin30', this)">Check-in · 30 dias</div>
+          <div class="ptab" data-sub="desligamentos" onclick="mudarSubRelatorio('desligamentos', this)">Pareceres de desligamento</div>
+          <div class="ptab" data-sub="checkin30" onclick="mudarSubRelatorio('checkin30', this)">Ponto de 30 dias</div>
         </div>
       </div>
 
@@ -730,62 +777,104 @@ window.MARCA_ATIVA = 'jornada';
         </div>
       </div>
 
-      <!-- ===== DESLIGAMENTOS (Jornada do Cabaneiro, setembro/2026) ===== -->
+      <!-- ===== PARECERES DE DESLIGAMENTO (Jornada do Cabaneiro, outubro/2026) ===== -->
       <div id="relSub-desligamentos" class="rel-subview" style="display:none;">
-        <p class="sub" style="margin:-4px 0 18px;">Motivo e detalhamento do parecer só aparecem aqui — a visão de Coordenador/Gerente de Operações na Home nunca mostra isso, só a contagem de pendência de curso.</p>
-        <div style="text-align:right; margin-bottom:10px;">
+        <p class="sub" style="margin:-4px 0 14px;">Base dos pareceres registrados pelos gestores quando alguém sai. Use os filtros para comparar por regional, loja, motivo e tempo de casa. O detalhamento só aparece aqui: coordenadores e gerentes de operações não veem esse conteúdo na Home.</p>
+        <div id="desNovosBanner"></div>
+        <div class="kpi-row" id="desKpis"></div>
+        <div class="flt-bar">
+          <select id="desFRegional" onchange="filtrarDeslig()"></select>
+          <select id="desFLoja" onchange="filtrarDeslig()"></select>
+          <select id="desFMotivo" onchange="filtrarDeslig()"></select>
+          <select id="desFIniciativa" onchange="filtrarDeslig()">
+            <option value="">Quem decidiu: todos</option>
+            <option value="colaborador">Colaborador</option>
+            <option value="empresa">Empresa</option>
+            <option value="fim_contrato">Fim de contrato</option>
+            <option value="outro">Outro</option>
+          </select>
+          <select id="desFPeriodo" onchange="filtrarDeslig()">
+            <option value="tudo">Todo o período</option>
+            <option value="30">Últimos 30 dias</option>
+            <option value="90">Últimos 90 dias</option>
+            <option value="365">Últimos 12 meses</option>
+          </select>
+          <input id="desFBusca" type="search" placeholder="Buscar nome ou cargo…" oninput="filtrarDeslig()">
+          <button class="ghost-btn" onclick="limparFiltrosDeslig()">Limpar</button>
           <button class="ghost-btn" onclick="exportarDesligamentosCSV()">⬇ Exportar</button>
         </div>
         <div class="rep-grid">
-          <div class="rep-card">
-            <h4>🕓 Pareceres pendentes</h4>
-            <div id="relDesligPendentes"><small class="hint" style="color:var(--ink-soft); font-size:12.5px;">Carregando…</small></div>
-          </div>
-          <div class="rep-card">
-            <h4>📊 Ranking de motivos</h4>
-            <div id="relDesligMotivos"><small class="hint" style="color:var(--ink-soft); font-size:12.5px;">Carregando…</small></div>
-          </div>
-          <div class="rep-card">
-            <h4>🗺️ Desligamentos por regional</h4>
-            <div id="relDesligRegional"><small class="hint" style="color:var(--ink-soft); font-size:12.5px;">Carregando…</small></div>
-          </div>
+          <div class="rep-card"><h4>📊 Motivos</h4><div id="desMotivos"></div></div>
+          <div class="rep-card"><h4>⏳ Tempo de casa na saída</h4><div id="desTempo"></div><h4 style="margin-top:20px;">🤝 Quem decidiu</h4><div id="desIniciativa"></div></div>
+          <div class="rep-card"><h4>🗺️ Por regional</h4><div id="desRegional"></div></div>
+          <div class="rep-card"><h4>🏬 Por loja</h4><div id="desLoja"></div></div>
+          <div class="rep-card" style="grid-column:1/-1;"><h4>📅 Desligamentos por mês</h4><div id="desMes"></div></div>
         </div>
-        <div class="panel-card" style="margin-top:20px;">
-          <table>
-            <thead><tr><th>Colaborador</th><th>Cargo</th><th>Loja</th><th>Regional</th><th>Motivo</th><th>Detalhamento</th><th>Registrado em</th></tr></thead>
-            <tbody id="relDesligBody">
-              <tr><td colspan="7" style="text-align:center; color:var(--ink-soft); padding:24px;">Carregando…</td></tr>
-            </tbody>
+        <details class="rep-card" id="desPendBox" style="margin-bottom:22px;">
+          <summary style="cursor:pointer; font-family:var(--display); font-size:15.5px;">🕓 Aguardando parecer <span class="cnt-pill" id="desPendCnt">0</span></summary>
+          <div id="relDesligPendentes" style="margin-top:12px;"></div>
+        </details>
+        <div class="panel-card">
+          <div id="desTabelaTitulo" style="padding:14px 18px 0; font-size:12.5px; color:var(--ink-soft);"></div>
+          <table class="tb-base">
+            <thead><tr><th>Colaborador</th><th>Loja · Regional</th><th>Motivo</th><th>Tempo de casa</th><th>Ponto de 30 dias</th><th>Registrado em</th></tr></thead>
+            <tbody id="relDesligBody"></tbody>
           </table>
         </div>
       </div>
 
-      <!-- ===== CHECK-IN · 30 DIAS (Jornada do Cabaneiro, setembro/2026) ===== -->
+      <!-- ===== PONTO DE CHECAGEM · 30 DIAS (Jornada do Cabaneiro, outubro/2026) ===== -->
       <div id="relSub-checkin30" class="rel-subview" style="display:none;">
-        <p class="sub" style="margin:-4px 0 18px;">Farol preenchido pelo gestor direto no ponto de checagem de 30 dias — "Preocupante"/"Atenção" merece um acompanhamento mais de perto.</p>
-        <div style="text-align:right; margin-bottom:10px;">
+        <p class="sub" style="margin:-4px 0 14px;">Resumo da <b>conversa de 30 dias</b>: o feedback que o gestor dá à pessoa ao completar o primeiro mês. Cada registro traz o farol de três temas, os comentários, a leitura do gestor sobre o potencial de continuar no Cabana e o resumo da conversa. Use o comparativo para ver padrões entre lojas, regionais e cargos.</p>
+        <div id="chkNovosBanner"></div>
+        <div class="kpi-row" id="chkKpis"></div>
+        <div class="flt-bar">
+          <select id="chkFRegional" onchange="filtrarChk()"></select>
+          <select id="chkFLoja" onchange="filtrarChk()"></select>
+          <select id="chkFCargo" onchange="filtrarChk()"></select>
+          <select id="chkFPotencial" onchange="filtrarChk()">
+            <option value="">Potencial: todos</option>
+            <option value="sim">Sim, com certeza</option>
+            <option value="sim_desenvolver">Sim, com pontos a desenvolver</option>
+            <option value="duvida">Tenho dúvidas</option>
+            <option value="nao">Hoje não vejo</option>
+          </select>
+          <select id="chkFPeriodo" onchange="filtrarChk()">
+            <option value="tudo">Todo o período</option>
+            <option value="30">Últimos 30 dias</option>
+            <option value="90">Últimos 90 dias</option>
+            <option value="365">Últimos 12 meses</option>
+          </select>
+          <label class="flt-check"><input type="checkbox" id="chkFAlerta" onchange="filtrarChk()"> Só com alerta</label>
+          <input id="chkFBusca" type="search" placeholder="Buscar nome…" oninput="filtrarChk()">
+          <button class="ghost-btn" onclick="limparFiltrosChk()">Limpar</button>
           <button class="ghost-btn" onclick="exportarCheckin30CSV()">⬇ Exportar</button>
         </div>
-        <div class="rep-grid">
-          <div class="rep-card">
-            <h4>🕓 Pendentes agora</h4>
-            <div id="relCheckin30Pendentes"><small class="hint" style="color:var(--ink-soft); font-size:12.5px;">Carregando…</small></div>
+        <div class="rep-card" style="margin-bottom:22px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:12px;">
+            <h4 style="margin:0;">⚖️ Comparativo</h4>
+            <label style="font-size:12.5px; color:var(--ink-soft);">Comparar por
+              <select id="chkAgrupar" onchange="renderCheckin30Relatorio()" style="margin-left:6px;">
+                <option value="Regional">Regional</option><option value="Loja">Loja</option><option value="Cargo">Cargo</option>
+              </select>
+            </label>
           </div>
-          <div class="rep-card">
-            <h4>🚦 Resultado agregado dos faróis</h4>
-            <div id="relCheckin30Farol"><small class="hint" style="color:var(--ink-soft); font-size:12.5px;">Carregando…</small></div>
-          </div>
-          <div class="rep-card">
-            <h4>🚩 Pontos de atenção por loja</h4>
-            <div id="relCheckin30PorLoja"><small class="hint" style="color:var(--ink-soft); font-size:12.5px;">Carregando…</small></div>
-          </div>
+          <div class="leg-row"><span><i style="background:#4F9C40"></i>Indo bem</span><span><i style="background:#D89840"></i>Atenção</span><span><i style="background:#B4462B"></i>Preocupante</span><span style="margin-left:8px;"><i style="background:#8DB84A"></i>Potencial: sim</span><span><i style="background:#E0B060"></i>dúvidas</span><span><i style="background:#B4462B"></i>não vejo</span></div>
+          <div style="overflow-x:auto;"><div id="chkComparativo"></div></div>
         </div>
-        <div class="panel-card" style="margin-top:20px;">
-          <table>
-            <thead><tr><th>Colaborador</th><th>Loja</th><th>Regional</th><th>Integração</th><th>Treinamento</th><th>Comportamento</th><th>Registrado em</th></tr></thead>
-            <tbody id="relCheckin30Body">
-              <tr><td colspan="7" style="text-align:center; color:var(--ink-soft); padding:24px;">Carregando…</td></tr>
-            </tbody>
+        <div class="rep-grid">
+          <div class="rep-card"><h4>🌱 Potencial de continuar no Cabana</h4><div id="chkPotencial"></div></div>
+          <div class="rep-card"><h4>🚩 Pessoas com sinal de alerta</h4><div id="chkAlertas"></div></div>
+        </div>
+        <details class="rep-card" style="margin-bottom:22px;">
+          <summary style="cursor:pointer; font-family:var(--display); font-size:15.5px;">🕓 Aguardando o ponto de 30 dias <span class="cnt-pill" id="chkPendCnt">0</span></summary>
+          <div id="relCheckin30Pendentes" style="margin-top:12px;"></div>
+        </details>
+        <div class="panel-card">
+          <div id="chkTabelaTitulo" style="padding:14px 18px 0; font-size:12.5px; color:var(--ink-soft);"></div>
+          <table class="tb-base">
+            <thead><tr><th>Colaborador</th><th>Loja · Regional</th><th>Conversa em</th><th>Integração</th><th>Aprendizado</th><th>Comportamento</th><th>Potencial</th></tr></thead>
+            <tbody id="relCheckin30Body"></tbody>
           </table>
         </div>
       </div>
@@ -5083,6 +5172,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     onSnapshot(collection(db, 'checkins30'), (snapshot) => {
       checkins30Cache = snapshot.docs.map(d => ({ cpf: d.id, ...d.data() }));
       renderCheckin30Relatorio();
+      renderDesligamentos();
     }, (err) => console.error('Erro ao carregar check-ins de 30 dias:', err));
   }
 
@@ -5091,164 +5181,308 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     return ts.toDate().toLocaleDateString('pt-BR');
   }
 
+  /* ---------- helpers do painel de pareceres e pontos de 30 dias (outubro/2026) ---------- */
+  const A_COR = { verde: '#4F9C40', amarelo: '#D89840', vermelho: '#B4462B' };
+  const A_FAROL_ROT = { verde: 'Indo bem', amarelo: 'Atenção', vermelho: 'Preocupante' };
+  const A_POT_ROT = { sim: 'Sim, com certeza', sim_desenvolver: 'Sim, com pontos a desenvolver', duvida: 'Tenho dúvidas', nao: 'Hoje não vejo' };
+  const A_POT_COR = { sim: '#4F9C40', sim_desenvolver: '#8DB84A', duvida: '#E0B060', nao: '#B4462B' };
+  const A_INI_ROT = { colaborador: 'Colaborador', empresa: 'Empresa', fim_contrato: 'Fim de contrato', outro: 'Outro' };
+  const A_INI_COR = { colaborador: '#6E8FB5', empresa: '#B4462B', fim_contrato: '#9A9078', outro: '#B8B09C' };
+  function aEsc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch])); }
+  function aTs(ts){ return ts && ts.toDate ? ts.toDate() : null; }
+  function aData(d){ return d ? d.toLocaleDateString('pt-BR') : '—'; }
+  function aIniDe(m){ return ({ 'Pediu demissão': 'colaborador', 'Fim de período de experiência': 'fim_contrato', 'Término de contrato': 'fim_contrato', 'Outro': 'outro' })[m] || (m ? 'empresa' : 'outro'); }
+  function aDistintos(lista, campo){ return [...new Set(lista.map(x => x[campo]).filter(Boolean))].sort((a, b) => String(a).localeCompare(String(b), 'pt-BR')); }
+  function aPreencher(id, rotuloTodos, valores){
+    const el = document.getElementById(id); if (!el) return '';
+    const atual = el.value;
+    el.innerHTML = `<option value="">${aEsc(rotuloTodos)}</option>` + valores.map(v => `<option value="${aEsc(v)}">${aEsc(v)}</option>`).join('');
+    el.value = valores.includes(atual) ? atual : '';
+    return el.value;
+  }
+  function aVisto(chave){ try { const v = localStorage.getItem('cabana_adm_visto_' + chave); return v ? Number(v) : Date.now() - 7 * 86400000; } catch (e) { return Date.now() - 7 * 86400000; } }
+  window.marcarVistos = function(chave){
+    try { localStorage.setItem('cabana_adm_visto_' + chave, String(Date.now())); } catch (e) {}
+    if (chave === 'des') renderDesligamentos(); else renderCheckin30Relatorio();
+  };
+  function aBadgeAba(sub, n){
+    const tab = document.querySelector(`#relSubTabs .ptab[data-sub="${sub}"]`); if (!tab) return;
+    const antigo = tab.querySelector('.tab-badge'); if (antigo) antigo.remove();
+    if (n > 0) tab.insertAdjacentHTML('beforeend', `<span class="tab-badge">${n}</span>`);
+  }
+  function aBannerNovos(el, chave, novos, singular, plural, nomeFn){
+    if (!el) return;
+    if (!novos.length) { el.innerHTML = ''; return; }
+    const nomes = novos.slice(0, 3).map(nomeFn).join(', ') + (novos.length > 3 ? ` e mais ${novos.length - 3}` : '');
+    el.innerHTML = `<div class="novos-banner"><span>🔔 <b>${novos.length} ${novos.length === 1 ? singular : plural}</b> desde a sua última visita: ${aEsc(nomes)}</span><button class="ghost-btn" onclick="marcarVistos('${chave}')">Marcar como vistos</button></div>`;
+  }
+  function aKpi(rotulo, valor, sub, cor){
+    return `<div class="kpi"><small>${rotulo}</small><b${cor ? ` style="color:${cor}"` : ''}>${valor}</b>${sub ? `<span>${sub}</span>` : ''}</div>`;
+  }
+  function aBarras(pares, total, corFn){
+    if (!pares.length) return `<small class="hint" style="color:var(--ink-soft); font-size:12.5px;">Nada para mostrar com os filtros atuais.</small>`;
+    return pares.map(([rot, n]) => {
+      const p = total ? Math.round((n / total) * 100) : 0;
+      return `<div class="barra-l"><div><span>${aEsc(rot)}</span><span>${n} · ${p}%</span></div><div class="barra-t"><i style="width:${p}%; background:${corFn ? corFn(rot) : 'var(--green)'}"></i></div></div>`;
+    }).join('');
+  }
+  function aEmpilhada(segs, tituloExtra){
+    const total = segs.reduce((a, s) => a + s.n, 0);
+    if (!total) return `<span class="muted">—</span>`;
+    return `<div class="emp" title="${aEsc(segs.filter(s => s.n).map(s => s.rot + ': ' + s.n).join(' · '))}">${segs.filter(s => s.n).map(s => `<i style="width:${(s.n / total) * 100}%; background:${s.cor}"></i>`).join('')}</div>` + (tituloExtra ? `<small class="emp-t">${tituloExtra(total)}</small>` : '');
+  }
+  function aPeriodoOk(data, periodo){
+    if (periodo === 'tudo' || !data) return true;
+    return (Date.now() - data.getTime()) <= Number(periodo) * 86400000;
+  }
+  window.toggleDet = function(id){ const e = document.getElementById(id); if (e) e.style.display = e.style.display === 'none' ? 'table-row' : 'none'; };
+  function aFarolDots(c){
+    return ['Integracao', 'Treinamento', 'Comportamento'].map(k => `<i class="fdot" title="${A_FAROL_ROT[c[k]] || 'não informado'}" style="background:${A_COR[c[k]] || '#CFC8B8'}"></i>`).join('');
+  }
+  function aChipPot(v){ return v && A_POT_ROT[v] ? `<span class="chip-pot" style="background:${A_POT_COR[v]}22; color:${v === 'sim' ? '#2F6E27' : v === 'sim_desenvolver' ? '#587D22' : v === 'duvida' ? '#8A5E10' : '#8E2F18'}"><i style="background:${A_POT_COR[v]}"></i>${A_POT_ROT[v]}</span>` : `<span class="muted">—</span>`; }
+
+  /* ================== PARECERES DE DESLIGAMENTO ================== */
+  function aDesEnriquecidos(){
+    return desligamentosCache.filter(d => !d.Descartado).map(d => {
+      const col = colaboradoresCache.find(c => c.cpf === d.cpf);
+      const reg = aTs(d.RegistradoEm);
+      let tempo = d.TempoDeCasaDias;
+      if ((tempo === undefined || tempo === null) && col && col.Admissao && col.Admissao.toDate && reg) tempo = Math.floor((reg - col.Admissao.toDate()) / 86400000);
+      return { ...d, _reg: reg, _tempo: (tempo === undefined ? null : tempo), _ini: d.Iniciativa || aIniDe(d.Motivo),
+        _chk: checkins30Cache.find(c => c.cpf === d.cpf) || null,
+        Regional: d.Regional || (col && col.Regional) || '', Loja: d.Loja || (col && col.Loja) || '', Cargo: d.Cargo || (col && col.Cargo) || '' };
+    });
+  }
+  function aFaixaTempo(t){ return t === null ? 'Sem data de admissão' : t <= 30 ? 'Até 30 dias' : t <= 90 ? '31 a 90 dias' : t <= 180 ? '91 a 180 dias' : t <= 365 ? '181 a 365 dias' : 'Mais de 1 ano'; }
+  const A_FAIXAS = ['Até 30 dias', '31 a 90 dias', '91 a 180 dias', '181 a 365 dias', 'Mais de 1 ano', 'Sem data de admissão'];
+
+  window.filtrarDeslig = function(){ renderDesligamentos(); };
+  window.limparFiltrosDeslig = function(){
+    ['desFRegional', 'desFLoja', 'desFMotivo', 'desFIniciativa'].forEach(i => { document.getElementById(i).value = ''; });
+    document.getElementById('desFPeriodo').value = 'tudo'; document.getElementById('desFBusca').value = '';
+    renderDesligamentos();
+  };
+
   let ultimoDesligamentosCache = null;
   function renderDesligamentos(){
-    const pendentesEl = document.getElementById('relDesligPendentes');
-    if (!pendentesEl) return; // aba ainda não está no DOM
-
-    const registrados = desligamentosCache.filter(d => !d.Descartado);
-    const porCpfRegistrado = new Set(desligamentosCache.map(d => d.cpf));
-    const pendentes = colaboradoresCache.filter(c => c.Status === 'inativo' && !porCpfRegistrado.has(c.cpf));
-
-    pendentesEl.innerHTML = renderListaCard(
-      pendentes.map(c => linhaSimples(c.Nome || c.cpf, [c.Cargo, c.Loja].filter(Boolean).join(' · '))),
-      'Nenhum parecer pendente — todo mundo que saiu já tem parecer registrado ou foi marcado como engano de cadastro.'
-    );
-
-    const porMotivo = {};
-    registrados.forEach(d => { const m = d.Motivo || '(sem motivo)'; porMotivo[m] = (porMotivo[m] || 0) + 1; });
-    const motivosOrdenados = Object.keys(porMotivo).sort((a, b) => porMotivo[b] - porMotivo[a]);
-    document.getElementById('relDesligMotivos').innerHTML = motivosOrdenados.length
-      ? motivosOrdenados.map(m => linhaSimples(m, `${porMotivo[m]} desligamento${porMotivo[m] === 1 ? '' : 's'}`)).join('')
-      : `<small class="hint" style="color:var(--ink-soft); font-size:12.5px;">Sem desligamentos registrados ainda.</small>`;
-
-    const porRegional = {};
-    registrados.forEach(d => { const r = d.Regional || '(sem regional)'; porRegional[r] = (porRegional[r] || 0) + 1; });
-    const regionaisOrdenadas = Object.keys(porRegional).sort((a, b) => porRegional[b] - porRegional[a]);
-    document.getElementById('relDesligRegional').innerHTML = regionaisOrdenadas.length
-      ? regionaisOrdenadas.map(r => linhaSimples(r, `${porRegional[r]} desligamento${porRegional[r] === 1 ? '' : 's'}`)).join('')
-      : `<small class="hint" style="color:var(--ink-soft); font-size:12.5px;">Sem desligamentos registrados ainda.</small>`;
-
     const corpo = document.getElementById('relDesligBody');
-    const linhasTabela = registrados.slice().sort((a, b) => (b.RegistradoEm?.toDate?.() || 0) - (a.RegistradoEm?.toDate?.() || 0));
-    corpo.innerHTML = linhasTabela.length
-      ? linhasTabela.map(d => `<tr><td>${d.Nome || d.cpf}</td><td>${d.Cargo || '—'}</td><td>${d.Loja || '—'}</td><td>${d.Regional || '—'}</td><td>${d.Motivo || '—'}</td><td>${d.Detalhamento || '—'}</td><td>${formatarDataHora(d.RegistradoEm)}</td></tr>`).join('')
-      : `<tr><td colspan="7" style="text-align:center; color:var(--ink-soft); padding:24px;">Nenhum parecer de desligamento registrado ainda.</td></tr>`;
+    if (!corpo) return; // aba ainda não está no DOM
+    const todos = aDesEnriquecidos();
 
-    ultimoDesligamentosCache = { pendentes, registrados: linhasTabela };
+    // filtros
+    const fReg = aPreencher('desFRegional', 'Regional: todas', aDistintos(todos, 'Regional'));
+    const fLoja = aPreencher('desFLoja', 'Loja: todas', aDistintos(fReg ? todos.filter(d => d.Regional === fReg) : todos, 'Loja'));
+    const fMot = aPreencher('desFMotivo', 'Motivo: todos', aDistintos(todos, 'Motivo'));
+    const fIni = document.getElementById('desFIniciativa').value;
+    const fPer = document.getElementById('desFPeriodo').value;
+    const fBusca = document.getElementById('desFBusca').value.trim().toLowerCase();
+    const lista = todos.filter(d =>
+      (!fReg || d.Regional === fReg) && (!fLoja || d.Loja === fLoja) && (!fMot || d.Motivo === fMot) && (!fIni || d._ini === fIni) &&
+      aPeriodoOk(d._reg, fPer) && (!fBusca || (String(d.Nome || '') + ' ' + String(d.Cargo || '')).toLowerCase().includes(fBusca))
+    ).sort((a, b) => (b._reg || 0) - (a._reg || 0));
+    const filtrado = lista.length !== todos.length;
+
+    // pendentes (sem parecer e sem marcação de engano)
+    const jaTem = new Set(desligamentosCache.map(d => d.cpf));
+    const pendentes = colaboradoresCache.filter(c => c.Status === 'inativo' && !jaTem.has(c.cpf));
+    document.getElementById('relDesligPendentes').innerHTML = renderListaCard(
+      pendentes.map(c => linhaSimples(c.Nome || c.cpf, [c.Cargo, c.Loja].filter(Boolean).join(' · '))),
+      'Ninguém aguardando parecer: todo mundo que saiu já tem parecer ou foi marcado como engano de cadastro.', 12);
+    document.getElementById('desPendCnt').textContent = pendentes.length;
+
+    // novos desde a última visita (sempre sobre a base completa)
+    const visto = aVisto('des');
+    const novos = todos.filter(d => d._reg && d._reg.getTime() > visto);
+    aBannerNovos(document.getElementById('desNovosBanner'), 'des', novos, 'parecer novo', 'pareceres novos', d => d.Nome || d.cpf);
+    aBadgeAba('desligamentos', novos.length);
+
+    // KPIs
+    const ult30 = lista.filter(d => d._reg && (Date.now() - d._reg.getTime()) <= 30 * 86400000).length;
+    const ate90 = lista.filter(d => d._tempo !== null && d._tempo <= 90).length;
+    const comTempo = lista.filter(d => d._tempo !== null).length;
+    const mediana = (() => { const v = lista.map(d => d._tempo).filter(t => t !== null).sort((a, b) => a - b); return v.length ? v[Math.floor(v.length / 2)] : null; })();
+    document.getElementById('desKpis').innerHTML =
+      aKpi('Pareceres' + (filtrado ? ' (filtrados)' : ''), lista.length, filtrado ? `de ${todos.length} no total` : 'registrados') +
+      aKpi('Últimos 30 dias', ult30, 'novos pareceres') +
+      aKpi('Saíram com até 90 dias', comTempo ? Math.round((ate90 / comTempo) * 100) + '%' : '—', comTempo ? `${ate90} de ${comTempo}` : 'sem data de admissão', ate90 && comTempo && ate90 / comTempo >= 0.4 ? '#B4462B' : '') +
+      aKpi('Tempo de casa típico', mediana === null ? '—' : mediana + ' dias', 'mediana na saída') +
+      aKpi('Aguardando parecer', pendentes.length, 'sem registro ainda', pendentes.length ? '#D89840' : '');
+
+    // comparativos
+    const cont = (fn) => { const m = {}; lista.forEach(d => { const k = fn(d) || '(não informado)'; m[k] = (m[k] || 0) + 1; }); return Object.entries(m).sort((a, b) => b[1] - a[1]); };
+    document.getElementById('desMotivos').innerHTML = aBarras(cont(d => d.Motivo), lista.length, rot => A_INI_COR[aIniDe(rot)] || 'var(--green)');
+    const tempoCont = {}; A_FAIXAS.forEach(f => { tempoCont[f] = 0; }); lista.forEach(d => { tempoCont[aFaixaTempo(d._tempo)]++; });
+    document.getElementById('desTempo').innerHTML = aBarras(A_FAIXAS.filter(f => tempoCont[f] > 0).map(f => [f, tempoCont[f]]), lista.length, () => '#D89840');
+    document.getElementById('desIniciativa').innerHTML = aBarras(cont(d => A_INI_ROT[d._ini]), lista.length, rot => A_INI_COR[Object.keys(A_INI_ROT).find(k => A_INI_ROT[k] === rot)] || '#999');
+    document.getElementById('desRegional').innerHTML = aBarras(cont(d => d.Regional), lista.length, () => 'var(--green)');
+    document.getElementById('desLoja').innerHTML = aBarras(cont(d => d.Loja).slice(0, 10), lista.length, () => 'var(--green)') + (cont(d => d.Loja).length > 10 ? `<small class="muted">Mostrando as 10 lojas com mais saídas.</small>` : '');
+    // por mês (últimos 12 meses com dados)
+    const porMes = {}; lista.forEach(d => { if (!d._reg) return; const k = d._reg.getFullYear() + '-' + String(d._reg.getMonth() + 1).padStart(2, '0'); porMes[k] = (porMes[k] || 0) + 1; });
+    const meses = Object.keys(porMes).sort().slice(-12); const maxMes = Math.max(1, ...meses.map(m => porMes[m]));
+    document.getElementById('desMes').innerHTML = meses.length ? `<div class="colunas">${meses.map(m => `<div class="col"><span>${porMes[m]}</span><i style="height:${Math.max(6, (porMes[m] / maxMes) * 90)}px"></i><small>${m.slice(5)}/${m.slice(2, 4)}</small></div>`).join('')}</div>` : `<small class="hint" style="color:var(--ink-soft); font-size:12.5px;">Sem pareceres no período.</small>`;
+
+    // tabela
+    document.getElementById('desTabelaTitulo').textContent = lista.length ? `${lista.length} parecer${lista.length === 1 ? '' : 'es'}${filtrado ? ' com os filtros atuais' : ''}. Clique numa linha para ver o detalhamento completo.` : '';
+    corpo.innerHTML = lista.length ? lista.map(d => {
+      const eNovo = d._reg && d._reg.getTime() > visto;
+      const id = 'detd_' + d.cpf;
+      const c30 = d._chk;
+      return `<tr class="lin ${eNovo ? 'novo' : ''}" onclick="toggleDet('${id}')">
+        <td><b>${aEsc(d.Nome || d.cpf)}</b>${eNovo ? ' <span class="pill-novo">Novo</span>' : ''}<br><small class="muted">${aEsc(d.Cargo || '—')}</small></td>
+        <td>${aEsc(d.Loja || '—')}<br><small class="muted">${aEsc(d.Regional || '—')}</small></td>
+        <td><span class="chip-mot" style="border-color:${A_INI_COR[d._ini]}; color:${A_INI_COR[d._ini]}">${aEsc(d.Motivo || '—')}</span></td>
+        <td>${d._tempo === null ? '—' : d._tempo + ' dias'}</td>
+        <td>${c30 ? aFarolDots(c30) + ' ' + (c30.Potencial ? '' : '') : '<span class="muted">não registrado</span>'}</td>
+        <td>${aData(d._reg)}</td></tr>
+      <tr id="${id}" class="det" style="display:none;"><td colspan="6"><div class="det-grid">
+        <div><h5>Detalhamento do gestor</h5><p>${aEsc(d.Detalhamento || '—').replace(/\n/g, '<br>')}</p></div>
+        <div><h5>Contexto</h5><p>Quem decidiu: <b>${A_INI_ROT[d._ini]}</b><br>Cargo: ${aEsc(d.Cargo || '—')}<br>Registrado por: ${aEsc(d.RegistradoPorNome || d.RegistradoPor || '—')}</p></div>
+        <div><h5>Ponto de 30 dias</h5>${c30 ? `<p>${aFarolDots(c30)} &nbsp;${aChipPot(c30.Potencial)}</p>${c30.PotencialJustificativa ? `<p class="muted">${aEsc(c30.PotencialJustificativa)}</p>` : ''}<p>${aEsc(c30.ResumoFeedback || '')}</p>` : '<p class="muted">A pessoa saiu sem ponto de 30 dias registrado.</p>'}</div>
+      </div></td></tr>`;
+    }).join('') : `<tr><td colspan="6" style="text-align:center; color:var(--ink-soft); padding:28px;">${todos.length ? 'Nenhum parecer com esses filtros.' : 'Nenhum parecer de desligamento registrado ainda.'}</td></tr>`;
+
+    ultimoDesligamentosCache = { pendentes, registrados: lista };
   }
   window.renderDesligamentos = renderDesligamentos;
 
   window.exportarDesligamentosCSV = function(){
     if (!ultimoDesligamentosCache) { alert('Ainda não há dados pra exportar.'); return; }
-    const linhas = [
-      ['Pareceres pendentes'],
-      ['Colaborador', 'Cargo', 'Loja'],
-      ...(ultimoDesligamentosCache.pendentes.length ? ultimoDesligamentosCache.pendentes.map(c => [c.Nome || c.cpf, c.Cargo || '', c.Loja || '']) : [['Nenhum parecer pendente.', '', '']]),
-      [],
-      ['Desligamentos registrados'],
-      ['Colaborador', 'Cargo', 'Loja', 'Regional', 'Motivo', 'Detalhamento', 'Registrado em'],
-      ...(ultimoDesligamentosCache.registrados.length ? ultimoDesligamentosCache.registrados.map(d => [d.Nome || d.cpf, d.Cargo || '', d.Loja || '', d.Regional || '', d.Motivo || '', d.Detalhamento || '', formatarDataHora(d.RegistradoEm)]) : [['Nenhum desligamento registrado ainda.', '', '', '', '', '', '']]),
-    ];
-    baixarXLSX(linhas, `desligamentos-${new Date().toISOString().slice(0,10)}.xlsx`, 'Desligamentos');
+    const reg = [['Colaborador', 'CPF', 'Cargo', 'Loja', 'Regional', 'Motivo', 'Quem decidiu', 'Tempo de casa (dias)', 'Detalhamento', 'Ponto de 30 dias: potencial', 'Farol integração', 'Farol aprendizado', 'Farol comportamento', 'Registrado por', 'Registrado em']];
+    ultimoDesligamentosCache.registrados.forEach(d => {
+      const c = d._chk || {};
+      reg.push([d.Nome || d.cpf, d.cpf, d.Cargo || '', d.Loja || '', d.Regional || '', d.Motivo || '', A_INI_ROT[d._ini] || '', d._tempo === null ? '' : d._tempo, d.Detalhamento || '',
+        A_POT_ROT[c.Potencial] || '', A_FAROL_ROT[c.Integracao] || '', A_FAROL_ROT[c.Treinamento] || '', A_FAROL_ROT[c.Comportamento] || '', d.RegistradoPorNome || d.RegistradoPor || '', aData(d._reg)]);
+    });
+    if (reg.length === 1) reg.push(['Nenhum parecer com esses filtros.']);
+    const pend = [['Colaborador', 'Cargo', 'Loja'], ...(ultimoDesligamentosCache.pendentes.length ? ultimoDesligamentosCache.pendentes.map(c => [c.Nome || c.cpf, c.Cargo || '', c.Loja || '']) : [['Ninguém aguardando parecer.', '', '']])];
+    baixarXLSXMultiAba([{ nome: 'Pareceres', linhas: reg }, { nome: 'Aguardando parecer', linhas: pend }], `pareceres-desligamento-${new Date().toISOString().slice(0, 10)}.xlsx`);
+  };
+
+  /* ================== PONTO DE CHECAGEM · 30 DIAS ================== */
+  function aChkEnriquecidos(){
+    return checkins30Cache.map(c => {
+      const col = colaboradoresCache.find(x => x.cpf === c.cpf);
+      const reg = aTs(c.RegistradoEm);
+      const conv = c.DataConversa ? new Date(c.DataConversa + 'T12:00:00') : reg;
+      const alertas = [];
+      [['Integracao', 'Integração'], ['Treinamento', 'Aprendizado'], ['Comportamento', 'Comportamento']].forEach(([k, n]) => { if (c[k] === 'vermelho') alertas.push(n + ': preocupante'); });
+      if (c.Potencial === 'duvida' || c.Potencial === 'nao') alertas.push('Potencial: ' + A_POT_ROT[c.Potencial].toLowerCase());
+      return { ...c, _reg: reg, _conv: conv, _alertas: alertas,
+        Regional: c.Regional || (col && col.Regional) || '', Loja: c.Loja || (col && col.Loja) || '', Cargo: c.Cargo || (col && col.Cargo) || '' };
+    });
+  }
+  window.filtrarChk = function(){ renderCheckin30Relatorio(); };
+  window.limparFiltrosChk = function(){
+    ['chkFRegional', 'chkFLoja', 'chkFCargo', 'chkFPotencial'].forEach(i => { document.getElementById(i).value = ''; });
+    document.getElementById('chkFPeriodo').value = 'tudo'; document.getElementById('chkFBusca').value = ''; document.getElementById('chkFAlerta').checked = false;
+    renderCheckin30Relatorio();
   };
 
   let ultimoCheckin30Cache = null;
   function renderCheckin30Relatorio(){
-    const pendentesEl = document.getElementById('relCheckin30Pendentes');
-    if (!pendentesEl) return; // aba ainda não está no DOM
-
-    const agora = new Date();
-    const feitosPorCpf = new Set(checkins30Cache.map(c => c.cpf));
-    const pendentes = colaboradoresCache.filter(c => {
-      if (c.Status === 'inativo' || !c.Admissao || !c.Admissao.toDate) return false;
-      const dias = Math.floor((agora - c.Admissao.toDate()) / (1000 * 60 * 60 * 24));
-      return dias >= 30 && dias <= 90 && !feitosPorCpf.has(c.cpf);
-    }).map(c => {
-      const dias = Math.floor((agora - c.Admissao.toDate()) / (1000 * 60 * 60 * 24));
-      return { ...c, diasAtraso: dias - 30 };
-    }).sort((a, b) => b.diasAtraso - a.diasAtraso);
-
-    pendentesEl.innerHTML = renderListaCard(
-      pendentes.map(c => linhaSimples(c.Nome || c.cpf, `${[c.Loja, c.Regional].filter(Boolean).join(' · ')} · ${c.diasAtraso > 0 ? c.diasAtraso + ' dia(s) de atraso' : 'no prazo'}`)),
-      'Nenhum ponto de checagem de 30 dias pendente agora.'
-    );
-
-    const contagemFarol = { integracao: { verde: 0, amarelo: 0, vermelho: 0 }, treinamento: { verde: 0, amarelo: 0, vermelho: 0 }, comportamento: { verde: 0, amarelo: 0, vermelho: 0 } };
-    checkins30Cache.forEach(c => {
-      if (c.Integracao && contagemFarol.integracao[c.Integracao] !== undefined) contagemFarol.integracao[c.Integracao]++;
-      if (c.Treinamento && contagemFarol.treinamento[c.Treinamento] !== undefined) contagemFarol.treinamento[c.Treinamento]++;
-      if (c.Comportamento && contagemFarol.comportamento[c.Comportamento] !== undefined) contagemFarol.comportamento[c.Comportamento]++;
-    });
-    const nomesFarol = { integracao: 'Integração à loja e equipe', treinamento: 'Treinamento inicial', comportamento: 'Comportamento e postura' };
-    document.getElementById('relCheckin30Farol').innerHTML = checkins30Cache.length
-      ? Object.keys(contagemFarol).map(chave => {
-          const f = contagemFarol[chave];
-          return linhaSimples(nomesFarol[chave], `🟢 ${f.verde} indo bem · 🟡 ${f.amarelo} atenção · 🔴 ${f.vermelho} preocupante`);
-        }).join('')
-      : `<small class="hint" style="color:var(--ink-soft); font-size:12.5px;">Sem pontos de checagem registrados ainda.</small>`;
-
-    // Pontos de atenção POR LOJA, critério por critério — é o que permite enxergar se um mesmo
-    // ponto (ex.: Treinamento inicial) está se repetindo em VÁRIAS lojas diferentes (um padrão a
-    // investigar) ou se é um caso isolado de uma loja só. Pedido da Nayuri (setembro/2026): o
-    // resultado agregado sozinho (só um número geral por critério) não mostrava isso.
-    const criterios = ['integracao', 'treinamento', 'comportamento'];
-    const camposCriterio = { integracao: 'Integracao', treinamento: 'Treinamento', comportamento: 'Comportamento' };
-    const porLojaPorCriterio = {};
-    criterios.forEach(chave => { porLojaPorCriterio[chave] = {}; });
-    checkins30Cache.forEach(c => {
-      const loja = c.Loja || '(sem loja)';
-      criterios.forEach(chave => {
-        const valor = c[camposCriterio[chave]];
-        if (valor === 'amarelo' || valor === 'vermelho') {
-          if (!porLojaPorCriterio[chave][loja]) porLojaPorCriterio[chave][loja] = { amarelo: 0, vermelho: 0 };
-          porLojaPorCriterio[chave][loja][valor]++;
-        }
-      });
-    });
-    const algumPontoDeAtencao = criterios.some(chave => Object.keys(porLojaPorCriterio[chave]).length > 0);
-    document.getElementById('relCheckin30PorLoja').innerHTML = algumPontoDeAtencao
-      ? criterios.map(chave => {
-          const lojas = Object.keys(porLojaPorCriterio[chave]);
-          if (!lojas.length) return linhaSimples(nomesFarol[chave], 'Nenhuma loja com alerta nesse item.');
-          const lojasOrdenadas = lojas.sort((a, b) => (porLojaPorCriterio[chave][b].vermelho - porLojaPorCriterio[chave][a].vermelho) || (porLojaPorCriterio[chave][b].amarelo - porLojaPorCriterio[chave][a].amarelo));
-          const detalhe = lojasOrdenadas.map(loja => {
-            const f = porLojaPorCriterio[chave][loja];
-            const partes = [];
-            if (f.vermelho) partes.push(`🔴${f.vermelho}`);
-            if (f.amarelo) partes.push(`🟡${f.amarelo}`);
-            return `${loja} (${partes.join(' ')})`;
-          }).join(' · ');
-          return linhaSimples(`${nomesFarol[chave]} — ${lojas.length} loja${lojas.length === 1 ? '' : 's'} com alerta`, detalhe);
-        }).join('')
-      : `<small class="hint" style="color:var(--ink-soft); font-size:12.5px;">Nenhuma loja com alerta em nenhum item, por enquanto.</small>`;
-
     const corpo = document.getElementById('relCheckin30Body');
-    const linhasTabela = checkins30Cache.slice().sort((a, b) => (b.RegistradoEm?.toDate?.() || 0) - (a.RegistradoEm?.toDate?.() || 0));
-    const rotuloFarol = { verde: '🟢 Indo bem', amarelo: '🟡 Atenção', vermelho: '🔴 Preocupante' };
-    corpo.innerHTML = linhasTabela.length
-      ? linhasTabela.map(c => `<tr><td>${c.Nome || c.cpf}</td><td>${c.Loja || '—'}</td><td>${c.Regional || '—'}</td><td>${rotuloFarol[c.Integracao] || '—'}</td><td>${rotuloFarol[c.Treinamento] || '—'}</td><td>${rotuloFarol[c.Comportamento] || '—'}</td><td>${formatarDataHora(c.RegistradoEm)}</td></tr>`).join('')
-      : `<tr><td colspan="7" style="text-align:center; color:var(--ink-soft); padding:24px;">Nenhum ponto de checagem registrado ainda.</td></tr>`;
+    if (!corpo) return; // aba ainda não está no DOM
+    const todos = aChkEnriquecidos();
 
-    ultimoCheckin30Cache = { pendentes, registrados: linhasTabela, porLojaPorCriterio };
+    const fReg = aPreencher('chkFRegional', 'Regional: todas', aDistintos(todos, 'Regional'));
+    const fLoja = aPreencher('chkFLoja', 'Loja: todas', aDistintos(fReg ? todos.filter(c => c.Regional === fReg) : todos, 'Loja'));
+    const fCargo = aPreencher('chkFCargo', 'Cargo: todos', aDistintos(todos, 'Cargo'));
+    const fPot = document.getElementById('chkFPotencial').value;
+    const fPer = document.getElementById('chkFPeriodo').value;
+    const fAlerta = document.getElementById('chkFAlerta').checked;
+    const fBusca = document.getElementById('chkFBusca').value.trim().toLowerCase();
+    const lista = todos.filter(c =>
+      (!fReg || c.Regional === fReg) && (!fLoja || c.Loja === fLoja) && (!fCargo || c.Cargo === fCargo) && (!fPot || c.Potencial === fPot) &&
+      aPeriodoOk(c._conv, fPer) && (!fAlerta || c._alertas.length) && (!fBusca || String(c.Nome || '').toLowerCase().includes(fBusca))
+    ).sort((a, b) => (b._reg || b._conv || 0) - (a._reg || a._conv || 0));
+    const filtrado = lista.length !== todos.length;
+
+    // pendentes: só Loja, entre 30 e 90 dias de casa, sem ponto registrado
+    const agora = new Date();
+    const feitos = new Set(checkins30Cache.map(c => c.cpf));
+    const pendentes = colaboradoresCache.filter(c => {
+      if (c.Status === 'inativo' || (c.Local || 'Loja') !== 'Loja' || !c.Admissao || !c.Admissao.toDate) return false;
+      const dias = Math.floor((agora - c.Admissao.toDate()) / 86400000);
+      return dias >= 30 && dias <= 90 && !feitos.has(c.cpf);
+    }).map(c => ({ ...c, diasAtraso: Math.floor((agora - c.Admissao.toDate()) / 86400000) - 30 })).sort((a, b) => b.diasAtraso - a.diasAtraso);
+    document.getElementById('relCheckin30Pendentes').innerHTML = renderListaCard(
+      pendentes.map(c => linhaSimples(c.Nome || c.cpf, `${[c.Loja, c.Regional].filter(Boolean).join(' · ')} · ${c.diasAtraso > 0 ? c.diasAtraso + ' dia(s) de atraso' : 'no prazo'}`)),
+      'Nenhum ponto de 30 dias aguardando agora.', 12);
+    document.getElementById('chkPendCnt').textContent = pendentes.length;
+
+    const visto = aVisto('chk');
+    const novos = todos.filter(c => c._reg && c._reg.getTime() > visto);
+    aBannerNovos(document.getElementById('chkNovosBanner'), 'chk', novos, 'ponto de 30 dias novo', 'pontos de 30 dias novos', c => c.Nome || c.cpf);
+    aBadgeAba('checkin30', novos.length);
+
+    // KPIs
+    const comPot = lista.filter(c => c.Potencial);
+    const pos = comPot.filter(c => c.Potencial === 'sim' || c.Potencial === 'sim_desenvolver').length;
+    const comAlerta = lista.filter(c => c._alertas.length).length;
+    document.getElementById('chkKpis').innerHTML =
+      aKpi('Pontos registrados' + (filtrado ? ' (filtrados)' : ''), lista.length, filtrado ? `de ${todos.length} no total` : 'conversas de 30 dias') +
+      aKpi('Aguardando', pendentes.length, 'entre 30 e 90 dias de casa', pendentes.length ? '#D89840' : '') +
+      aKpi('Potencial positivo', comPot.length ? Math.round((pos / comPot.length) * 100) + '%' : '—', comPot.length ? `${pos} de ${comPot.length} respostas` : 'sem respostas ainda', '#4F9C40') +
+      aKpi('Com sinal de alerta', comAlerta, 'preocupante ou dúvida sobre continuar', comAlerta ? '#B4462B' : '');
+
+    // comparativo por grupo
+    const campo = document.getElementById('chkAgrupar').value;
+    const grupos = {};
+    lista.forEach(c => { const k = c[campo] || '(não informado)'; (grupos[k] = grupos[k] || []).push(c); });
+    const linhasG = Object.entries(grupos).sort((a, b) => b[1].length - a[1].length);
+    const empFarol = (arr, k) => aEmpilhada(['verde', 'amarelo', 'vermelho'].map(v => ({ n: arr.filter(c => c[k] === v).length, cor: A_COR[v], rot: A_FAROL_ROT[v] })), tot => Math.round((arr.filter(c => c[k] === 'verde').length / tot) * 100) + '% indo bem');
+    const grupoRows = linhasG.map(([nome, arr]) => `<tr><td><b>${aEsc(nome)}</b>${arr.length < 3 ? '<br><small class="muted">poucos registros</small>' : ''}</td><td style="text-align:center;">${arr.length}</td>
+      <td>${empFarol(arr, 'Integracao')}</td><td>${empFarol(arr, 'Treinamento')}</td><td>${empFarol(arr, 'Comportamento')}</td>
+      <td>${aEmpilhada(['sim', 'sim_desenvolver', 'duvida', 'nao'].map(v => ({ n: arr.filter(c => c.Potencial === v).length, cor: A_POT_COR[v], rot: A_POT_ROT[v] })), tot => Math.round((arr.filter(c => c.Potencial === 'sim' || c.Potencial === 'sim_desenvolver').length / tot) * 100) + '% positivo')}</td></tr>`).join('');
+    document.getElementById('chkComparativo').innerHTML = linhasG.length
+      ? `<table class="tb-base tb-comp"><thead><tr><th>${campo}</th><th>Pontos</th><th>Integração</th><th>Aprendizado</th><th>Comportamento</th><th>Potencial de continuar</th></tr></thead><tbody>${grupoRows}</tbody></table>`
+      : `<small class="hint" style="color:var(--ink-soft); font-size:12.5px;">Sem pontos de 30 dias com os filtros atuais.</small>`;
+
+    // potencial + alertas
+    document.getElementById('chkPotencial').innerHTML = aBarras(['sim', 'sim_desenvolver', 'duvida', 'nao'].map(v => [A_POT_ROT[v], lista.filter(c => c.Potencial === v).length]).filter(p => p[1] > 0), comPot.length, rot => A_POT_COR[Object.keys(A_POT_ROT).find(k => A_POT_ROT[k] === rot)])
+      + (lista.length - comPot.length > 0 ? `<small class="muted">${lista.length - comPot.length} registro(s) antigos, de antes desta pergunta, ficam de fora.</small>` : '');
+    const emAlerta = lista.filter(c => c._alertas.length).slice(0, 8);
+    document.getElementById('chkAlertas').innerHTML = emAlerta.length
+      ? emAlerta.map(c => linhaSimples(`${aEsc(c.Nome || c.cpf)}`, `${aEsc([c.Loja, c.Cargo].filter(Boolean).join(' · '))}<br>${aEsc(c._alertas.join(' · '))}`)).join('') + (lista.filter(c => c._alertas.length).length > 8 ? `<small class="muted">+ ${lista.filter(c => c._alertas.length).length - 8} na tabela abaixo (filtre por "Só com alerta").</small>` : '')
+      : `<small class="hint" style="color:var(--ink-soft); font-size:12.5px;">Ninguém com sinal de alerta nos filtros atuais.</small>`;
+
+    // tabela
+    document.getElementById('chkTabelaTitulo').textContent = lista.length ? `${lista.length} registro${lista.length === 1 ? '' : 's'}${filtrado ? ' com os filtros atuais' : ''}. Clique numa linha para ler os comentários e o resumo da conversa.` : '';
+    const campoFarol = (c, k, nomeCom) => `<span class="farol-cel"><i class="fdot" style="background:${A_COR[c[k]] || '#CFC8B8'}"></i>${A_FAROL_ROT[c[k]] || '—'}</span>`;
+    corpo.innerHTML = lista.length ? lista.map(c => {
+      const eNovo = c._reg && c._reg.getTime() > visto;
+      const id = 'detc_' + c.cpf;
+      const cm = (k, rot, com) => `<div><h5>${rot} <span class="farol-cel"><i class="fdot" style="background:${A_COR[c[k]] || '#CFC8B8'}"></i>${A_FAROL_ROT[c[k]] || '—'}</span></h5><p class="${com ? '' : 'muted'}">${com ? aEsc(com) : 'Sem comentário.'}</p></div>`;
+      return `<tr class="lin ${eNovo ? 'novo' : ''}" onclick="toggleDet('${id}')">
+        <td><b>${aEsc(c.Nome || c.cpf)}</b>${eNovo ? ' <span class="pill-novo">Novo</span>' : ''}<br><small class="muted">${aEsc(c.Cargo || '—')}${c.DiasDeCasa != null ? ' · ' + c.DiasDeCasa + ' dias de casa' : ''}</small></td>
+        <td>${aEsc(c.Loja || '—')}<br><small class="muted">${aEsc(c.Regional || '—')}</small></td>
+        <td>${aData(c._conv)}</td><td>${campoFarol(c, 'Integracao')}</td><td>${campoFarol(c, 'Treinamento')}</td><td>${campoFarol(c, 'Comportamento')}</td><td>${aChipPot(c.Potencial)}</td></tr>
+      <tr id="${id}" class="det" style="display:none;"><td colspan="7"><div class="det-grid">
+        ${cm('Integracao', 'Integração à loja e equipe', c.ComentarioIntegracao)}
+        ${cm('Treinamento', 'Aprendizado inicial', c.ComentarioAprendizado)}
+        ${cm('Comportamento', 'Comportamento e postura', c.ComentarioComportamento)}
+        <div><h5>Potencial de continuar no Cabana</h5><p>${aChipPot(c.Potencial)}</p>${c.PotencialJustificativa ? `<p>${aEsc(c.PotencialJustificativa)}</p>` : ''}</div>
+        <div style="grid-column:span 2;"><h5>Resumo do feedback da conversa de 30 dias</h5><p>${aEsc(c.ResumoFeedback || '—').replace(/\n/g, '<br>')}</p>${c.ProximosPassos ? `<h5>Combinados</h5><p>${aEsc(c.ProximosPassos)}</p>` : ''}${c.OQueEstaAcontecendo ? `<h5>O que estava acontecendo (formulário anterior)</h5><p>${aEsc(c.OQueEstaAcontecendo)}</p>` : ''}<p class="muted">Registrado por ${aEsc(c.RegistradoPorNome || c.RegistradoPor || '—')} em ${aData(c._reg)}</p></div>
+      </div></td></tr>`;
+    }).join('') : `<tr><td colspan="7" style="text-align:center; color:var(--ink-soft); padding:28px;">${todos.length ? 'Nenhum registro com esses filtros.' : 'Nenhum ponto de 30 dias registrado ainda.'}</td></tr>`;
+
+    ultimoCheckin30Cache = { pendentes, registrados: lista, linhasG, campo };
   }
   window.renderCheckin30Relatorio = renderCheckin30Relatorio;
 
   window.exportarCheckin30CSV = function(){
     if (!ultimoCheckin30Cache) { alert('Ainda não há dados pra exportar.'); return; }
-    const rotuloFarol = { verde: 'Indo bem', amarelo: 'Atenção', vermelho: 'Preocupante' };
-    const nomesFarolExport = { integracao: 'Integração à loja e equipe', treinamento: 'Treinamento inicial', comportamento: 'Comportamento e postura' };
-    const linhasPorLoja = [];
-    Object.keys(ultimoCheckin30Cache.porLojaPorCriterio || {}).forEach(chave => {
-      const porLoja = ultimoCheckin30Cache.porLojaPorCriterio[chave];
-      Object.keys(porLoja).forEach(loja => {
-        linhasPorLoja.push([nomesFarolExport[chave], loja, porLoja[loja].amarelo, porLoja[loja].vermelho]);
-      });
+    const R = A_FAROL_ROT;
+    const reg = [['Colaborador', 'CPF', 'Cargo', 'Loja', 'Regional', 'Dias de casa', 'Data da conversa', 'Integração', 'Comentário integração', 'Aprendizado inicial', 'Comentário aprendizado', 'Comportamento', 'Comentário comportamento', 'Potencial de continuar', 'Justificativa do potencial', 'Resumo do feedback', 'Combinados', 'Registrado por', 'Registrado em']];
+    ultimoCheckin30Cache.registrados.forEach(c => reg.push([c.Nome || c.cpf, c.cpf, c.Cargo || '', c.Loja || '', c.Regional || '', c.DiasDeCasa == null ? '' : c.DiasDeCasa, aData(c._conv), R[c.Integracao] || '', c.ComentarioIntegracao || '', R[c.Treinamento] || '', c.ComentarioAprendizado || '', R[c.Comportamento] || '', c.ComentarioComportamento || '', A_POT_ROT[c.Potencial] || '', c.PotencialJustificativa || '', c.ResumoFeedback || '', c.ProximosPassos || '', c.RegistradoPorNome || c.RegistradoPor || '', aData(c._reg)]));
+    if (reg.length === 1) reg.push(['Nenhum registro com esses filtros.']);
+    const cmp = [[ultimoCheckin30Cache.campo, 'Pontos', 'Integração: indo bem', 'Integração: atenção', 'Integração: preocupante', 'Aprendizado: indo bem', 'Aprendizado: atenção', 'Aprendizado: preocupante', 'Comportamento: indo bem', 'Comportamento: atenção', 'Comportamento: preocupante', 'Potencial: sim', 'Potencial: sim, com pontos a desenvolver', 'Potencial: dúvidas', 'Potencial: hoje não vejo']];
+    ultimoCheckin30Cache.linhasG.forEach(([nome, arr]) => {
+      const n = (k, v) => arr.filter(c => c[k] === v).length;
+      cmp.push([nome, arr.length, n('Integracao', 'verde'), n('Integracao', 'amarelo'), n('Integracao', 'vermelho'), n('Treinamento', 'verde'), n('Treinamento', 'amarelo'), n('Treinamento', 'vermelho'), n('Comportamento', 'verde'), n('Comportamento', 'amarelo'), n('Comportamento', 'vermelho'), n('Potencial', 'sim'), n('Potencial', 'sim_desenvolver'), n('Potencial', 'duvida'), n('Potencial', 'nao')]);
     });
-    const linhas = [
-      ['Pendentes agora'],
-      ['Colaborador', 'Loja', 'Regional', 'Dias de atraso'],
-      ...(ultimoCheckin30Cache.pendentes.length ? ultimoCheckin30Cache.pendentes.map(c => [c.Nome || c.cpf, c.Loja || '', c.Regional || '', Math.max(0, c.diasAtraso)]) : [['Nenhum pendente agora.', '', '', '']]),
-      [],
-      ['Pontos de atenção por loja (critério com amarelo ou vermelho)'],
-      ['Critério', 'Loja', 'Qtd. Atenção (amarelo)', 'Qtd. Preocupante (vermelho)'],
-      ...(linhasPorLoja.length ? linhasPorLoja : [['Nenhuma loja com alerta ainda.', '', '', '']]),
-      [],
-      ['Pontos de checagem registrados'],
-      ['Colaborador', 'Loja', 'Regional', 'Integração', 'Treinamento', 'Comportamento', 'Registrado em'],
-      ...(ultimoCheckin30Cache.registrados.length ? ultimoCheckin30Cache.registrados.map(c => [c.Nome || c.cpf, c.Loja || '', c.Regional || '', rotuloFarol[c.Integracao] || '', rotuloFarol[c.Treinamento] || '', rotuloFarol[c.Comportamento] || '', formatarDataHora(c.RegistradoEm)]) : [['Nenhum registrado ainda.', '', '', '', '', '', '']]),
-    ];
-    baixarXLSX(linhas, `checkin-30-dias-${new Date().toISOString().slice(0,10)}.xlsx`, 'Check-in 30 dias');
+    const pend = [['Colaborador', 'Loja', 'Regional', 'Dias de atraso'], ...(ultimoCheckin30Cache.pendentes.length ? ultimoCheckin30Cache.pendentes.map(c => [c.Nome || c.cpf, c.Loja || '', c.Regional || '', Math.max(0, c.diasAtraso)]) : [['Nenhum aguardando agora.', '', '', '']])];
+    baixarXLSXMultiAba([{ nome: 'Pontos de 30 dias', linhas: reg }, { nome: 'Comparativo', linhas: cmp }, { nome: 'Aguardando', linhas: pend }], `ponto-de-checagem-30-dias-${new Date().toISOString().slice(0, 10)}.xlsx`);
   };
 
   function renderBarras(grupos){
