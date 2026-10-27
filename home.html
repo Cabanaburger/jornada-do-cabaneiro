@@ -25,18 +25,18 @@ window.MARCA_ATIVA = 'jornadaDS';
 var JORNADA_TEXTOS = {
   nav_home: { pt: 'Início', es: 'Inicio' },
   nav_categorias: { pt: 'Temas', es: 'Temas' },
-  nav_cursos: { pt: 'Etapas', es: 'Etapas' },
+  nav_cursos: { pt: 'Trilhas', es: 'Rutas' },
   nav_biblioteca: { pt: 'Guia rápido', es: 'Guía rápida' },
   busca_topo: { pt: 'Buscar na jornada...', es: 'Buscar en el recorrido...' },
-  busca_placeholder: { pt: 'Buscar uma etapa, tema ou dúvida...', es: 'Buscar una etapa, tema o duda...' },
+  busca_placeholder: { pt: 'Buscar uma trilha, tema ou dúvida...', es: 'Buscar una ruta, tema o duda...' },
 
   hero_h1_pre: { pt: 'Bem-vindo(a) ', es: 'Bienvenido(a) ' },
   hero_h1_span: { pt: 'ao Cabana.', es: 'a Cabana.' },
   hero_lede: { pt: 'Pode entrar. Essa é a sua jornada de chegada: aqui você vê, passo a passo, como a gente faz no Cabana, do primeiro dia até pegar o ritmo.', es: '¡Pasa! Este es tu recorrido de llegada: aquí ves, paso a paso, cómo lo hacemos en Cabana, desde el primer día hasta tomar el ritmo.' },
 
-  btn_abrir_fazer_prova: { pt: 'Abrir treinamento', es: 'Abrir capacitación' },
+  btn_abrir_fazer_prova: { pt: 'Abrir trilha', es: 'Abrir ruta' },
   btn_aprovado: { pt: '✓ Concluído', es: '✓ Completado' },
-  autohint_prova_link: { pt: 'A conclusão é registrada dentro do próprio treinamento: leia até o fim e clique em concluir lá. O certificado libera sozinho quando voltar pra cá.', es: 'La conclusión se registra dentro de la propia capacitación: lee hasta el final y haz clic en concluir allí. El certificado se libera solo al volver aquí.' },
+  autohint_prova_link: { pt: 'A conclusão é registrada dentro da própria trilha: leia até o fim e clique em concluir lá. O certificado libera sozinho quando voltar pra cá.', es: 'La conclusión se registra dentro de la propia ruta: lee hasta el final y haz clic en concluir allí. El certificado se libera solo al volver aquí.' },
 
   jornada_titulo: { pt: 'Sua jornada', es: 'Tu recorrido' },
   ritmo_tudoemdia: { pt: 'Jornada completa! 💚', es: '¡Recorrido completo! 💚' },
@@ -47,8 +47,8 @@ var JORNADA_TEXTOS = {
   obrigatorio_tag: { pt: 'passo obrigatório · comece por aqui', es: 'paso obligatorio · empieza por aquí' },
   nao_iniciado: { pt: 'ainda não começou', es: 'aún no empezaste' },
   tudo_em_dia_b: { pt: 'Jornada completa!', es: '¡Recorrido completo!' },
-  voce_concluiu_tudo: { pt: 'você passou por todas as etapas', es: 'pasaste por todas las etapas' },
-  ver_cursos: { pt: 'Ver etapas', es: 'Ver etapas' },
+  voce_concluiu_tudo: { pt: 'você passou por todas as trilhas', es: 'pasaste por todas las rutas' },
+  ver_cursos: { pt: 'Ver trilhas', es: 'Ver rutas' },
 
   sua_jornada_cabana: { pt: 'Sua chegada ao Cabana', es: 'Tu llegada a Cabana' },
   nivel: { pt: 'Fase', es: 'Fase' },
@@ -61,7 +61,7 @@ var JORNADA_TEXTOS = {
 
   sua_trilha: { pt: 'Seu caminho no Cabana', es: 'Tu camino en Cabana' },
   ordem_recomendada: { pt: 'A ordem que a gente sugere pra você chegar bem.', es: 'El orden que te sugerimos para llegar bien.' },
-  nenhum_curso_trilha: { pt: 'Nenhuma etapa nesse tema ainda.', es: 'Ninguna etapa en este tema todavía.' },
+  nenhum_curso_trilha: { pt: 'Nenhuma trilha nesse tema ainda.', es: 'Ninguna ruta en este tema todavía.' },
   programas_titulo: { pt: 'Seus encontros presenciais', es: 'Tus encuentros presenciales' },
   programas_sub: { pt: 'Conversas em sala. Confirme sua presença em cada encontro e emita seu certificado.', es: 'Conversaciones en sala. Confirma tu presencia en cada encuentro y emite tu certificado.' },
 
@@ -71,37 +71,39 @@ var JORNADA_TEXTOS = {
   obrigatorios_sub: { pt: 'É por aqui que sua jornada começa.', es: 'Por aquí empieza tu recorrido.' },
   em_destaque: { pt: 'Pra conhecer primeiro', es: 'Para conocer primero' },
   treinamentos_importantes: { pt: 'O que mais ajuda quem acabou de chegar.', es: 'Lo que más ayuda a quien acaba de llegar.' },
-  ver_todos_cursos: { pt: 'Ver todas as etapas →', es: 'Ver todas las etapas →' },
+  ver_todos_cursos: { pt: 'Ver todas as trilhas →', es: 'Ver todas las rutas →' },
   biblioteca_titulo: { pt: 'Guia do Cabaneiro', es: 'Guía del Cabaneiro' },
   biblioteca_modal_titulo: { pt: 'Guia do Cabaneiro', es: 'Guía del Cabaneiro' },
   biblioteca_sub: { pt: 'POPs, políticas e materiais de apoio pra quando bater a dúvida.', es: 'POEs, políticas y materiales de apoyo para cuando surja la duda.' },
   abrir_biblioteca: { pt: 'Abrir o guia →', es: 'Abrir la guía →' },
-  carregando_cursos: { pt: 'Carregando etapas...', es: 'Cargando etapas...' },
-  nenhum_curso_publicado: { pt: 'Nenhuma etapa publicada ainda.', es: 'Ninguna etapa publicada todavía.' },
+  carregando_cursos: { pt: 'Carregando trilhas...', es: 'Cargando rutas...' },
+  nenhum_curso_publicado: { pt: 'Nenhuma trilha publicada ainda.', es: 'Ninguna ruta publicada todavía.' },
   cta_revisar: { pt: 'Rever', es: 'Repasar' },
-  categoria_desc_prefixo: { pt: 'Etapas de ', es: 'Etapas de ' },
+  categoria_desc_prefixo: { pt: 'Trilhas de ', es: 'Rutas de ' },
 
   crie_sua_senha_sub: { pt: 'Essa é a sua chegada! Por segurança, crie uma senha só sua (mínimo 6 caracteres) antes de entrar.', es: '¡Esta es tu llegada! Por seguridad, crea una contraseña solo tuya (mínimo 6 caracteres) antes de entrar.' },
   que_bom_ter_voce: { pt: 'Bem-vindo(a) ao Cabana!', es: '¡Bienvenido(a) a Cabana!' },
   como_prefere_ser_chamado: { pt: 'Pra começar: como a gente te chama por aqui?', es: 'Para empezar: ¿cómo te llamamos por aquí?' },
 
-  voce_concluiu_treinamento: { pt: 'Você concluiu essa etapa.', es: 'Completaste esta etapa.' },
-  trilha_concluida: { pt: 'Trilha concluída! 💚', es: '¡Ruta completada! 💚' },
-  trilha_concluida_msg1: { pt: 'Você passou por todas as etapas da trilha "', es: 'Pasaste por todas las etapas de la ruta "' },
+  voce_concluiu_treinamento: { pt: 'Você concluiu essa trilha.', es: 'Completaste esta ruta.' },
+  trilha_concluida: { pt: 'Tema concluído! 💚', es: '¡Tema completado! 💚' },
+  trilha_concluida_msg1: { pt: 'Você passou por todas as trilhas do tema "', es: 'Pasaste por todas las rutas del tema "' },
   trilha_concluida_msg2: { pt: '". Que orgulho ter você com a gente!', es: '". ¡Qué orgullo tenerte con nosotros!' },
-  certificados_vazio: { pt: 'Você ainda não concluiu nenhuma etapa. Assim que concluir, o certificado aparece aqui.', es: 'Todavía no completaste ninguna etapa. En cuanto la completes, el certificado aparecerá aquí.' },
-  sem_perguntas: { pt: 'Essa etapa não tem perguntas cadastradas ainda.', es: 'Esta etapa todavía no tiene preguntas registradas.' },
-  erro_timeout_cursos: { pt: 'Não consegui carregar as etapas agora. Recarregue a página; se persistir, veja o console (F12) pra mais detalhes.', es: 'No pude cargar las etapas ahora. Recarga la página; si persiste, revisa la consola (F12) para más detalles.' },
+  certificados_vazio: { pt: 'Você ainda não concluiu nenhuma trilha. Assim que concluir, o certificado aparece aqui.', es: 'Todavía no completaste ninguna ruta. En cuanto la completes, el certificado aparecerá aquí.' },
+  sem_perguntas: { pt: 'Essa trilha não tem perguntas cadastradas ainda.', es: 'Esta ruta todavía no tiene preguntas registradas.' },
+  erro_timeout_cursos: { pt: 'Não consegui carregar as trilhas agora. Recarregue a página; se persistir, veja o console (F12) pra mais detalhes.', es: 'No pude cargar las rutas ahora. Recarga la página; si persiste, revisa la consola (F12) para más detalles.' },
 
-  screen_voltar: { pt: '← Voltar às etapas', es: '← Volver a las etapas' },
-  autohint_prova: { pt: 'Essa etapa tem prova. Você precisa acertar a nota mínima pra receber o certificado.', es: 'Esta etapa tiene examen. Necesitas alcanzar la nota mínima para recibir el certificado.' },
+  screen_voltar: { pt: '← Voltar às trilhas', es: '← Volver a las rutas' },
+  autohint_prova: { pt: 'Essa trilha tem prova. Você precisa acertar a nota mínima pra receber o certificado.', es: 'Esta ruta tiene examen. Necesitas alcanzar la nota mínima para recibir el certificado.' },
 
+  minha_equipe_desc: { pt: 'Só o andamento de quem tem você cadastrado como gestor. Ordenado por quem está mais atrasado primeiro.', es: 'Solo el avance de quienes te tienen registrado como gestor. Ordenado por quien va más atrasado primero.' },
+  equipe_sem_treinos: { pt: 'Sem trilhas aplicáveis', es: 'Sin rutas aplicables' },
   footer_desc: { pt: 'O caminho de chegada ao Cabana Burger. Cada passo mostra como a gente faz aqui.', es: 'El camino de llegada a Cabana Burger. Cada paso muestra cómo lo hacemos aquí.' },
   footer_plataforma: { pt: 'Navegue', es: 'Navega' },
   footer_suporte: { pt: 'Ajuda', es: 'Ayuda' }
 };
 
-var JORNADA_UNIDADE = { pt: ['etapa','etapas'], es: ['etapa','etapas'] };
+var JORNADA_UNIDADE = { pt: ['trilha','trilhas'], es: ['ruta','rutas'] };
 window.MARCAS = {
   school: {
     nome: 'Cabana School', emNome: 'no Cabana School', palavraHtml: '<b>Cabana</b> School',
@@ -687,6 +689,27 @@ window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && S
   .farol-item{ margin-bottom:18px; }
   .farol-item > label{ display:block; font-size:13px; font-weight:700; margin-bottom:9px; }
   .farol-opts{ display:flex; gap:8px; }
+  .farol-sub{ display:block; font-size:12px; color:var(--ink-soft); font-weight:400; margin-top:2px; line-height:1.4; }
+  .farol-obs{ width:100%; margin-top:10px; padding:10px 13px; border-radius:10px; border:1px solid var(--line); font-size:13px; min-height:58px; resize:vertical; font-family:inherit; background:#fff; color:var(--ink); box-sizing:border-box; }
+  .farol-obs.obrig{ border-color:#D89840; background:#FFFBF2; }
+  .farol-item > label.farol-obs-l{ margin:10px 0 6px; }
+  .farol-obs{ margin-top:0 !important; }
+  .farol-obs-l{ display:block; font-size:11.5px; font-weight:700; color:var(--ink-soft); margin-top:10px; }
+  .ck30-intro{ background:var(--cream); border:1px solid var(--line); border-radius:14px; padding:14px 16px; font-size:12.5px; line-height:1.5; color:var(--ink); }
+  .ck30-intro b{ display:block; margin-bottom:4px; font-size:13px; }
+  .ck30-passo{ display:flex; gap:10px; align-items:flex-start; margin-top:8px; }
+  .ck30-passo i{ flex:none; width:20px; height:20px; border-radius:50%; background:var(--green); color:#fff; font-style:normal; font-size:11px; font-weight:800; display:flex; align-items:center; justify-content:center; margin-top:1px; }
+  .ck30-sec{ font-family:var(--display); font-size:15px; margin:6px 0 -4px; padding-top:14px; border-top:1px solid var(--line); }
+  .pot-opts{ display:flex; flex-direction:column; gap:8px; }
+  .pot-opt{ display:flex; align-items:center; gap:12px; padding:11px 14px; border-radius:12px; border:2px solid var(--line); background:#fff; cursor:pointer; font-size:13px; font-weight:700; }
+  .pot-opt small{ display:block; font-weight:400; font-size:11.5px; color:var(--ink-soft); margin-top:1px; }
+  .pot-opt .pbol{ width:14px; height:14px; border-radius:50%; flex:none; }
+  .pot-opt[data-valor=sim] .pbol{ background:var(--green); }
+  .pot-opt[data-valor=sim_desenvolver] .pbol{ background:#8DB84A; }
+  .pot-opt[data-valor=duvida] .pbol{ background:#D89840; }
+  .pot-opt[data-valor=nao] .pbol{ background:#B4462B; }
+  .pot-opt.sel{ border-color:var(--ink); background:var(--cream); }
+
   .farol-opt{ flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; padding:12px 8px; border-radius:12px; border:2px solid var(--line); cursor:pointer; background:#fff; }
   .farol-opt .bolinha{ width:20px; height:20px; border-radius:50%; }
   .farol-opt span{ font-size:11px; font-weight:700; color:var(--ink-soft); }
@@ -709,6 +732,63 @@ window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && S
   .jornada-pill.pendente{ background:#F0E6D2; color:var(--ink-soft); }
   .jornada-pill.atrasado{ background:#F3D9D0; color:#B4462B; }
   .jornada-pill.ok{ background:var(--green-tint); color:var(--green-dark); }
+  /* ---- checklist de integração + painéis de gestão (Jornada) ---- */
+  .ck-prog{ height:8px; border-radius:100px; background:rgba(30,26,20,0.10); overflow:hidden; }
+  .ck-prog > i{ display:block; height:100%; border-radius:100px; background:var(--green); transition:width .3s; }
+  .ck-prog.atraso > i{ background:#D89840; }
+  .ck-head{ display:flex; gap:14px; align-items:center; background:var(--cream); border-radius:var(--radius-md); padding:14px 16px; margin-bottom:16px; }
+  .ck-avatar{ width:46px; height:46px; border-radius:50%; background:var(--green); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:15px; flex:none; }
+  .ck-bloco{ border:1px solid var(--line); border-radius:var(--radius-md); background:var(--paper); margin-bottom:12px; overflow:hidden; }
+  .ck-bloco-h{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 16px; background:var(--cream); }
+  .ck-bloco-h b{ font-size:13.5px; display:block; }
+  .ck-bloco-h small{ display:block; font-size:11.5px; color:var(--ink-soft); font-weight:500; }
+  .ck-cont{ font-size:11.5px; font-weight:800; padding:4px 10px; border-radius:100px; background:rgba(30,26,20,0.07); color:var(--ink-soft); white-space:nowrap; }
+  .ck-cont.ok{ background:var(--green-tint); color:var(--green-dark); }
+  .ck-cont.atraso{ background:#F3D9D0; color:#B4462B; }
+  .ck-item{ display:flex; align-items:center; gap:12px; padding:12px 16px; border:0; border-top:1px solid var(--line); cursor:pointer; width:100%; text-align:left; background:none; font-family:inherit; color:var(--ink); font-size:13.5px; line-height:1.35; }
+  .ck-item:hover{ background:rgba(var(--green-rgb),0.05); }
+  .ck-item .ck-box{ width:24px; height:24px; border-radius:7px; border:2px solid var(--line); flex:none; display:flex; align-items:center; justify-content:center; color:#fff; font-size:14px; font-weight:800; background:#fff; }
+  .ck-item.feito .ck-box{ background:var(--green); border-color:var(--green); }
+  .ck-item.feito .ck-txt{ color:var(--ink-soft); }
+  .ck-item.somente{ cursor:default; }
+  .ck-item.somente:hover{ background:none; }
+  .ck-txt{ flex:1; min-width:0; }
+  .ck-tit{ display:block; font-weight:700; }
+  .ck-det{ display:block; font-size:12px; color:var(--ink-soft); font-weight:400; margin-top:3px; line-height:1.45; }
+  .ck-item{ align-items:flex-start; }
+  .ck-meta{ font-size:11px; color:var(--ink-soft); margin-left:auto; white-space:nowrap; text-align:right; padding-left:8px; }
+  .ck-auto{ font-size:10.5px; font-weight:800; background:var(--green-tint); color:var(--green-dark); padding:3px 9px; border-radius:100px; margin-left:auto; white-space:nowrap; }
+  .eq-kpis{ display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; margin-bottom:18px; }
+  .eq-kpi{ background:var(--cream); border-radius:var(--radius-md); padding:13px 15px; }
+  .eq-kpi b{ display:block; font-family:var(--display); font-size:26px; line-height:1.15; color:var(--ink); font-weight:700; }
+  .eq-kpi span{ font-size:10.5px; font-weight:800; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.05em; }
+  .eq-kpi.alerta b{ color:#B4462B; }
+  .eq-card{ border:1px solid var(--line); background:var(--paper); border-radius:var(--radius-md); padding:14px 16px; margin-bottom:10px; }
+  .eq-card.atraso{ border-color:rgba(180,70,43,0.35); background:#FBF0EC; }
+  .eq-top{ display:flex; align-items:center; gap:12px; }
+  .eq-top .nm{ flex:1; min-width:0; }
+  .eq-top .nm b{ display:block; font-size:14px; }
+  .eq-top .nm span{ font-size:12px; color:var(--ink-soft); }
+  .eq-barras{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:12px; }
+  .eq-bar label{ display:flex; justify-content:space-between; font-size:10.5px; font-weight:800; color:var(--ink-soft); margin-bottom:5px; text-transform:uppercase; letter-spacing:.05em; }
+  .eq-bar label b{ color:var(--ink); }
+  .eq-acoes{ display:flex; gap:8px; align-items:center; margin-top:12px; flex-wrap:wrap; }
+  .eq-acoes .espaco{ flex:1; }
+  .eq-tag{ font-size:11px; font-weight:700; padding:4px 10px; border-radius:100px; background:rgba(30,26,20,0.07); color:var(--ink-soft); white-space:nowrap; }
+  .eq-tag.alerta{ background:#F3D9D0; color:#B4462B; }
+  .eq-tag.ok{ background:var(--green-tint); color:var(--green-dark); }
+  .eq-tag.atencao{ background:#FBEBD2; color:#9A6516; }
+  .eq-tabela td .mini{ display:flex; align-items:center; gap:8px; white-space:nowrap; }
+  .eq-tabela td .mini .ck-prog{ width:64px; flex:none; }
+  .eq-tabela{ font-size:13px; }
+  .eq-scroll{ overflow-x:auto; }
+  @media (max-width:560px){ .eq-barras{ grid-template-columns:1fr; } }
+  .carta-card{ display:flex; align-items:center; gap:16px; background:var(--paper); border:1px solid var(--line); border-radius:var(--radius-lg); padding:16px 20px; cursor:pointer; }
+  .carta-ico{ font-size:30px; flex:none; }
+  .carta-txt{ flex:1; min-width:0; }
+  .carta-txt b{ display:block; font-size:15px; }
+  .carta-txt span{ font-size:13px; color:var(--ink-soft); }
+  .carta-cta{ font-size:13px; font-weight:800; color:var(--green); white-space:nowrap; }
 
   /* ---------- lojinha redesenhada: categorias + cards + confirmação (setembro/2026) ----------- */
   .loja-cat-rail{ display:flex; gap:8px; overflow-x:auto; padding:2px 0 14px; }
@@ -1238,6 +1318,14 @@ window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && S
   </div>
 </section>
 
+<section class="block carta-block" id="cartaBloco" style="display:none;">
+  <div class="carta-card" onclick="window.abrirCarta()">
+    <div class="carta-ico">💌</div>
+    <div class="carta-txt"><b>Sua carta de boas-vindas</b><span>Foi enviada no seu primeiro contato. Toque pra reler quando quiser.</span></div>
+    <span class="carta-cta">Abrir →</span>
+  </div>
+</section>
+
 <section class="block ranking-block">
   <div class="ranking-teaser" onclick="if(window.abrirRanking) abrirRanking();">
     <div class="textura">
@@ -1464,6 +1552,7 @@ window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && S
     </div>
     <div style="padding:16px 24px; overflow:auto;">
       <p style="font-size:12.5px; color:var(--ink-soft); margin:0 0 14px;" data-i18n="minha_equipe_desc">Só o progresso de treinamento de quem tem você cadastrado como gestor. Ordenado por quem está mais atrasado primeiro.</p>
+      <div id="equipeResumo"></div>
       <div class="legenda-chips-equipe">
         <span><i style="background:#B4462B;"></i> <span data-i18n="legenda_chip_vencido">vencido</span></span>
         <span><i style="background:#D89840;"></i> <span data-i18n="legenda_chip_reprovado">reprovado</span></span>
@@ -1501,18 +1590,27 @@ window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && S
         <label style="display:block; font-size:12.5px; font-weight:700; margin-bottom:7px;">Motivo *</label>
         <select id="parecerMotivoSelect" style="width:100%; padding:11px 14px; border-radius:10px; border:1px solid var(--line); font-size:13.5px; background:#fff; color:var(--ink);">
           <option value="">Selecione…</option>
-          <option>Pediu demissão</option>
-          <option>Fim de período de experiência</option>
-          <option>Faltas / assiduidade</option>
-          <option>Baixo desempenho</option>
-          <option>Quebra de conduta</option>
+          <optgroup label="Por iniciativa do colaborador">
+            <option>Pediu demissão</option>
+          </optgroup>
+          <optgroup label="Fim de contrato">
+            <option>Fim de período de experiência</option>
+            <option>Término de contrato</option>
+          </optgroup>
+          <optgroup label="Por iniciativa da empresa">
+            <option>Desligamento pela empresa sem justa causa</option>
+            <option>Justa causa</option>
+            <option>Faltas / assiduidade</option>
+            <option>Baixo desempenho</option>
+            <option>Quebra de conduta</option>
+          </optgroup>
           <option>Outro</option>
         </select>
       </div>
       <div class="field">
         <label style="display:block; font-size:12.5px; font-weight:700; margin-bottom:7px;">Detalhamento *</label>
         <textarea id="parecerDetalhamentoInput" placeholder="Descreva o contexto do desligamento…" style="width:100%; padding:11px 14px; border-radius:10px; border:1px solid var(--line); font-size:13.5px; min-height:90px; resize:vertical; font-family:inherit;"></textarea>
-        <small style="display:block; margin-top:6px; font-size:11.5px; color:var(--ink-soft);">Os dois campos são obrigatórios. Só o DHO tem acesso a esse conteúdo no painel admin.</small>
+        <small style="display:block; margin-top:6px; font-size:11.5px; color:var(--ink-soft);">Os dois campos são obrigatórios. Conte com as suas palavras o que aconteceu. Esse conteúdo fica só com o DHO.</small>
       </div>
       <div id="parecerErro" style="display:none; color:#B4462B; font-size:13px; font-weight:600;"></div>
       <button class="btn-primary" style="width:100%;" onclick="window.salvarParecerDesligamento()">Registrar parecer</button>
@@ -1528,7 +1626,11 @@ window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && S
     </div>
     <div style="padding:20px 24px; overflow-y:auto;">
       <div class="jornada-bloco">
-        <div class="jornada-section-label">🆕 Colaboradores novos · treinamento obrigatório <span class="contagem" id="pendNovatosContagem" style="display:none;">0</span></div>
+        <div class="jornada-section-label">✅ Checklist de integração <span class="contagem" id="pendChecklistContagem" style="display:none;">0</span></div>
+        <div id="pendChecklistLista"><p class="jornada-vazio">Carregando…</p></div>
+      </div>
+      <div class="jornada-bloco">
+        <div class="jornada-section-label">🆕 Colaboradores novos · trilhas obrigatórias <span class="contagem" id="pendNovatosContagem" style="display:none;">0</span></div>
         <div id="pendNovatosLista"><p class="jornada-vazio">Carregando…</p></div>
       </div>
       <div class="jornada-bloco">
@@ -1551,6 +1653,32 @@ window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && S
   </div>
 </div>
 
+<div id="modalCarta" style="display:none; position:fixed; inset:0; background:rgba(30,26,20,0.6); backdrop-filter:blur(3px); align-items:center; justify-content:center; z-index:94;">
+  <div style="background:var(--paper); border-radius:22px; box-shadow:var(--shadow); width:min(560px,94vw); max-height:92vh; display:flex; flex-direction:column; overflow:hidden;">
+    <div style="padding:18px 24px; border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between;">
+      <h3 style="margin:0; font-family:var(--display); font-weight:400;">💌 Carta de boas-vindas</h3>
+      <button onclick="closeModal('modalCarta')" style="background:none; border:none; font-size:18px; cursor:pointer; color:var(--ink-soft);">✕</button>
+    </div>
+    <div style="padding:16px 20px; overflow-y:auto; text-align:center;">
+      <img id="cartaImg" src="" alt="Carta de boas-vindas da Cabana" style="max-width:100%; border-radius:12px; border:1px solid var(--line);">
+      <a id="cartaBaixar" href="carta-boas-vindas.png" download="Carta de boas-vindas - Cabana.png" style="display:inline-block; margin-top:14px; font-size:13px; font-weight:800; color:var(--green);">Baixar a carta</a>
+    </div>
+  </div>
+</div>
+
+<div id="modalChecklist" style="display:none; position:fixed; inset:0; background:rgba(30,26,20,0.6); backdrop-filter:blur(3px); align-items:center; justify-content:center; z-index:93;">
+  <div style="background:var(--paper); border-radius:22px; box-shadow:var(--shadow); width:min(660px,94vw); max-height:90vh; display:flex; flex-direction:column; overflow:hidden;">
+    <div style="padding:18px 24px; border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between;">
+      <h3 style="margin:0; font-family:var(--display); font-weight:400;">✅ Checklist de integração</h3>
+      <button onclick="window.fecharChecklist()" style="background:none; border:none; font-size:18px; cursor:pointer; color:var(--ink-soft);">✕</button>
+    </div>
+    <div style="padding:18px 24px 22px; overflow-y:auto;">
+      <div id="checklistCorpo"></div>
+      <div id="checklistErro" style="display:none; color:#B4462B; font-size:13px; font-weight:600; margin-top:8px;"></div>
+    </div>
+  </div>
+</div>
+
 <div id="modalPesquisaLinkQr" style="display:none; position:fixed; inset:0; background:rgba(30,26,20,0.6); backdrop-filter:blur(3px); align-items:center; justify-content:center; z-index:97;">
   <div style="background:var(--paper); border-radius:22px; box-shadow:var(--shadow); width:min(380px,92vw); text-align:center; padding:28px 24px;">
     <h3 id="pesquisaLinkQrTitulo" style="margin:0 0 14px; font-family:var(--display); font-weight:400; font-size:17px;"></h3>
@@ -1561,47 +1689,81 @@ window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && S
 </div>
 
 <div id="modalCheckin30" style="display:none; position:fixed; inset:0; background:rgba(30,26,20,0.6); backdrop-filter:blur(3px); align-items:center; justify-content:center; z-index:96;">
-  <div style="background:var(--paper); border-radius:22px; box-shadow:var(--shadow); width:min(560px,92vw); max-height:88vh; overflow-y:auto;">
-    <div style="padding:22px 26px; border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between;">
+  <div style="background:var(--paper); border-radius:22px; box-shadow:var(--shadow); width:min(600px,94vw); max-height:90vh; overflow-y:auto;">
+    <div style="padding:22px 26px; border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; background:var(--paper); z-index:2;">
       <h3 style="margin:0; font-family:var(--display); font-weight:400; font-size:19px;">Ponto de checagem · 30 dias</h3>
       <button onclick="closeModal('modalCheckin30')" style="background:none; border:none; font-size:18px; cursor:pointer; color:var(--ink-soft);">✕</button>
     </div>
-    <div style="padding:22px 26px; display:flex; flex-direction:column; gap:16px;">
-      <p id="checkin30ColaboradorInfo" style="margin:0; font-size:12.5px; color:var(--ink-soft);"></p>
+    <div style="padding:22px 26px; display:flex; flex-direction:column; gap:18px;">
+      <p id="checkin30ColaboradorInfo" style="margin:0; font-size:13px; font-weight:700;"></p>
+
+      <div class="ck30-intro">
+        <b>Como funciona</b>
+        <div class="ck30-passo"><i>1</i><span><strong>Conversa de 30 dias.</strong> Ao completar o primeiro mês, você conversa a sós com a pessoa e dá um feedback sobre como foi: o que está indo bem, o que melhorar e como ela se sente.</span></div>
+        <div class="ck30-passo"><i>2</i><span><strong>Ponto de checagem.</strong> É esta tela. Depois da conversa, você registra aqui o resumo dela. Leva poucos minutos e ajuda o DHO a acompanhar junto com você.</span></div>
+      </div>
+
+      <div class="field">
+        <label style="display:block; font-size:12.5px; font-weight:700; margin-bottom:7px;">Data em que a conversa de 30 dias aconteceu *</label>
+        <input type="date" id="checkin30DataConversa" style="padding:10px 14px; border-radius:10px; border:1px solid var(--line); font-size:13.5px; font-family:inherit; background:#fff; color:var(--ink);">
+      </div>
+
+      <div class="ck30-sec">Como está a pessoa neste primeiro mês</div>
+      <p style="margin:-10px 0 0; font-size:12px; color:var(--ink-soft); line-height:1.5;">Marque o farol de cada tema. O comentário é opcional quando está indo bem. Se marcar <b>Atenção</b> ou <b>Preocupante</b>, conte o que você observou.</p>
 
       <div class="farol-item" data-farol="integracao">
-        <label>Integração à loja e equipe *</label>
+        <label>Integração à loja e equipe *<span class="farol-sub">Como ela se relaciona com o time e se sente na loja.</span></label>
         <div class="farol-opts">
           <div class="farol-opt g" data-valor="verde"><div class="bolinha"></div><span>Indo bem</span></div>
           <div class="farol-opt y" data-valor="amarelo"><div class="bolinha"></div><span>Atenção</span></div>
           <div class="farol-opt r" data-valor="vermelho"><div class="bolinha"></div><span>Preocupante</span></div>
         </div>
+        <label class="farol-obs-l" id="obsLabel_integracao">Comentário (opcional)</label>
+        <textarea class="farol-obs" id="obs_integracao" placeholder="O que você observou? Um exemplo ajuda."></textarea>
       </div>
       <div class="farol-item" data-farol="treinamento">
-        <label>Treinamento inicial *</label>
+        <label>Aprendizado inicial *<span class="farol-sub">Se está aprendendo a rotina e as tarefas da função no ritmo esperado.</span></label>
         <div class="farol-opts">
           <div class="farol-opt g" data-valor="verde"><div class="bolinha"></div><span>Indo bem</span></div>
           <div class="farol-opt y" data-valor="amarelo"><div class="bolinha"></div><span>Atenção</span></div>
           <div class="farol-opt r" data-valor="vermelho"><div class="bolinha"></div><span>Preocupante</span></div>
         </div>
+        <label class="farol-obs-l" id="obsLabel_treinamento">Comentário (opcional)</label>
+        <textarea class="farol-obs" id="obs_treinamento" placeholder="O que você observou? Um exemplo ajuda."></textarea>
       </div>
       <div class="farol-item" data-farol="comportamento">
-        <label>Comportamento e postura *</label>
+        <label>Comportamento e postura *<span class="farol-sub">Pontualidade, assiduidade, atendimento e cumprimento do Código de Conduta.</span></label>
         <div class="farol-opts">
           <div class="farol-opt g" data-valor="verde"><div class="bolinha"></div><span>Indo bem</span></div>
           <div class="farol-opt y" data-valor="amarelo"><div class="bolinha"></div><span>Atenção</span></div>
           <div class="farol-opt r" data-valor="vermelho"><div class="bolinha"></div><span>Preocupante</span></div>
         </div>
+        <label class="farol-obs-l" id="obsLabel_comportamento">Comentário (opcional)</label>
+        <textarea class="farol-obs" id="obs_comportamento" placeholder="O que você observou? Um exemplo ajuda."></textarea>
       </div>
 
+      <div class="ck30-sec">Olhando para frente</div>
+      <div class="field" id="potBloco">
+        <label style="display:block; font-size:13px; font-weight:700; margin-bottom:4px;">Pelo que você viu neste primeiro mês, essa pessoa tem potencial para continuar no Cabana? *</label>
+        <small style="display:block; margin-bottom:10px; font-size:12px; color:var(--ink-soft); line-height:1.45;">É a sua leitura de hoje e pode mudar. Serve para o DHO acompanhar junto com você.</small>
+        <div class="pot-opts">
+          <div class="pot-opt" data-valor="sim"><span class="pbol"></span><span>Sim, com certeza<small>Está no caminho e tende a crescer na casa.</small></span></div>
+          <div class="pot-opt" data-valor="sim_desenvolver"><span class="pbol"></span><span>Sim, com pontos a desenvolver<small>Vejo potencial, mas precisa de apoio em algo específico.</small></span></div>
+          <div class="pot-opt" data-valor="duvida"><span class="pbol"></span><span>Tenho dúvidas<small>Ainda não consigo dizer. Há sinais de alerta.</small></span></div>
+          <div class="pot-opt" data-valor="nao"><span class="pbol"></span><span>Hoje não vejo<small>Os sinais apontam que não vai seguir.</small></span></div>
+        </div>
+        <label class="farol-obs-l" id="obsLabel_pot">Por quê? (opcional)</label>
+        <textarea class="farol-obs" id="obs_pot" placeholder="O que te leva a pensar assim?"></textarea>
+      </div>
+
+      <div class="ck30-sec">Resumo da conversa</div>
       <div class="field">
-        <label style="display:block; font-size:12.5px; font-weight:700; margin-bottom:7px;">O que está acontecendo? *</label>
-        <textarea id="checkin30OqueInput" placeholder="Descreva livremente a situação…" style="width:100%; padding:11px 14px; border-radius:10px; border:1px solid var(--line); font-size:13.5px; min-height:80px; resize:vertical; font-family:inherit;"></textarea>
+        <label style="display:block; font-size:12.5px; font-weight:700; margin-bottom:7px;">Resumo do feedback dado na conversa de 30 dias *</label>
+        <textarea id="checkin30ResumoInput" placeholder="O que você disse à pessoa e como ela reagiu…" style="width:100%; padding:11px 14px; border-radius:10px; border:1px solid var(--line); font-size:13.5px; min-height:90px; resize:vertical; font-family:inherit; box-sizing:border-box;"></textarea>
       </div>
       <div class="field">
-        <label style="display:block; font-size:12.5px; font-weight:700; margin-bottom:7px;">Resumo do feedback informal com o colaborador *</label>
-        <textarea id="checkin30ResumoInput" placeholder="O que foi conversado com ele(a) até agora…" style="width:100%; padding:11px 14px; border-radius:10px; border:1px solid var(--line); font-size:13.5px; min-height:80px; resize:vertical; font-family:inherit;"></textarea>
-        <small style="display:block; margin-top:6px; font-size:11.5px; color:var(--ink-soft);">Converse com o colaborador antes de preencher — esse resumo é do que já foi dito a ele(a).</small>
+        <label style="display:block; font-size:12.5px; font-weight:700; margin-bottom:7px;">Combinados para os próximos dias (opcional)</label>
+        <textarea id="checkin30PassosInput" placeholder="O que você e a pessoa combinaram daqui para frente…" style="width:100%; padding:11px 14px; border-radius:10px; border:1px solid var(--line); font-size:13.5px; min-height:64px; resize:vertical; font-family:inherit; box-sizing:border-box;"></textarea>
       </div>
       <div id="checkin30Erro" style="display:none; color:#B4462B; font-size:13px; font-weight:600;"></div>
       <button class="btn-primary" style="width:100%;" onclick="window.salvarCheckin30()">Salvar ponto de checagem</button>
@@ -2346,7 +2508,7 @@ function renderJornada(){
 }
 window.renderJornada = renderJornada;
 
-// fases do onboarding (perfil Jornada): 1 Gente Boa chegou (entrou) → 2 Gente Boa na rotina (todos os treinamentos do perfil concluídos)
+// fases do onboarding (perfil Jornada): 1 Gente Boa chegou (entrou) → 2 Gente Boa na rotina (todas as trilhas do perfil concluídas)
 // → 3 Já faz parte (marcou que respondeu a pesquisa de 45 dias) → 4 Virou Cabana (marcou a de 90 dias) = certificado.
 // Os dados das pesquisas vêm de window.__fasesEstado, preenchido no script de auth (carregarEstadoFases).
 function renderFasesOnboarding(){
@@ -2377,8 +2539,8 @@ function renderFasesOnboarding(){
 
   const cont = document.querySelector('.level-count');
   if (cont) {
-    const palavra = total === 1 ? L('treinamento','capacitación') : L('treinamentos','capacitaciones');
-    const feito = IDIOMA === 'es' ? (total === 1 ? 'completada' : 'completadas') : (total === 1 ? 'concluído' : 'concluídos');
+    const palavra = total === 1 ? L('trilha','ruta') : L('trilhas','rutas');
+    const feito = IDIOMA === 'es' ? (total === 1 ? 'completada' : 'completadas') : (total === 1 ? 'concluída' : 'concluídas');
     cont.innerHTML = total > 0 ? (concl + ' <span>' + L('de','de') + ' ' + total + ' ' + palavra + ' ' + feito + '</span>') : '';
   }
 
@@ -2395,13 +2557,13 @@ function renderFasesOnboarding(){
   const frase = function(txt){ return '<b style="color:var(--fries);">' + txt + '</b> '; };
   const dp = function(n){ return n + ' ' + (n === 1 ? L('dia','día') : L('dias','días')); };
   if (hint) {
-    if (total === 0) hint.innerHTML = L('Seus treinamentos aparecem aqui assim que forem liberados.', 'Tus capacitaciones aparecen aquí en cuanto se liberen.');
+    if (total === 0) hint.innerHTML = L('Suas trilhas aparecem aqui assim que forem liberadas.', 'Tus rutas aparecen aquí en cuanto se liberen.');
     else if (!m2) {
       const falta = total - concl;
-      hint.innerHTML = frase(concl > 0 ? t('ritmo_bomritmo') : t('ritmo_boracomecar')) + L('Faltam ','Faltan ') + '<b>' + falta + ' ' + (falta === 1 ? L('treinamento','capacitación') : L('treinamentos','capacitaciones')) + '</b> ' + L('pra chegar na fase ','para llegar a la fase ') + nomeNivel('Aprendiz Cabana');
+      hint.innerHTML = frase(concl > 0 ? t('ritmo_bomritmo') : t('ritmo_boracomecar')) + (falta === 1 ? L('Falta ','Falta ') : L('Faltam ','Faltan ')) + '<b>' + falta + ' ' + (falta === 1 ? L('trilha','ruta') : L('trilhas','rutas')) + '</b> ' + L('pra chegar na fase ','para llegar a la fase ') + nomeNivel('Aprendiz Cabana');
     }
     else if (m4) hint.innerHTML = frase(L('Virou Cabana! 💚','¡Ya eres Cabana! 💚')) + L('Seu certificado de boas-vindas está pronto.','Tu certificado de bienvenida está listo.');
-    else if (!r45) hint.innerHTML = frase(L('Treinamentos em dia! 🤝','¡Capacitaciones al día! 🤝')) + (lib45 ? L('Falta a pesquisa de 45 dias pra chegar na fase ','Falta la encuesta de 45 días para llegar a la fase ') + nomeNivel('Veterano') : L('A pesquisa de 45 dias libera em ','La encuesta de 45 días se libera en ') + '<b>' + dp(45 - dias) + '</b>');
+    else if (!r45) hint.innerHTML = frase(L('Trilhas em dia! 🤝','¡Rutas al día! 🤝')) + (lib45 ? L('Falta a pesquisa de 45 dias pra chegar na fase ','Falta la encuesta de 45 días para llegar a la fase ') + nomeNivel('Veterano') : L('A pesquisa de 45 dias libera em ','La encuesta de 45 días se libera en ') + '<b>' + dp(45 - dias) + '</b>');
     else hint.innerHTML = frase(L('Já faz parte! 🔥','¡Ya eres parte! 🔥')) + (lib90 ? L('Falta a pesquisa de 90 dias pra chegar na fase ','Falta la encuesta de 90 días para llegar a la fase ') + nomeNivel('Referência Cabana') : L('A pesquisa de 90 dias libera em ','La encuesta de 90 días se libera en ') + '<b>' + dp(90 - dias) + '</b>');
   }
 
@@ -2425,8 +2587,8 @@ function renderFasesOnboarding(){
         }
         return '<div class="fp-linha ' + (ok ? 'ok' : '') + '">' + ico(ok, n === 45 ? '2' : '3') + '<div class="fp-txt">' + titulo + '<small>' + sub + '</small></div><div class="fp-acoes">' + acoes + '</div></div>';
       };
-      let h = '<div class="fp-linha ' + (m2 ? 'ok' : '') + '">' + ico(m2, '1') + '<div class="fp-txt">' + L('Treinamentos do onboarding','Capacitaciones de onboarding') +
-        '<small>' + (m2 ? L('Tudo concluído','Todo completado') : (concl + ' ' + L('de','de') + ' ' + total + ' ' + L('concluídos','completadas'))) + '</small></div>' +
+      let h = '<div class="fp-linha ' + (m2 ? 'ok' : '') + '">' + ico(m2, '1') + '<div class="fp-txt">' + L('Trilhas da Jornada','Rutas de la Jornada') +
+        '<small>' + (m2 ? L('Tudo concluído','Todo completado') : (concl + ' ' + L('de','de') + ' ' + total + ' ' + L('concluídas','completadas'))) + '</small></div>' +
         '<div class="fp-acoes">' + ((!m2 && primeiroPend) ? '<button class="fp-btn" onclick="abrirCurso(\'' + primeiroPend.id + '\')">' + L('Continuar','Continuar') + '</button>' : '') + '</div></div>';
       h += linhaPesq(r45, lib45, 45, E.link45, dias === null ? 0 : 45 - dias);
       h += linhaPesq(r90, lib90, 90, E.link90, dias === null ? 0 : 90 - dias);
@@ -3287,7 +3449,7 @@ function configurarGateConclusao(c){
       const M = window.MARCA || {};
       if (!M.certModeloCabaneiro || window.__faseIdx !== 3) { alert(t('erro_sem_modelo_certificado')); return; }
       const E = window.__fasesEstado;
-      // data = o último marco cumprido (última conclusão de treinamento ou a pesquisa de 90 dias)
+      // data = o último marco cumprido (última conclusão de trilha ou a pesquisa de 90 dias)
       let ultima = [E.p45, E.p90].filter(Boolean).reduce(function(a, b){ return b > a ? b : a; }, new Date(0));
       const progs = await Promise.all((window.CURSOS || []).map(function(c){
         return getDoc(doc(db, 'progresso', `${currentCpf}_${c.id}`)).then(function(sn){ return sn.exists() ? sn.data() : null; }).catch(function(){ return null; });
@@ -4017,6 +4179,7 @@ function configurarGateConclusao(c){
   function renderizarListaEquipe(linhas){
     const corpo = document.getElementById('equipeCardsLista');
     if (!corpo) return;
+    if (window.MARCA && window.MARCA.fasesOnboarding) { renderizarListaEquipeJornada(linhas); return; }
     corpo.innerHTML = linhas.length ? linhas.map(l => {
       const iniciais = l.nome.split(' ').filter(Boolean).slice(0, 2).map(p => p[0]).join('').toUpperCase() || '?';
       const chipsVR = [
@@ -4048,6 +4211,7 @@ function configurarGateConclusao(c){
       const linhas = await calcularEquipeDetalhada();
       window.__equipeDetalhada = linhas;
       atualizarBadgeAtalhoEquipe(linhas);
+      if (window.MARCA && window.MARCA.fasesOnboarding) { try { await carregarChecklists((window.MINHA_EQUIPE || []).filter(emIntegracao).map(c => c.cpf)); } catch (e) { console.error('checklist:', e); } }
       renderizarListaEquipe(linhas);
     } catch (err) {
       console.error('Erro ao carregar minha equipe:', err);
@@ -4141,7 +4305,12 @@ function configurarGateConclusao(c){
         Loja: c.Loja || '',
         Regional: c.Regional || '',
         Motivo: motivo,
+        Iniciativa: ({ 'Pediu demissão': 'colaborador', 'Fim de período de experiência': 'fim_contrato', 'Término de contrato': 'fim_contrato', 'Outro': 'outro' })[motivo] || 'empresa',
         Detalhamento: detalhamento,
+        TempoDeCasaDias: (c.Admissao && c.Admissao.toDate) ? Math.floor((new Date() - c.Admissao.toDate()) / 86400000) : null,
+        CpfGestor: c.CpfGestor || currentCpf,
+        RegistradoPorNome: (typeof nomeColaboradorAtual !== 'undefined' ? nomeColaboradorAtual : '') || '',
+        Versao: 2,
         Descartado: false,
         RegistradoPor: currentCpf,
         RegistradoEm: serverTimestamp()
@@ -4178,14 +4347,15 @@ function configurarGateConclusao(c){
   async function atualizarPainelPendenciasGestor(){
     const equipe = window.MINHA_EQUIPE || [];
     if (!equipe.length) return;
-    const [qtdNovatos, qtdCheckin, qtdPesquisa] = await Promise.all([
+    const [qtdNovatos, qtdCheckin, qtdPesquisa, qtdChecklist] = await Promise.all([
       renderPendNovatos(equipe),
       renderPendCheckin30(equipe),
-      renderPendPesquisas(equipe)
+      renderPendPesquisas(equipe),
+      renderPendChecklist(equipe)
     ]);
     renderFasesTime(equipe);
     const qtdCursos = renderPendCursosGeral(window.__equipeDetalhada || []);
-    const total = (qtdNovatos || 0) + (qtdCheckin || 0) + (qtdPesquisa || 0) + (qtdCursos || 0);
+    const total = (qtdNovatos || 0) + (qtdCheckin || 0) + (qtdPesquisa || 0) + (qtdCursos || 0) + (qtdChecklist || 0);
     const status = document.getElementById('atalhoPendenciasStatus');
     if (status) status.textContent = total > 0 ? `${total} pendência${total === 1 ? '' : 's'}` : 'Tudo em dia';
   }
@@ -4225,7 +4395,7 @@ function configurarGateConclusao(c){
     if (!lista) return 0;
     const candidatos = equipe.filter(c => c.Admissao && c.Admissao.toDate);   // vale pra loja, escritório e fábrica
     if (!candidatos.length) {
-      lista.innerHTML = `<p class="jornada-vazio">Ninguém em período de treinamento obrigatório agora.</p>`;
+      lista.innerHTML = `<p class="jornada-vazio">Ninguém com trilhas obrigatórias em andamento agora.</p>`;
       if (contagem) contagem.style.display = 'none';
       return 0;
     }
@@ -4274,7 +4444,7 @@ function configurarGateConclusao(c){
           <div class="pendencia-info"><b>${l.nome}</b><span>${l.loja} · ${l.qtd} curso${l.qtd === 1 ? '' : 's'} obrigatório${l.qtd === 1 ? '' : 's'} pendente${l.qtd === 1 ? '' : 's'}</span></div>
           <div class="prazo-chip ${chipClass}">${chipTxt}</div>
         </div>`;
-      }).join('') : `<p class="jornada-vazio">Todo mundo em dia com o treinamento obrigatório.</p>`;
+      }).join('') : `<p class="jornada-vazio">Todo mundo em dia com as trilhas obrigatórias.</p>`;
       return linhas.length;
     } catch (err) {
       console.error('Erro ao carregar pendências de novatos:', err);
@@ -4305,13 +4475,8 @@ function configurarGateConclusao(c){
     try {
       const cpfs = candidatos.map(c => c.cpf);
       const jaFeitos = new Set();
-      const lotes = [];
-      for (let i = 0; i < cpfs.length; i += 30) lotes.push(cpfs.slice(i, i + 30));
-      for (const lote of lotes) {
-        if (!lote.length) continue;
-        const snap = await getDocs(query(collection(db, 'checkins30'), where('Cpf', 'in', lote)));
-        snap.forEach(d => jaFeitos.add(d.id));
-      }
+      const existe = await Promise.all(cpfs.map(async cpf => { try { return (await getDoc(doc(db, 'checkins30', cpf))).exists(); } catch (e) { return false; } }));
+      cpfs.forEach((cpf, i) => { if (existe[i]) jaFeitos.add(cpf); });
       const pendentes = candidatos.filter(c => !jaFeitos.has(c.cpf)).map(c => {
         const dias = Math.floor((agora - c.Admissao.toDate()) / (1000 * 60 * 60 * 24));
         return { cpf: c.cpf, nome: c.Nome || '—', loja: c.Loja || '—', diasAtraso: dias - 30 };
@@ -4398,6 +4563,252 @@ function configurarGateConclusao(c){
     return comPendencia.length;
   }
 
+  // ================================================================================
+  // Checklist de integração por pessoa (outubro/2026) — o gestor marca "feito" em cada passo da
+  // chegada (antes, 1º dia, 1ª semana, 30 dias). Coleção checklistIntegracao/{cpf}:
+  //   { Cpf, Nome, Loja, Regional, CpfGestor, Itens: { a1: { feito, em (ISO), por (nome) } ... }, AtualizadoEm }
+  // Só o gestor direto marca; coordenador e gerente de operações veem apenas os totais.
+  // ================================================================================
+  const CHECKLIST_BLOCOS = [
+    { id: 'antes', titulo: 'Antes de chegar', sub: 'Até a véspera da admissão', prazo: 1, itens: [
+      { id: 'a1', t: 'Orientador definido e escala montada', d: 'Escolha quem vai acompanhar a pessoa nos primeiros dias (alguém da mesma área, que conheça bem a rotina) e deixe a escala dos primeiros turnos pronta.' },
+      { id: 'a2', t: '1º dia reservado na agenda, com tempo para as trilhas', d: 'Reserve um período do 1º dia, longe do pico do serviço, para a pessoa fazer as três trilhas online (onboarding institucional, benefícios e hospitalidade).' },
+      { id: 'a3', t: 'Uniforme e armário separados', d: 'Deixe o uniforme no tamanho certo e um armário disponível antes de a pessoa chegar.' },
+      { id: 'a4', t: 'Cadastro conferido, inclusive no Apontatu', d: 'Confira se cargo, loja e horário estão corretos no cadastro e no Apontatu, para o ponto funcionar já no 1º dia.' },
+      { id: 'a5', t: 'Time avisado da chegada', d: 'Conte ao time da loja que uma pessoa nova chega (nome, cargo e área) e peça que ela seja bem recebida.' },
+      { id: 'a6', t: 'Mensagem de confirmação enviada ao colaborador', d: 'Na véspera, mande uma mensagem por WhatsApp ao colaborador confirmando o 1º dia: horário, endereço da loja, o que levar e quem vai recebê-lo.' } ] },
+    { id: 'dia1', titulo: '1º dia', sub: 'Na ordem em que acontece', prazo: 3, itens: [
+      { id: 'b1', t: 'Boas-vindas, tour pela loja e apresentação do time', d: 'Receba a pessoa na chegada, mostre as áreas da loja (salão, cozinha, estoque, vestiário) e apresente cada colega pelo nome.' },
+      { id: 'b2', t: 'Uniforme entregue; ponto, escala e canais apresentados', d: 'Entregue o uniforme, mostre como bater o ponto, onde consultar a escala e como falar com você e com o orientador no dia a dia.' },
+      { id: 'b3', t: 'Trilhas da Jornada concluídas', auto: 'trilhas', d: 'A pessoa faz as três trilhas online no celular ou computador. Este item marca sozinho quando ela conclui na Jornada.' },
+      { id: 'b4', t: 'Conversa sobre dúvidas e a experiência online', d: 'Depois das trilhas, converse: o que ficou de dúvida e o que achou do conteúdo. Não é prova nem avaliação.' },
+      { id: 'b5', t: 'Código de Conduta explicado e assinado', d: 'Passe pelos pontos principais com a pessoa, tire as dúvidas e colha a assinatura no documento.' },
+      { id: 'b6', t: 'Ficha de EPI assinada', d: 'Entregue os EPIs da função, explique como usar e colha a assinatura na ficha de EPI.' },
+      { id: 'b7', t: 'Sombra com o orientador, almoço Combo Cabana e cardápio', d: 'A pessoa acompanha o orientador no turno, almoça o Combo Cabana e conhece o cardápio.' } ] },
+    { id: 'semana', titulo: 'Primeira semana', sub: 'Dias 2 a 7', prazo: 8, itens: [
+      { id: 'c1', t: 'Feedback ao fim de cada turno', d: 'Ao fim de cada turno, você ou o orientador conta em poucos minutos o que foi bem e o que ajustar no próximo.' },
+      { id: 'c2', t: 'Conversa de fechamento da semana', d: 'No fim da primeira semana, converse a sós com a pessoa: como ela se sentiu, o que está difícil e onde precisa de apoio.' } ] },
+    { id: 'd30', titulo: '30 dias', sub: 'Fechando o primeiro mês', prazo: 35, itens: [
+      { id: 'd1', t: 'Conversa de 30 dias realizada', d: 'Conversa a sós com a pessoa para dar feedback sobre o 1º mês: o que está indo bem, o que melhorar e como ela se sente. O resumo dessa conversa é registrado no ponto de checagem, logo abaixo.' } ] }
+  ];
+  window.CHECKLIST_BLOCOS = CHECKLIST_BLOCOS;
+  window.__checklistCache = window.__checklistCache || {};
+  let ckPessoaAtual = null;
+  let ckEditavel = false;
+
+  function diasDeCasa(c){
+    if (!c || !c.Admissao || !c.Admissao.toDate) return null;
+    return Math.floor((new Date() - c.Admissao.toDate()) / 86400000);
+  }
+  // "em integração": de 15 dias antes da admissão (já cadastrado) até o dia 90
+  function emIntegracao(c){ const d = diasDeCasa(c); return d !== null && d >= -15 && d <= 90; }
+  function iniciaisDe(nome){ return String(nome || '').split(' ').filter(Boolean).slice(0, 2).map(p => p[0]).join('').toUpperCase() || '?'; }
+  function dataCurta(iso){ try { const d = new Date(iso); return String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0'); } catch (e) { return ''; } }
+  function textoDias(d){ return d === null ? '' : d < 0 ? `chega em ${-d} dia${d === -1 ? '' : 's'}` : d === 0 ? 'chegou hoje' : `${d} dia${d === 1 ? '' : 's'} de casa`; }
+  function linhaCursosDe(cpf){ return (window.__equipeDetalhada || []).find(l => l.cpf === cpf) || null; }
+
+  async function carregarChecklists(cpfs){
+    const unicos = [...new Set((cpfs || []).filter(Boolean))];
+    const lotes = [];
+    for (let i = 0; i < unicos.length; i += 30) lotes.push(unicos.slice(i, i + 30));
+    unicos.forEach(c => { window.__checklistCache[c] = {}; });
+    for (const lote of lotes) {
+      const snap = await getDocs(query(collection(db, 'checklistIntegracao'), where('Cpf', 'in', lote)));
+      snap.forEach(d => { const x = d.data(); window.__checklistCache[x.Cpf || d.id] = x.Itens || {}; });
+    }
+  }
+
+  // resumo de uma pessoa: feitos/total, por bloco, e se já passou do prazo de algum bloco
+  function resumoChecklist(c, linhaCursos){
+    const itens = window.__checklistCache[c.cpf] || {};
+    const dias = diasDeCasa(c);
+    const trilhasOk = !!(linhaCursos && linhaCursos.total > 0 && linhaCursos.concluidos >= linhaCursos.total);
+    let feitos = 0, total = 0, atraso = false;
+    const blocos = {};
+    CHECKLIST_BLOCOS.forEach(b => {
+      let f = 0;
+      b.itens.forEach(it => { if ((itens[it.id] && itens[it.id].feito) || (it.auto === 'trilhas' && trilhasOk)) f++; });
+      blocos[b.id] = { feitos: f, total: b.itens.length };
+      feitos += f; total += b.itens.length;
+      if (dias !== null && dias > b.prazo && f < b.itens.length) atraso = true;
+    });
+    return { feitos, total, pct: Math.round((feitos / total) * 100), atraso, blocos, dias, trilhasOk };
+  }
+  window.resumoChecklist = resumoChecklist;
+
+  window.abrirChecklist = async function(cpf){
+    const c = (window.MINHA_EQUIPE || []).find(x => x.cpf === cpf);
+    if (!c) return;
+    ckPessoaAtual = c;
+    ckEditavel = (c.CpfGestor === currentCpf);
+    document.getElementById('checklistErro').style.display = 'none';
+    ckCheckinFeito = null;
+    renderChecklist();
+    openModal('modalChecklist');
+    if ((c.Local || 'Loja') === 'Loja') {
+      try { const d = await getDoc(doc(db, 'checkins30', c.cpf)); ckCheckinFeito = d.exists(); } catch (e) { ckCheckinFeito = false; }
+      if (ckPessoaAtual && ckPessoaAtual.cpf === cpf) renderChecklist();
+    }
+  };
+  let ckCheckinFeito = null;
+
+  function renderChecklist(){
+    const c = ckPessoaAtual; const corpo = document.getElementById('checklistCorpo');
+    if (!c || !corpo) return;
+    const r = resumoChecklist(c, linhaCursosDe(c.cpf));
+    const itens = window.__checklistCache[c.cpf] || {};
+    const subt = [c.Cargo, c.Loja, textoDias(r.dias)].filter(Boolean).join(' · ');
+    let h = `<div class="ck-head">
+      <div class="ck-avatar">${iniciaisDe(c.Nome)}</div>
+      <div style="flex:1; min-width:0;">
+        <b style="display:block; font-size:15px;">${c.Nome || '—'}</b>
+        <span style="font-size:12.5px; color:var(--ink-soft);">${subt}</span>
+        <div style="display:flex; align-items:center; gap:10px; margin-top:9px;">
+          <div class="ck-prog ${r.atraso ? 'atraso' : ''}" style="flex:1;"><i style="width:${r.pct}%"></i></div>
+          <b style="font-size:13px; white-space:nowrap;">${r.feitos} de ${r.total}</b>
+        </div>
+      </div>
+    </div>`;
+    if (!ckEditavel) h += `<p style="font-size:12.5px; color:var(--ink-soft); margin:-4px 0 14px;">Só o gestor direto desta pessoa marca os itens. Você está vendo o andamento.</p>`;
+    CHECKLIST_BLOCOS.forEach(b => {
+      const bl = r.blocos[b.id];
+      const atrasado = r.dias !== null && r.dias > b.prazo && bl.feitos < bl.total;
+      h += `<div class="ck-bloco"><div class="ck-bloco-h"><div><b>${b.titulo}</b><small>${b.sub}</small></div><span class="ck-cont ${bl.feitos === bl.total ? 'ok' : atrasado ? 'atraso' : ''}">${bl.feitos === bl.total ? '✓ ' : ''}${bl.feitos}/${bl.total}${atrasado ? ' · atrasado' : ''}</span></div>`;
+      b.itens.forEach(it => {
+        const x = itens[it.id];
+        const auto = it.auto === 'trilhas' && r.trilhasOk;
+        const feito = !!(x && x.feito) || auto;
+        const meta = auto ? '<span class="ck-auto">Automático</span>' : (feito && x && x.em ? `<span class="ck-meta">${dataCurta(x.em)}${x.por ? '<br>' + String(x.por).split(' ')[0] : ''}</span>` : (it.auto === 'trilhas' ? '<span class="ck-meta">marca sozinho quando<br>concluir na Jornada</span>' : ''));
+        const clicavel = ckEditavel && !auto;
+        h += `<${clicavel ? 'button' : 'div'} class="ck-item ${feito ? 'feito' : ''} ${clicavel ? '' : 'somente'}" ${clicavel ? `onclick="window.alternarItemChecklist('${it.id}')"` : ''}><span class="ck-box">${feito ? '✓' : ''}</span><span class="ck-txt"><b class="ck-tit">${it.t}</b>${it.d ? `<span class="ck-det">${it.d}</span>` : ''}</span>${meta}</${clicavel ? 'button' : 'div'}>`;
+      });
+      if (b.id === 'd30' && (c.Local || 'Loja') === 'Loja') {
+        const d = r.dias;
+        h += `<div class="ck-item somente" style="flex-wrap:wrap;"><span class="ck-txt" style="flex:1;"><b class="ck-tit">Ponto de checagem: resumo da conversa de 30 dias</b><span class="ck-det">Aqui você registra o que foi conversado: farol de cada tema, se a pessoa tem potencial para seguir no Cabana e o resumo do feedback.</span></span>` +
+          (ckCheckinFeito ? `<span class="ck-auto">Registrado</span>` : (ckEditavel && d !== null && d >= 30 ? `<button class="btn-secondary" style="padding:7px 14px; font-size:12px;" onclick="window.fecharChecklist(); window.abrirCheckin30('${c.cpf}')">Preencher →</button>` : `<span class="ck-meta">disponível a partir do dia 30</span>`)) + `</div>`;
+      }
+      h += `</div>`;
+    });
+    corpo.innerHTML = h;
+  }
+
+  window.alternarItemChecklist = async function(id){
+    const c = ckPessoaAtual; if (!c || !ckEditavel) return;
+    const itens = window.__checklistCache[c.cpf] = window.__checklistCache[c.cpf] || {};
+    const anterior = itens[id];
+    const estava = !!(anterior && anterior.feito);
+    itens[id] = estava ? { feito: false } : { feito: true, em: new Date().toISOString(), por: nomeColaboradorAtual || '' };
+    document.getElementById('checklistErro').style.display = 'none';
+    renderChecklist();
+    try {
+      await setDoc(doc(db, 'checklistIntegracao', c.cpf), {
+        Cpf: c.cpf, Nome: c.Nome || '', Loja: c.Loja || '', Regional: c.Regional || '',
+        CpfGestor: c.CpfGestor || currentCpf, Itens: itens, AtualizadoEm: serverTimestamp()
+      }, { merge: true });
+    } catch (err) {
+      console.error('Erro ao salvar checklist:', err);
+      if (anterior) itens[id] = anterior; else delete itens[id];
+      renderChecklist();
+      const e = document.getElementById('checklistErro');
+      e.textContent = 'Não deu pra salvar agora. Tenta de novo em instantes.'; e.style.display = 'block';
+    }
+  };
+
+  window.fecharChecklist = function(){
+    closeModal('modalChecklist');
+    ckPessoaAtual = null;
+    atualizarPainelPendenciasGestor();
+    const me = document.getElementById('modalEquipe');
+    if (me && me.style.display === 'flex') renderizarListaEquipe(window.__equipeDetalhada || []);
+  };
+
+  // Pendências > checklist de integração do time
+  async function renderPendChecklist(equipe){
+    const lista = document.getElementById('pendChecklistLista');
+    const contagem = document.getElementById('pendChecklistContagem');
+    if (!lista) return 0;
+    const novos = equipe.filter(emIntegracao);
+    if (!novos.length) {
+      lista.innerHTML = `<p class="jornada-vazio">Ninguém em período de integração no seu time agora.</p>`;
+      if (contagem) contagem.style.display = 'none';
+      return 0;
+    }
+    try {
+      await carregarChecklists(novos.map(c => c.cpf));
+      const linhas = novos.map(c => ({ c, r: resumoChecklist(c, linhaCursosDe(c.cpf)) }))
+        .sort((a, b) => ((b.r.atraso ? 1 : 0) - (a.r.atraso ? 1 : 0)) || (a.r.pct - b.r.pct));
+      const atrasados = linhas.filter(x => x.r.atraso).length;
+      if (contagem) { contagem.style.display = atrasados ? 'inline-flex' : 'none'; contagem.textContent = atrasados; }
+      lista.innerHTML = linhas.map(x => `
+        <div class="pendencia-card ${x.r.atraso ? 'critico' : ''}">
+          <div class="pendencia-info" style="flex:1; min-width:0;"><b>${x.c.Nome || '—'}</b><span>${x.c.Loja || '—'} · ${textoDias(x.r.dias)}${x.r.atraso ? ' · atrasado' : ''}</span>
+            <div style="display:flex; align-items:center; gap:10px; margin-top:8px;"><div class="ck-prog ${x.r.atraso ? 'atraso' : ''}" style="flex:1; max-width:220px;"><i style="width:${x.r.pct}%"></i></div><b style="font-size:12px;">${x.r.feitos}/${x.r.total}</b></div>
+          </div>
+          <button class="btn-secondary" style="padding:8px 14px; font-size:12.5px;" onclick="window.abrirChecklist('${x.c.cpf}')">${x.r.feitos === x.r.total ? 'Ver' : 'Marcar'} →</button>
+        </div>`).join('');
+      return atrasados;
+    } catch (err) {
+      console.error('Erro ao carregar checklists:', err);
+      lista.innerHTML = `<p class="jornada-vazio">Não deu pra carregar agora.</p>`;
+      return 0;
+    }
+  }
+
+  // Minha equipe (versão Jornada): resumo no topo + um cartão por pessoa
+  function renderizarListaEquipeJornada(linhas){
+    const corpo = document.getElementById('equipeCardsLista');
+    const resumo = document.getElementById('equipeResumo');
+    ['.header-tabela-equipe', '.legenda-chips-equipe'].forEach(s => { const e = document.querySelector('#modalEquipe ' + s); if (e) e.style.display = 'none'; });
+    const nomesFase = ['Novato', 'Aprendiz Cabana', 'Veterano', 'Referência Cabana'];
+    const porCpf = {}; (window.MINHA_EQUIPE || []).forEach(c => { porCpf[c.cpf] = c; });
+    const itens = linhas.map(l => {
+      const c = porCpf[l.cpf] || {};
+      const novo = emIntegracao(c);
+      const r = novo ? resumoChecklist(c, l) : null;
+      return { l, c, novo, r, dias: diasDeCasa(c) };
+    }).sort((a, b) => ((b.novo ? 1 : 0) - (a.novo ? 1 : 0)) || ((b.r && b.r.atraso ? 1 : 0) - (a.r && a.r.atraso ? 1 : 0)) || ((a.r ? a.r.pct : a.l.pct) - (b.r ? b.r.pct : b.l.pct)));
+    const novos = itens.filter(x => x.novo);
+    const atrasados = novos.filter(x => x.r.atraso).length;
+    const trilhasPend = itens.filter(x => x.l.cursosPendentes.length || x.l.cursosVencidos.length || x.l.cursosReprovados.length).length;
+    if (resumo) resumo.innerHTML = `<div class="eq-kpis">
+      <div class="eq-kpi"><b>${itens.length}</b><span>Pessoas no time</span></div>
+      <div class="eq-kpi"><b>${novos.length}</b><span>Em integração</span></div>
+      <div class="eq-kpi ${atrasados ? 'alerta' : ''}"><b>${atrasados}</b><span>Checklist atrasado</span></div>
+      <div class="eq-kpi ${trilhasPend ? 'alerta' : ''}"><b>${trilhasPend}</b><span>Com trilha pendente</span></div></div>`;
+    if (!itens.length) { corpo.innerHTML = `<p style="text-align:center; color:var(--ink-soft); padding:20px; font-size:13.5px;">${t('equipe_vazia')}</p>`; return; }
+    corpo.innerHTML = itens.map(x => {
+      const { l, c, r } = x;
+      const fase = Number(c.FaseJornada) || 0;
+      const tagFase = x.novo ? (fase ? `<span class="eq-tag ${fase === 4 ? 'ok' : ''}">Fase ${fase} de 4 · ${nomeNivel(nomesFase[fase - 1])}</span>` : `<span class="eq-tag">Ainda não acessou</span>`) : '';
+      const falta = [...l.cursosVencidos.map(n => n + ' (vencida)'), ...l.cursosReprovados.map(n => n + ' (reprovada)'), ...l.cursosPendentes];
+      const barraTrilhas = `<div class="eq-bar"><label>Trilhas <b>${l.total ? l.concluidos + '/' + l.total : '—'}</b></label><div class="ck-prog"><i style="width:${l.pct}%"></i></div></div>`;
+      const barraCheck = r ? `<div class="eq-bar"><label>Checklist <b>${r.feitos}/${r.total}</b></label><div class="ck-prog ${r.atraso ? 'atraso' : ''}"><i style="width:${r.pct}%"></i></div></div>` : '';
+      return `<div class="eq-card ${r && r.atraso ? 'atraso' : ''}">
+        <div class="eq-top"><div class="ck-avatar">${iniciaisDe(l.nome)}</div>
+          <div class="nm"><b>${l.nome}</b><span>${[l.cargo, x.dias !== null ? textoDias(x.dias) : ''].filter(Boolean).join(' · ')}</span></div>${tagFase}</div>
+        <div class="eq-barras" ${r ? '' : 'style="grid-template-columns:1fr;"'}>${barraCheck}${barraTrilhas}</div>
+        <div class="eq-acoes">
+          ${r && r.atraso ? '<span class="eq-tag alerta">Checklist atrasado</span>' : ''}
+          ${falta.length ? `<span class="eq-tag ${l.cursosVencidos.length || l.cursosReprovados.length ? 'alerta' : ''}" title="${falta.join(', ')}">Falta: ${falta.slice(0, 2).join(', ')}${falta.length > 2 ? ' +' + (falta.length - 2) : ''}</span>` : (l.total ? '<span class="eq-tag ok">Trilhas em dia</span>' : '')}
+          <span class="espaco"></span>
+          ${x.novo ? `<button class="btn-secondary" style="padding:8px 14px; font-size:12.5px;" onclick="window.abrirChecklist('${l.cpf}')">${r.feitos === r.total ? 'Ver checklist' : 'Abrir checklist'} →</button>` : ''}
+        </div></div>`;
+    }).join('');
+  }
+
+  // ---------- carta de boas-vindas: o R&S manda por WhatsApp e ela fica aqui pra reler ----------
+  function iniciarCarta(dados){
+    try {
+      if (!(window.MARCA && window.MARCA.fasesOnboarding)) return;
+      const adm = dados && dados.Admissao && dados.Admissao.toDate ? dados.Admissao.toDate() : null;
+      if (!adm || (new Date() - adm) / 86400000 > 180) return;   // só pra quem chegou há pouco
+      const im = new Image();
+      im.onload = () => { document.getElementById('cartaImg').src = im.src; document.getElementById('cartaBloco').style.display = ''; };
+      im.src = 'carta-boas-vindas.png';   // arquivo ao lado do home.html; se não existir, o cartão simplesmente não aparece
+    } catch (e) { console.error('carta:', e); }
+  }
+  window.abrirCarta = function(){ openModal('modalCarta'); };
+
   // ---------- ponto de checagem de 30 dias (farol + texto livre) ----------
 
   let checkin30ColaboradorAtual = null;
@@ -4408,8 +4819,12 @@ function configurarGateConclusao(c){
     checkin30ColaboradorAtual = c;
     document.getElementById('checkin30ColaboradorInfo').textContent = [c.Nome, c.Cargo, c.Loja].filter(Boolean).join(' · ');
     document.querySelectorAll('#modalCheckin30 .farol-opt').forEach(el => el.classList.remove('sel'));
-    document.getElementById('checkin30OqueInput').value = '';
+    ['integracao','treinamento','comportamento','pot'].forEach(k => { const t = document.getElementById('obs_' + k); if (t) { t.value = ''; t.classList.remove('obrig'); } const l = document.getElementById('obsLabel_' + k); if (l) l.textContent = k === 'pot' ? 'Por quê? (opcional)' : 'Comentário (opcional)'; });
+    document.querySelectorAll('#modalCheckin30 .pot-opt').forEach(el => el.classList.remove('sel'));
     document.getElementById('checkin30ResumoInput').value = '';
+    document.getElementById('checkin30PassosInput').value = '';
+    (function(){ const d = new Date(); const el = document.getElementById('checkin30DataConversa'); el.max = d.toISOString().slice(0, 10); el.value = d.toISOString().slice(0, 10); })();
+    document.getElementById('modalCheckin30').firstElementChild.scrollTop = 0;
     document.getElementById('checkin30Erro').style.display = 'none';
     closeModal('modalPendenciasGestor');
     openModal('modalCheckin30');
@@ -4420,6 +4835,21 @@ function configurarGateConclusao(c){
       const grupo = opt.closest('.farol-item');
       if (grupo) grupo.querySelectorAll('.farol-opt').forEach(el => el.classList.remove('sel'));
       opt.classList.add('sel');
+      if (grupo && grupo.dataset.farol) {
+        const k = grupo.dataset.farol; const precisa = opt.dataset.valor !== 'verde';
+        const l = document.getElementById('obsLabel_' + k), t = document.getElementById('obs_' + k);
+        if (l) l.textContent = precisa ? 'O que você observou? *' : 'Comentário (opcional)';
+        if (t) t.classList.toggle('obrig', precisa);
+      }
+    });
+  });
+  document.querySelectorAll('#modalCheckin30 .pot-opt').forEach(opt => {
+    opt.addEventListener('click', () => {
+      document.querySelectorAll('#modalCheckin30 .pot-opt').forEach(el => el.classList.remove('sel'));
+      opt.classList.add('sel');
+      const precisa = opt.dataset.valor === 'duvida' || opt.dataset.valor === 'nao';
+      document.getElementById('obsLabel_pot').textContent = precisa ? 'Por quê? *' : 'Por quê? (opcional)';
+      document.getElementById('obs_pot').classList.toggle('obrig', precisa);
     });
   });
 
@@ -4432,27 +4862,51 @@ function configurarGateConclusao(c){
       const sel = item.querySelector('.farol-opt.sel');
       valores[chave] = sel ? sel.dataset.valor : null;
     });
-    const oque = document.getElementById('checkin30OqueInput').value.trim();
     const resumo = document.getElementById('checkin30ResumoInput').value.trim();
+    const passos = document.getElementById('checkin30PassosInput').value.trim();
+    const dataConv = document.getElementById('checkin30DataConversa').value;
+    const obs = {};
+    ['integracao','treinamento','comportamento','pot'].forEach(k => { obs[k] = document.getElementById('obs_' + k).value.trim(); });
+    const potSel = document.querySelector('#modalCheckin30 .pot-opt.sel');
+    const potencial = potSel ? potSel.dataset.valor : null;
     const erro = document.getElementById('checkin30Erro');
-    if (!valores.integracao || !valores.treinamento || !valores.comportamento || !oque || !resumo) {
-      erro.textContent = 'Preencha os três faróis e os dois campos de texto — tudo é obrigatório.';
-      erro.style.display = 'block';
-      return;
+    const nomes = { integracao: 'Integração à loja e equipe', treinamento: 'Aprendizado inicial', comportamento: 'Comportamento e postura' };
+    let msg = '';
+    if (!dataConv) msg = 'Informe a data em que a conversa de 30 dias aconteceu.';
+    else if (!valores.integracao || !valores.treinamento || !valores.comportamento) msg = 'Marque o farol dos três temas.';
+    else {
+      const faltando = Object.keys(nomes).find(k => valores[k] !== 'verde' && !obs[k]);
+      if (faltando) msg = 'Em "' + nomes[faltando] + '" você marcou ' + (valores[faltando] === 'amarelo' ? 'Atenção' : 'Preocupante') + '. Conte o que observou.';
+      else if (!potencial) msg = 'Responda se a pessoa tem potencial para continuar no Cabana.';
+      else if ((potencial === 'duvida' || potencial === 'nao') && !obs.pot) msg = 'Explique por que você tem dúvidas sobre a continuidade da pessoa.';
+      else if (!resumo) msg = 'Escreva o resumo do feedback dado na conversa de 30 dias.';
     }
+    if (msg) { erro.textContent = msg; erro.style.display = 'block'; erro.scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
     erro.style.display = 'none';
     try {
+      const admD = c.Admissao && c.Admissao.toDate ? c.Admissao.toDate() : null;
       await setDoc(doc(db, 'checkins30', c.cpf), {
         Cpf: c.cpf,
         Nome: c.Nome || '',
+        Cargo: c.Cargo || '',
         Loja: c.Loja || '',
         Regional: c.Regional || '',
+        CpfGestor: c.CpfGestor || currentCpf,
         Integracao: valores.integracao,
-        Treinamento: valores.treinamento,
+        Treinamento: valores.treinamento,          // = "Aprendizado inicial" (nome do campo mantido p/ compatibilidade)
         Comportamento: valores.comportamento,
-        OQueEstaAcontecendo: oque,
+        ComentarioIntegracao: obs.integracao,
+        ComentarioAprendizado: obs.treinamento,
+        ComentarioComportamento: obs.comportamento,
+        Potencial: potencial,                      // sim | sim_desenvolver | duvida | nao
+        PotencialJustificativa: obs.pot,
+        DataConversa: dataConv,                    // 'AAAA-MM-DD'
         ResumoFeedback: resumo,
+        ProximosPassos: passos,
+        DiasDeCasa: admD ? Math.floor((new Date(dataConv + 'T12:00:00') - admD) / 86400000) : null,
+        Versao: 2,
         RegistradoPor: currentCpf,
+        RegistradoPorNome: (typeof nomeColaboradorAtual !== 'undefined' ? nomeColaboradorAtual : '') || '',
         RegistradoEm: serverTimestamp()
       });
     } catch (err) {
@@ -4486,11 +4940,11 @@ function configurarGateConclusao(c){
     if (qual === 'geral') {
       btnEquipe.classList.remove('on'); btnGeral.classList.add('on');
       visaoEquipe.style.display = 'none'; visaoGeral.style.display = '';
-      carregarVisaoGeralRegional();
+      carregarVisaoGeralRegionalV2();
     } else {
       btnGeral.classList.remove('on'); btnEquipe.classList.add('on');
       visaoGeral.style.display = 'none'; visaoEquipe.style.display = '';
-      carregarMinhaEquipeRegional();
+      carregarMinhaEquipeRegionalV2();
     }
   };
 
@@ -4713,6 +5167,178 @@ function configurarGateConclusao(c){
     } catch (err) {
       console.error('Erro ao carregar visão geral da regional:', err);
       cardsWrap.innerHTML = `<p class="jornada-vazio">Não deu pra carregar agora.</p>`;
+    }
+  }
+
+  // ================================================================================
+  // Visões de gestão da Jornada (outubro/2026): Coordenador Regional e Gerente de Operações
+  // veem NÚMEROS (integração, checklist, trilhas, ponto de checagem) por gerente/coordenador e por
+  // loja/regional — nunca o checklist individual nem o parecer de desligamento (isso é do gestor
+  // direto e do DHO). Reaproveita calcularPendenciaCursosParaLista + checklistIntegracao.
+  // ================================================================================
+  async function escopoRegionalJornada(){
+    const ehGO = cargoColaboradorAtual === 'GERENTE DE OPERAÇÕES';
+    let escopo = [];
+    if (ehGO) {
+      const regionais = [...new Set((window.MINHA_EQUIPE || []).map(c => c.Regional).filter(Boolean))];
+      for (let i = 0; i < regionais.length; i += 30) {
+        const snap = await getDocs(query(collection(db, 'colaboradores'), where('Regional', 'in', regionais.slice(i, i + 30))));
+        snap.forEach(d => { const x = d.data(); if (x.Status !== 'inativo' && x.Local === 'Loja') escopo.push({ cpf: d.id, ...x }); });
+      }
+    } else {
+      const snap = await getDocs(query(collection(db, 'colaboradores'), where('Regional', '==', regionalColaboradorAtual)));
+      escopo = snap.docs.map(d => ({ cpf: d.id, ...d.data() })).filter(c => c.Status !== 'inativo' && c.Local === 'Loja');
+    }
+    return escopo;
+  }
+
+  async function metricasPessoasJornada(colabs){
+    const linhas = await calcularPendenciaCursosParaLista(colabs);
+    const porCpf = {}; linhas.forEach(l => { porCpf[l.cpf] = l; });
+    await carregarChecklists(colabs.filter(emIntegracao).map(c => c.cpf));
+    const cand = colabs.filter(c => { const d = diasDeCasa(c); return d !== null && d >= 30 && d <= 90; });
+    const feitos = new Set();
+    for (let i = 0; i < cand.length; i += 30) {
+      const snap = await getDocs(query(collection(db, 'checkins30'), where('Cpf', 'in', cand.slice(i, i + 30).map(c => c.cpf))));
+      snap.forEach(d => feitos.add(d.id));
+    }
+    const candSet = new Set(cand.map(c => c.cpf));
+    return colabs.map(c => {
+      const l = porCpf[c.cpf] || null;
+      const novo = emIntegracao(c);
+      return { c, l, novo, r: novo ? resumoChecklist(c, l) : null,
+        trilhasPend: !!(l && (l.cursosPendentes.length || l.cursosVencidos.length || l.cursosReprovados.length)),
+        pendCheckin: candSet.has(c.cpf) && !feitos.has(c.cpf) };
+    });
+  }
+
+  function agregarJornada(ps){
+    const novos = ps.filter(p => p.novo);
+    return {
+      total: ps.length, novos: novos.length,
+      atrasados: novos.filter(p => p.r.atraso).length,
+      checklistPct: novos.length ? Math.round(novos.reduce((s, p) => s + p.r.pct, 0) / novos.length) : null,
+      trilhasPend: ps.filter(p => p.trilhasPend).length,
+      trilhasPct: ps.length ? Math.round(((ps.length - ps.filter(p => p.trilhasPend).length) / ps.length) * 100) : 100,
+      checkin: ps.filter(p => p.pendCheckin).length
+    };
+  }
+
+  const barraPct = (pct, aviso) => pct === null ? '<span style="color:var(--ink-soft);">—</span>' : `<div class="mini"><div class="ck-prog ${aviso !== undefined ? (aviso ? 'atraso' : '') : (pct < 60 ? 'atraso' : '')}"><i style="width:${pct}%"></i></div><b>${pct}%</b></div>`;
+
+  function kpisJornada(a, rotuloTotal){
+    return `<div class="eq-kpis">
+      <div class="eq-kpi"><b>${a.total}</b><span>${rotuloTotal}</span></div>
+      <div class="eq-kpi"><b>${a.novos}</b><span>Em integração</span></div>
+      <div class="eq-kpi ${a.atrasados ? 'alerta' : ''}"><b>${a.checklistPct === null ? '—' : a.checklistPct + '%'}</b><span>Checklist médio${a.atrasados ? ' · ' + a.atrasados + ' atrasado' + (a.atrasados === 1 ? '' : 's') : ''}</span></div>
+      <div class="eq-kpi"><b>${a.trilhasPct}%</b><span>Trilhas em dia</span></div>
+      <div class="eq-kpi ${a.checkin ? 'alerta' : ''}"><b>${a.checkin}</b><span>Check-in pendente</span></div></div>`;
+  }
+
+  // "Meus gerentes" / "Meus coordenadores"
+  async function carregarMinhaEquipeRegionalV2(){
+    const lista = document.getElementById('jornadaListaPessoas');
+    if (!lista) return;
+    lista.innerHTML = `<p class="jornada-vazio">Carregando…</p>`;
+    const diretos = window.MINHA_EQUIPE || [];
+    if (!diretos.length) { lista.innerHTML = `<p class="jornada-vazio">Ninguém reportando diretamente pra você ainda.</p>`; return; }
+    const ehGO = cargoColaboradorAtual === 'GERENTE DE OPERAÇÕES';
+    try {
+      const escopo = await escopoRegionalJornada();
+      const ps = await metricasPessoasJornada(escopo);
+      const linhas = diretos.map(d => {
+        const time = ps.filter(p => ehGO ? (p.c.Regional === d.Regional) : (p.c.CpfGestor === d.cpf && p.c.cpf !== d.cpf));
+        return { d, a: agregarJornada(time) };
+      }).sort((x, y) => (y.a.atrasados - x.a.atrasados) || ((x.a.checklistPct === null ? 101 : x.a.checklistPct) - (y.a.checklistPct === null ? 101 : y.a.checklistPct)));
+      const geral = agregarJornada(ps);
+      lista.innerHTML = kpisJornada(geral, ehGO ? 'Pessoas nas regionais' : 'Pessoas na regional') +
+        `<div class="jornada-section-label">${ehGO ? 'Cada coordenador e a regional dele' : 'Cada gerente e o time dele'}</div>` +
+        linhas.map(({ d, a }) => `<div class="eq-card ${a.atrasados ? 'atraso' : ''}">
+          <div class="eq-top"><div class="ck-avatar">${iniciaisDe(d.Nome)}</div>
+            <div class="nm"><b>${d.Nome || '—'}</b><span>${ehGO ? (d.Regional || 'Regional não informada') : (d.Loja || '—')} · ${a.total} pessoa${a.total === 1 ? '' : 's'}</span></div>
+            <span class="eq-tag ${a.novos ? '' : 'ok'}">${a.novos ? a.novos + ' em integração' : 'Ninguém em integração'}</span></div>
+          <div class="eq-barras">
+            <div class="eq-bar"><label>Checklist médio <b>${a.checklistPct === null ? '—' : a.checklistPct + '%'}</b></label><div class="ck-prog ${a.checklistPct !== null && a.checklistPct < 60 ? 'atraso' : ''}"><i style="width:${a.checklistPct || 0}%"></i></div></div>
+            <div class="eq-bar"><label>Trilhas em dia <b>${a.trilhasPct}%</b></label><div class="ck-prog ${a.trilhasPct < 60 ? 'atraso' : ''}"><i style="width:${a.trilhasPct}%"></i></div></div>
+          </div>
+          <div class="eq-acoes">
+            ${a.atrasados ? `<span class="eq-tag alerta">${a.atrasados} checklist${a.atrasados === 1 ? '' : 's'} atrasado${a.atrasados === 1 ? '' : 's'}</span>` : ''}
+            ${a.checkin ? `<span class="eq-tag alerta">${a.checkin} check-in pendente${a.checkin === 1 ? '' : 's'}</span>` : ''}
+            ${!a.atrasados && !a.checkin ? '<span class="eq-tag ok">Em dia</span>' : ''}
+          </div></div>`).join('');
+    } catch (err) {
+      console.error('Erro ao carregar visão de equipe regional:', err);
+      lista.innerHTML = `<p class="jornada-vazio">Não deu pra carregar agora.</p>`;
+    }
+  }
+
+  // "Visão geral": por loja (coordenador) ou comparativo entre regionais (gerente de operações)
+  let __jornadaGeralCache = null;
+  function renderTabelaJornada(grupos, rotulo1, titulo){
+    const cabecalho = document.getElementById('jornadaTabelaCabecalho');
+    const corpo = document.getElementById('jornadaTabelaCorpo');
+    const tit = document.getElementById('jornadaTabelaTitulo');
+    if (tit) tit.textContent = titulo;
+    const wrap = corpo.closest('.jornada-bloco'); if (wrap) wrap.style.overflowX = 'auto';
+    cabecalho.innerHTML = `<th>${rotulo1}</th><th>Pessoas</th><th>Em integração</th><th>Checklist médio</th><th>Trilhas em dia</th><th>Check-in pend.</th>`;
+    corpo.className = 'eq-tabela';
+    corpo.innerHTML = grupos.map(g => `<tr>
+      <td><b>${g.nome}</b>${g.sub ? `<br><span style="font-size:11.5px; color:var(--ink-soft);">${g.sub}</span>` : ''}</td>
+      <td>${g.a.total}</td>
+      <td>${g.a.novos}${g.a.atrasados ? ` <span class="jornada-pill atrasado">${g.a.atrasados} atrasado${g.a.atrasados === 1 ? '' : 's'}</span>` : ''}</td>
+      <td>${barraPct(g.a.checklistPct)}</td>
+      <td>${barraPct(g.a.trilhasPct)}</td>
+      <td><span class="jornada-pill ${g.a.checkin ? 'atrasado' : 'ok'}">${g.a.checkin}</span></td></tr>`).join('');
+  }
+
+  window.filtrarVisaoGeralRegional = function(regional){
+    if (!__jornadaGeralCache) return;
+    const { porLoja, porRegional, ps, ehGO } = __jornadaGeralCache;
+    const resumo = document.getElementById('jornadaResumoRegional');
+    if (!regional) {
+      renderTabelaJornada(porRegional, 'Regional', 'Comparativo entre regionais');
+      if (resumo) resumo.innerHTML = `<div class="jornada-section-label" style="margin-bottom:10px;">Todas as regionais</div>` + kpisJornada(agregarJornada(ps), 'Pessoas de loja');
+    } else {
+      renderTabelaJornada(porLoja.filter(g => g.regional === regional), 'Loja', `Lojas · ${regional}`);
+      if (resumo) resumo.innerHTML = `<div class="jornada-section-label" style="margin-bottom:10px;">${regional}</div>` + kpisJornada(agregarJornada(ps.filter(p => (p.c.Regional || '—') === regional)), 'Pessoas de loja');
+    }
+  };
+
+  async function carregarVisaoGeralRegionalV2(){
+    const cardsWrap = document.getElementById('jornadaCardsAgregado');
+    const cabecalho = document.getElementById('jornadaTabelaCabecalho');
+    const corpo = document.getElementById('jornadaTabelaCorpo');
+    const resumo = document.getElementById('jornadaResumoRegional');
+    const filtro = document.getElementById('jornadaFiltroRegional');
+    if (!cardsWrap || !corpo || !cabecalho) return;
+    cardsWrap.innerHTML = ''; corpo.innerHTML = ''; cabecalho.innerHTML = '';
+    if (resumo) resumo.innerHTML = `<p class="jornada-vazio">Carregando…</p>`;
+    if (filtro) { filtro.style.display = 'none'; filtro.innerHTML = ''; }
+    __jornadaGeralCache = null;
+    const ehGO = cargoColaboradorAtual === 'GERENTE DE OPERAÇÕES';
+    try {
+      const escopo = await escopoRegionalJornada();
+      if (!escopo.length) { if (resumo) resumo.innerHTML = `<p class="jornada-vazio">Nenhum colaborador encontrado ${ehGO ? 'nas regionais dos seus coordenadores' : 'nessa regional'} ainda.</p>`; return; }
+      const ps = await metricasPessoasJornada(escopo);
+      const agrupar = (chave, montar) => {
+        const m = {}; ps.forEach(p => { const k = chave(p); (m[k] = m[k] || []).push(p); });
+        return Object.keys(m).map(k => ({ ...montar(k, m[k][0]), a: agregarJornada(m[k]) }))
+          .sort((x, y) => (y.a.atrasados - x.a.atrasados) || ((x.a.checklistPct === null ? 101 : x.a.checklistPct) - (y.a.checklistPct === null ? 101 : y.a.checklistPct)));
+      };
+      const porLoja = agrupar(p => `${p.c.Regional || '—'}|${p.c.Loja || '—'}`, (k, p) => ({ nome: p.c.Loja || '—', regional: p.c.Regional || '—', sub: '' }));
+      if (resumo) resumo.innerHTML = `<div class="jornada-section-label" style="margin-bottom:10px;">${ehGO ? 'Todas as regionais' : (regionalColaboradorAtual || 'Sua regional')}</div>` + kpisJornada(agregarJornada(ps), 'Pessoas de loja');
+      if (!ehGO) { __jornadaGeralCache = { porLoja, porRegional: [], ps, ehGO }; renderTabelaJornada(porLoja, 'Loja', 'Cada loja da regional'); return; }
+      const porRegional = agrupar(p => p.c.Regional || '—', (k) => ({ nome: k, regional: k, sub: '' }));
+      __jornadaGeralCache = { porLoja, porRegional, ps, ehGO };
+      if (filtro) {
+        filtro.style.display = 'inline-block';
+        filtro.innerHTML = `<option value="">Todas as regionais (comparar)</option>` + porRegional.map(r => `<option value="${r.nome}">${r.nome}</option>`).join('');
+        filtro.value = '';
+      }
+      renderTabelaJornada(porRegional, 'Regional', 'Comparativo entre regionais');
+    } catch (err) {
+      console.error('Erro ao carregar visão geral da regional:', err);
+      if (resumo) resumo.innerHTML = `<p class="jornada-vazio">Não deu pra carregar agora.</p>`;
     }
   }
 
@@ -5287,6 +5913,7 @@ function configurarGateConclusao(c){
     iniciarLojaVisibilidade();
     verificarPesquisasMarco(cpf, dados);
     carregarEstadoFases(cpf, dados);
+    iniciarCarta(dados);
     iniciarPainelGestor(cpf);
 
     // menu do avatar com nome, cargo e loja reais
