@@ -782,6 +782,34 @@ window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && S
   .eq-tabela td .mini .ck-prog{ width:64px; flex:none; }
   .eq-tabela{ font-size:13px; }
   .eq-scroll{ overflow-x:auto; }
+  .eq-kpi small{ display:block; font-size:11px; color:var(--ink-soft); font-weight:400; margin-top:3px; line-height:1.3; text-transform:none; letter-spacing:0; }
+  .eq-intro{ font-size:12.5px; color:var(--ink-soft); margin:0 0 14px; line-height:1.5; }
+  .eq-linha{ border:1px solid var(--line); background:var(--paper); border-radius:var(--radius-md); margin-bottom:8px; }
+  .eq-linha.aten{ border-color:rgba(180,70,43,0.35); background:#FBF0EC; }
+  .eq-linha > summary{ list-style:none; cursor:pointer; display:flex; align-items:center; gap:12px; padding:11px 14px; }
+  .eq-linha > summary::-webkit-details-marker{ display:none; }
+  .eq-linha.folha{ display:flex; align-items:center; gap:12px; padding:11px 14px; }
+  .eq-linha .ck-avatar{ width:38px; height:38px; font-size:13px; }
+  .eq-linha .nm{ flex:1; min-width:0; }
+  .eq-linha .nm b{ display:block; font-size:14px; }
+  .eq-linha .nm span{ font-size:12px; color:var(--ink-soft); }
+  .eq-linha .nm span.pend{ display:block; color:#B4462B; font-weight:700; font-size:12px; margin-top:3px; }
+  .eq-chips{ display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end; }
+  .eq-seta{ width:7px; height:7px; border-right:2px solid var(--ink-soft); border-bottom:2px solid var(--ink-soft); transform:rotate(45deg); flex:none; margin:0 4px 3px 2px; transition:transform .15s; }
+  .eq-linha[open] > summary .eq-seta{ transform:rotate(-135deg); margin-bottom:-3px; }
+  .eq-det{ padding:4px 16px 14px; border-top:1px dashed var(--line); }
+  .eq-det h5{ margin:12px 0 0; font-size:10.5px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft); }
+  .eq-falta{ list-style:none; margin:8px 0 0; padding:0; display:flex; flex-direction:column; gap:6px; }
+  .eq-falta li{ display:flex; align-items:center; justify-content:space-between; gap:10px; font-size:13px; padding:7px 11px; background:rgba(30,26,20,0.045); border-radius:9px; }
+  .eq-ok-grupo{ margin-top:10px; }
+  .eq-ok-grupo > summary{ cursor:pointer; font-size:12.5px; font-weight:800; color:var(--green-dark); padding:10px 4px; list-style:none; }
+  .eq-ok-grupo > summary::-webkit-details-marker{ display:none; }
+  .eq-sub-lista{ padding:2px 12px 6px 28px; border-top:1px dashed var(--line); padding-top:10px; }
+  .eq-sub-lista .eq-linha{ background:var(--paper); }
+  .eq-filtros{ display:flex; gap:8px; margin:0 0 12px; align-items:center; flex-wrap:wrap; }
+  .eq-filtros button{ border:1px solid var(--line); background:var(--cream); border-radius:100px; padding:7px 14px; font-size:12px; font-weight:700; color:var(--ink-soft); cursor:pointer; }
+  .eq-filtros button.on{ background:var(--ink); color:#fff; border-color:var(--ink); }
+  @media (max-width:560px){ .eq-linha > summary, .eq-linha.folha{ flex-wrap:wrap; } .eq-chips{ justify-content:flex-start; width:100%; } }
   @media (max-width:560px){ .eq-barras{ grid-template-columns:1fr; } }
   .carta-card{ display:flex; align-items:center; gap:16px; background:var(--paper); border:1px solid var(--line); border-radius:var(--radius-lg); padding:16px 20px; cursor:pointer; }
   .carta-ico{ font-size:30px; flex:none; }
@@ -1778,27 +1806,9 @@ window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && S
       <button onclick="closeModal('modalJornadaRegional')" style="background:none; border:none; font-size:18px; cursor:pointer; color:var(--ink-soft);">✕</button>
     </div>
     <div style="padding:20px 24px; overflow-y:auto;">
-      <div class="regional-toggle">
-        <button id="jornadaToggleEquipe" class="on" onclick="window.mudarVisaoJornadaRegional('equipe')"></button>
-        <button id="jornadaToggleGeral" onclick="window.mudarVisaoJornadaRegional('geral')"></button>
-      </div>
-      <div id="jornadaVisaoEquipe">
-        <div id="jornadaListaPessoas"><p class="jornada-vazio">Carregando…</p></div>
-      </div>
-      <div id="jornadaVisaoGeral" style="display:none;">
-        <div id="jornadaResumoRegional" style="margin-bottom:16px;"></div>
-        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; flex-wrap:wrap;">
-          <div class="jornada-section-label" id="jornadaTabelaTitulo" style="margin:0;">Pendências de curso por loja</div>
-          <select id="jornadaFiltroRegional" style="display:none; min-width:220px; padding:9px 12px; border-radius:10px; border:1px solid var(--line); font-size:12.5px; background:#fff; color:var(--ink);" onchange="window.filtrarVisaoGeralRegional(this.value)"></select>
-        </div>
-        <div class="cards-grid" id="jornadaCardsAgregado"></div>
-        <div class="jornada-bloco" style="margin-bottom:0;">
-          <table class="jornada-tabela">
-            <thead><tr id="jornadaTabelaCabecalho"></tr></thead>
-            <tbody id="jornadaTabelaCorpo"></tbody>
-          </table>
-        </div>
-      </div>
+      <p class="eq-intro" id="jornadaRegionalIntro"></p>
+      <div id="jornadaResumoRegional"></div>
+      <div id="jornadaListaRegional"><p class="jornada-vazio">Carregando…</p></div>
     </div>
   </div>
 </div>
@@ -4052,9 +4062,9 @@ function configurarGateConclusao(c){
     const itemPendencias = document.getElementById('itemAtalhoPendencias');
     const itemRegional = document.getElementById('itemAtalhoRegional');
     const wrap = document.getElementById('atalhosIcoWrap');
-    if (itemEquipe) itemEquipe.style.display = temEquipe ? 'flex' : 'none';
+    if (itemEquipe) itemEquipe.style.display = (temEquipe && !temRegional) ? 'flex' : 'none';
     if (itemLoja) itemLoja.style.display = temLoja ? 'flex' : 'none';
-    if (itemPendencias) itemPendencias.style.display = temEquipe ? 'flex' : 'none';
+    if (itemPendencias) itemPendencias.style.display = (temEquipe && !temRegional) ? 'flex' : 'none';
     if (itemRegional) {
       itemRegional.style.display = temRegional ? 'flex' : 'none';
       const titulo = document.getElementById('atalhoRegionalTitulo');
@@ -4069,7 +4079,7 @@ function configurarGateConclusao(c){
   // 0% de progresso (nunca vencido/reprovado porque nunca chegou nem a começar) — corrigido depois
   // da Nayuri notar isso na prática (setembro/2026): "como tá todo mundo em dia se ela n fez nada?"
   function atualizarBadgeAtalhoEquipe(linhas){
-    const qtd = linhas.filter(l => l.cursosVencidos.length || l.cursosReprovados.length || l.cursosPendentes.length).length;
+    const qtd = linhas.filter(l => precisaAtencaoPessoa((window.MINHA_EQUIPE || []).find(x => x.cpf === l.cpf) || {}, l)).length;
     const badge = document.getElementById('atalhosBadge');
     const status = document.getElementById('atalhoEquipeStatus');
     if (badge) { badge.hidden = qtd === 0; badge.textContent = qtd; }
@@ -4358,6 +4368,7 @@ function configurarGateConclusao(c){
     const total = (qtdNovatos || 0) + (qtdCheckin || 0) + (qtdPesquisa || 0) + (qtdCursos || 0) + (qtdChecklist || 0);
     const status = document.getElementById('atalhoPendenciasStatus');
     if (status) status.textContent = total > 0 ? `${total} pendência${total === 1 ? '' : 's'}` : 'Tudo em dia';
+    try { atualizarBadgeAtalhoEquipe(window.__equipeDetalhada || []); } catch (e) {}
   }
 
   // fase de cada pessoa nova do time (quem entrou há até ~5 meses): a fase é gravada pela própria pessoa ao acessar; quem ainda não abriu a plataforma aparece como "ainda não acessou"
@@ -4754,46 +4765,81 @@ function configurarGateConclusao(c){
     }
   }
 
-  // Minha equipe (versão Jornada): resumo no topo + um cartão por pessoa
+  // ---- regras compartilhadas (gerente, coordenador, gerente de operações): tudo conta PESSOAS ----
+  const nomeTrilhaCurto = n => String(n || '').replace(/^Jornada do Cabaneiro\s*[-–—:]\s*/i, '');
+  const pl = (n, um, varios) => n + ' ' + (n === 1 ? um : varios);
+  // trilha atrasada = vencida/reprovada, ou ainda pendente depois do prazo (7 dias de casa; quem já passou de 90 dias não tem prazo de integração)
+  function trilhaAtrasada(c, l){
+    if (!l) return false;
+    if (l.cursosVencidos.length || l.cursosReprovados.length) return true;
+    if (!l.cursosPendentes.length) return false;
+    const d = diasDeCasa(c);
+    return d === null || d > 7;
+  }
+  window.trilhaAtrasada = trilhaAtrasada;
+  function precisaAtencaoPessoa(c, l){
+    let ckAtraso = false;
+    if (emIntegracao(c) && window.__checklistCache && window.__checklistCache[c.cpf] !== undefined) ckAtraso = resumoChecklist(c, l).atraso;
+    return ckAtraso || trilhaAtrasada(c, l);
+  }
+
+  // Minha equipe (versão Jornada): números no topo + uma linha por pessoa (abre ao toque); quem está em dia fica recolhido
+  function linhaEquipeHtml(x){
+    const { l, c, r } = x;
+    const nomesFase = ['Novato', 'Aprendiz Cabana', 'Veterano', 'Referência Cabana'];
+    const fase = Number(c.FaseJornada) || 0;
+    const falta = [
+      ...l.cursosVencidos.map(n => ({ n, t: 'vencida', k: 'alerta' })),
+      ...l.cursosReprovados.map(n => ({ n, t: 'reprovada', k: 'alerta' })),
+      ...l.cursosPendentes.map(n => ({ n, t: x.trAt ? 'atrasada' : 'a fazer', k: x.trAt ? 'alerta' : '' }))];
+    const chips = [];
+    if (r && r.atraso) chips.push('<span class="eq-tag alerta">Checklist atrasado</span>');
+    if (x.trAt) chips.push(`<span class="eq-tag alerta">${pl(falta.length, 'trilha atrasada', 'trilhas atrasadas')}</span>`);
+    else if (l.cursosPendentes.length) chips.push(`<span class="eq-tag">${pl(l.cursosPendentes.length, 'trilha a fazer', 'trilhas a fazer')}</span>`);
+    if (x.novo && !fase) chips.push('<span class="eq-tag">Ainda não acessou</span>');
+    if (!x.atencao && !l.cursosPendentes.length) chips.push('<span class="eq-tag ok">Em dia</span>');
+    const tagFase = x.novo && fase ? `<span class="eq-tag ${fase === 4 ? 'ok' : ''}">Fase ${fase} de 4 · ${nomeNivel(nomesFase[fase - 1])}</span>` : '';
+    const barras = `<div class="eq-barras" ${r ? '' : 'style="grid-template-columns:1fr;"'}>
+        ${r ? `<div class="eq-bar"><label>Checklist <b>${r.feitos} de ${r.total} passos</b></label><div class="ck-prog ${r.atraso ? 'atraso' : ''}"><i style="width:${r.pct}%"></i></div></div>` : ''}
+        <div class="eq-bar"><label>Trilhas <b>${l.total ? l.concluidos + ' de ' + l.total + ' concluídas' : '—'}</b></label><div class="ck-prog"><i style="width:${l.pct}%"></i></div></div></div>`;
+    const lista = falta.length
+      ? `<h5>Trilhas que faltam</h5><ul class="eq-falta">${falta.map(f => `<li><span>${nomeTrilhaCurto(f.n)}</span><span class="eq-tag ${f.k}">${f.t}</span></li>`).join('')}</ul>`
+      : (l.total ? `<h5>Trilhas</h5><p class="jornada-vazio" style="text-align:left; padding:6px 0 0;">Todas concluídas.</p>` : '');
+    return `<details class="eq-linha ${x.atencao ? 'aten' : ''}">
+      <summary><div class="ck-avatar">${iniciaisDe(l.nome)}</div>
+        <div class="nm"><b>${l.nome}</b><span>${[l.cargo, x.dias !== null ? textoDias(x.dias) : ''].filter(Boolean).join(' · ')}</span></div>
+        <div class="eq-chips">${chips.join('')}</div><i class="eq-seta"></i></summary>
+      <div class="eq-det">${barras}${lista}
+        <div class="eq-acoes">${tagFase}<span class="espaco"></span>${x.novo ? `<button class="btn-secondary" style="padding:8px 14px; font-size:12.5px;" onclick="window.abrirChecklist('${l.cpf}')">${r.feitos === r.total ? 'Ver checklist' : 'Abrir checklist'} →</button>` : ''}</div>
+      </div></details>`;
+  }
+
   function renderizarListaEquipeJornada(linhas){
     const corpo = document.getElementById('equipeCardsLista');
     const resumo = document.getElementById('equipeResumo');
-    ['.header-tabela-equipe', '.legenda-chips-equipe'].forEach(s => { const e = document.querySelector('#modalEquipe ' + s); if (e) e.style.display = 'none'; });
-    const nomesFase = ['Novato', 'Aprendiz Cabana', 'Veterano', 'Referência Cabana'];
+    ['.header-tabela-equipe', '.legenda-chips-equipe'].forEach(sel => { const e = document.querySelector('#modalEquipe ' + sel); if (e) e.style.display = 'none'; });
     const porCpf = {}; (window.MINHA_EQUIPE || []).forEach(c => { porCpf[c.cpf] = c; });
     const itens = linhas.map(l => {
       const c = porCpf[l.cpf] || {};
       const novo = emIntegracao(c);
       const r = novo ? resumoChecklist(c, l) : null;
-      return { l, c, novo, r, dias: diasDeCasa(c) };
-    }).sort((a, b) => ((b.novo ? 1 : 0) - (a.novo ? 1 : 0)) || ((b.r && b.r.atraso ? 1 : 0) - (a.r && a.r.atraso ? 1 : 0)) || ((a.r ? a.r.pct : a.l.pct) - (b.r ? b.r.pct : b.l.pct)));
+      const trAt = trilhaAtrasada(c, l);
+      return { l, c, novo, r, trAt, atencao: !!((r && r.atraso) || trAt), dias: diasDeCasa(c) };
+    }).sort((a, b) => ((b.atencao ? 1 : 0) - (a.atencao ? 1 : 0)) || ((b.novo ? 1 : 0) - (a.novo ? 1 : 0)) || ((a.r ? a.r.pct : a.l.pct) - (b.r ? b.r.pct : b.l.pct)));
     const novos = itens.filter(x => x.novo);
-    const atrasados = novos.filter(x => x.r.atraso).length;
-    const trilhasPend = itens.filter(x => x.l.cursosPendentes.length || x.l.cursosVencidos.length || x.l.cursosReprovados.length).length;
+    const ckAtr = novos.filter(x => x.r.atraso).length;
+    const trAtr = itens.filter(x => x.trAt).length;
     if (resumo) resumo.innerHTML = `<div class="eq-kpis">
       <div class="eq-kpi"><b>${itens.length}</b><span>Pessoas no time</span></div>
-      <div class="eq-kpi"><b>${novos.length}</b><span>Em integração</span></div>
-      <div class="eq-kpi ${atrasados ? 'alerta' : ''}"><b>${atrasados}</b><span>Checklist atrasado</span></div>
-      <div class="eq-kpi ${trilhasPend ? 'alerta' : ''}"><b>${trilhasPend}</b><span>Com trilha pendente</span></div></div>`;
+      <div class="eq-kpi"><b>${novos.length}</b><span>Em integração</span><small>chegaram há até 90 dias</small></div>
+      <div class="eq-kpi ${ckAtr ? 'alerta' : ''}"><b>${ckAtr}</b><span>Checklist atrasado</span><small>passo fora do prazo</small></div>
+      <div class="eq-kpi ${trAtr ? 'alerta' : ''}"><b>${trAtr}</b><span>Trilha atrasada</span><small>falta concluir</small></div></div>`;
     if (!itens.length) { corpo.innerHTML = `<p style="text-align:center; color:var(--ink-soft); padding:20px; font-size:13.5px;">${t('equipe_vazia')}</p>`; return; }
-    corpo.innerHTML = itens.map(x => {
-      const { l, c, r } = x;
-      const fase = Number(c.FaseJornada) || 0;
-      const tagFase = x.novo ? (fase ? `<span class="eq-tag ${fase === 4 ? 'ok' : ''}">Fase ${fase} de 4 · ${nomeNivel(nomesFase[fase - 1])}</span>` : `<span class="eq-tag">Ainda não acessou</span>`) : '';
-      const falta = [...l.cursosVencidos.map(n => n + ' (vencida)'), ...l.cursosReprovados.map(n => n + ' (reprovada)'), ...l.cursosPendentes];
-      const barraTrilhas = `<div class="eq-bar"><label>Trilhas <b>${l.total ? l.concluidos + '/' + l.total : '—'}</b></label><div class="ck-prog"><i style="width:${l.pct}%"></i></div></div>`;
-      const barraCheck = r ? `<div class="eq-bar"><label>Checklist <b>${r.feitos}/${r.total}</b></label><div class="ck-prog ${r.atraso ? 'atraso' : ''}"><i style="width:${r.pct}%"></i></div></div>` : '';
-      return `<div class="eq-card ${r && r.atraso ? 'atraso' : ''}">
-        <div class="eq-top"><div class="ck-avatar">${iniciaisDe(l.nome)}</div>
-          <div class="nm"><b>${l.nome}</b><span>${[l.cargo, x.dias !== null ? textoDias(x.dias) : ''].filter(Boolean).join(' · ')}</span></div>${tagFase}</div>
-        <div class="eq-barras" ${r ? '' : 'style="grid-template-columns:1fr;"'}>${barraCheck}${barraTrilhas}</div>
-        <div class="eq-acoes">
-          ${r && r.atraso ? '<span class="eq-tag alerta">Checklist atrasado</span>' : ''}
-          ${falta.length ? `<span class="eq-tag ${l.cursosVencidos.length || l.cursosReprovados.length ? 'alerta' : ''}" title="${falta.join(', ')}">Falta: ${falta.slice(0, 2).join(', ')}${falta.length > 2 ? ' +' + (falta.length - 2) : ''}</span>` : (l.total ? '<span class="eq-tag ok">Trilhas em dia</span>' : '')}
-          <span class="espaco"></span>
-          ${x.novo ? `<button class="btn-secondary" style="padding:8px 14px; font-size:12.5px;" onclick="window.abrirChecklist('${l.cpf}')">${r.feitos === r.total ? 'Ver checklist' : 'Abrir checklist'} →</button>` : ''}
-        </div></div>`;
-    }).join('');
+    const aten = itens.filter(x => x.atencao), ok = itens.filter(x => !x.atencao);
+    corpo.innerHTML =
+      (aten.length ? `<div class="jornada-section-label">Precisam de atenção <span class="contagem">${aten.length}</span></div>${aten.map(linhaEquipeHtml).join('')}`
+                   : `<p class="jornada-vazio" style="background:var(--green-tint); color:var(--green-dark); border-radius:12px; font-weight:700;">Todo o time está em dia.</p>`) +
+      (ok.length ? `<details class="eq-ok-grupo" ${ok.length <= 4 || !aten.length ? 'open' : ''}><summary>Em dia (${ok.length})</summary>${ok.map(linhaEquipeHtml).join('')}</details>` : '');
   }
 
   // ---------- carta de boas-vindas: o R&S manda por WhatsApp e ela fica aqui pra reler ----------
@@ -4926,256 +4972,15 @@ function configurarGateConclusao(c){
   window.abrirJornadaRegional = function(){
     const ehGO = cargoColaboradorAtual === 'GERENTE DE OPERAÇÕES';
     document.getElementById('jornadaRegionalTitulo').textContent = ehGO ? '🗺️ Minhas regionais' : '🗺️ Minha regional';
-    document.getElementById('jornadaToggleEquipe').textContent = ehGO ? 'Meus coordenadores' : 'Meus gerentes';
-    document.getElementById('jornadaToggleGeral').textContent = ehGO ? 'Visão geral das regionais' : 'Visão geral da regional';
+    document.getElementById('jornadaRegionalIntro').textContent = ehGO
+      ? 'Como está a integração de quem chegou nas lojas, regional por regional. Toque numa regional para ver as lojas. São só números: o detalhe de cada pessoa fica com o gerente da loja.'
+      : 'Como está a integração de quem chegou em cada loja da sua regional. São só números: o detalhe de cada pessoa fica com o gerente da loja.';
+    document.getElementById('jornadaResumoRegional').innerHTML = '';
+    document.getElementById('jornadaListaRegional').innerHTML = '<p class="jornada-vazio">Carregando…</p>';
     openModal('modalJornadaRegional');
-    window.mudarVisaoJornadaRegional('equipe');
+    carregarJornadaRegional();
   };
 
-  window.mudarVisaoJornadaRegional = function(qual){
-    const btnEquipe = document.getElementById('jornadaToggleEquipe');
-    const btnGeral = document.getElementById('jornadaToggleGeral');
-    const visaoEquipe = document.getElementById('jornadaVisaoEquipe');
-    const visaoGeral = document.getElementById('jornadaVisaoGeral');
-    if (qual === 'geral') {
-      btnEquipe.classList.remove('on'); btnGeral.classList.add('on');
-      visaoEquipe.style.display = 'none'; visaoGeral.style.display = '';
-      carregarVisaoGeralRegionalV2();
-    } else {
-      btnGeral.classList.remove('on'); btnEquipe.classList.add('on');
-      visaoGeral.style.display = 'none'; visaoEquipe.style.display = '';
-      carregarMinhaEquipeRegionalV2();
-    }
-  };
-
-  // "Meus gerentes"/"Meus coordenadores": window.MINHA_EQUIPE já é essa lista (CpfGestor == eu,
-  // mecanismo genérico já existente) — mostra pendência PESSOAL de curso de cada um + pendência
-  // de check-in 30 dias do time deles (não a pendência de curso do time, só o check-in).
-  async function carregarMinhaEquipeRegional(){
-    const lista = document.getElementById('jornadaListaPessoas');
-    if (!lista) return;
-    lista.innerHTML = `<p class="jornada-vazio">Carregando…</p>`;
-    const equipe = window.MINHA_EQUIPE || [];
-    if (!equipe.length) { lista.innerHTML = `<p class="jornada-vazio">Ninguém reportando diretamente pra você ainda.</p>`; return; }
-    try {
-      const linhasPessoais = await calcularPendenciaCursosParaLista(equipe);
-      const porCpf = {};
-      linhasPessoais.forEach(l => { porCpf[l.cpf] = l; });
-
-      const linhas = await Promise.all(equipe.map(async (c) => {
-        let qtdCheckinPendente = 0;
-        try {
-          const subSnap = await getDocs(query(collection(db, 'colaboradores'), where('CpfGestor', '==', c.cpf)));
-          const subordinados = subSnap.docs.map(d => ({ cpf: d.id, ...d.data() })).filter(s => s.Status !== 'inativo');
-          const agora = new Date();
-          const candidatosCheckin = subordinados.filter(s => {
-            if ((s.Local || 'Loja') !== 'Loja') return false;
-            if (!s.Admissao || !s.Admissao.toDate) return false;
-            const dias = Math.floor((agora - s.Admissao.toDate()) / (1000 * 60 * 60 * 24));
-            return dias >= 30 && dias <= 90;
-          });
-          if (candidatosCheckin.length) {
-            const cpfs = candidatosCheckin.map(s => s.cpf);
-            const jaFeitos = new Set();
-            const lotes = [];
-            for (let i = 0; i < cpfs.length; i += 30) lotes.push(cpfs.slice(i, i + 30));
-            for (const lote of lotes) {
-              const snap = await getDocs(query(collection(db, 'checkins30'), where('Cpf', 'in', lote)));
-              snap.forEach(d => jaFeitos.add(d.id));
-            }
-            qtdCheckinPendente = candidatosCheckin.filter(s => !jaFeitos.has(s.cpf)).length;
-          }
-        } catch (err) {
-          console.error('Erro ao calcular check-in 30 dias da loja de', c.cpf, err);
-        }
-        const pessoal = porCpf[c.cpf];
-        const qtdCursosPessoal = pessoal ? (pessoal.cursosVencidos.length + pessoal.cursosReprovados.length + pessoal.cursosPendentes.length) : 0;
-        return { nome: c.Nome || '—', loja: c.Loja || '—', qtdCursosPessoal, qtdCheckinPendente };
-      }));
-
-      lista.innerHTML = linhas.map(l => `
-        <div class="pendencia-card ${(l.qtdCursosPessoal || l.qtdCheckinPendente) ? 'critico' : ''}">
-          <div class="pendencia-info"><b>${l.nome}</b><span>${l.loja}</span></div>
-          <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            <div class="jornada-pill ${l.qtdCursosPessoal ? 'atrasado' : 'ok'}">${l.qtdCursosPessoal ? `${l.qtdCursosPessoal} curso${l.qtdCursosPessoal === 1 ? '' : 's'} pendente${l.qtdCursosPessoal === 1 ? '' : 's'}` : 'Cursos em dia'}</div>
-            <div class="jornada-pill ${l.qtdCheckinPendente ? 'atrasado' : 'ok'}">${l.qtdCheckinPendente ? `${l.qtdCheckinPendente} check-in pendente${l.qtdCheckinPendente === 1 ? '' : 's'}` : 'Check-in em dia'}</div>
-          </div>
-        </div>
-      `).join('');
-    } catch (err) {
-      console.error('Erro ao carregar visão de equipe regional:', err);
-      lista.innerHTML = `<p class="jornada-vazio">Não deu pra carregar agora.</p>`;
-    }
-  }
-
-  // "Visão geral da regional"/"Visão geral das regionais": agregado só por loja (Coordenador) ou
-  // por regional + loja (Gerente de Operações) — QUANTIDADE de pendência de curso, sem nome de
-  // colaborador nenhum e sem motivo/detalhe de desligamento (isso é só do DHO — ver contrato).
-  // Cache da última carga da visão geral — só existe (não-null) pro Gerente de Operações, que tem
-  // o filtro de regional; guarda as duas agregações prontas (por loja e por regional) pra trocar
-  // de visão na hora, sem reconsultar o Firestore a cada clique no filtro.
-  let __visaoGeralEscopoCache = null;
-
-  function corPorPct(pct){
-    return pct === 100 ? MARCA.corEscura : pct >= 70 ? '#D89840' : '#B4462B';
-  }
-
-  // Comparativo entre regionais (Gerente de Operações, visão padrão) — uma linha/card por
-  // REGIONAL, agregando todas as lojas dela, pra comparar regional com regional "de cara".
-  function renderizarTabelaPorRegional(linhasPorRegional){
-    const cardsWrap = document.getElementById('jornadaCardsAgregado');
-    const cabecalho = document.getElementById('jornadaTabelaCabecalho');
-    const corpo = document.getElementById('jornadaTabelaCorpo');
-    const titulo = document.getElementById('jornadaTabelaTitulo');
-    if (titulo) titulo.textContent = 'Comparativo entre regionais';
-    cardsWrap.innerHTML = linhasPorRegional.map(l => {
-      const pct = l.total ? Math.round(((l.total - l.pendentes) / l.total) * 100) : 100;
-      return `<div class="loja-count-card">
-        <div class="lc-ring" style="background:${corPorPct(pct)};">${pct}%</div>
-        <div class="lc-info"><b>${l.regional}</b><span>${l.pendentes} de ${l.total} com pendência de curso</span></div>
-      </div>`;
-    }).join('');
-    cabecalho.innerHTML = `<th>Regional</th><th>Colaboradores</th><th>Com pendência de curso</th><th>% em dia</th>`;
-    corpo.innerHTML = linhasPorRegional.map(l => {
-      const pct = l.total ? Math.round(((l.total - l.pendentes) / l.total) * 100) : 100;
-      return `<tr><td>${l.regional}</td><td>${l.total}</td><td><span class="jornada-pill ${l.pendentes ? 'pendente' : 'ok'}">${l.pendentes}</span></td><td>${pct}%</td></tr>`;
-    }).join('');
-  }
-
-  // Detalhe por loja — usado pro Coordenador (sempre, é a única regional dele) e pelo Gerente de
-  // Operações quando ele filtra uma regional específica pra ver o detalhe de dentro dela.
-  function renderizarTabelaPorLoja(linhasPorLoja, comColunaRegional){
-    const cardsWrap = document.getElementById('jornadaCardsAgregado');
-    const cabecalho = document.getElementById('jornadaTabelaCabecalho');
-    const corpo = document.getElementById('jornadaTabelaCorpo');
-    cardsWrap.innerHTML = linhasPorLoja.map(l => {
-      const pct = l.total ? Math.round(((l.total - l.pendentes) / l.total) * 100) : 100;
-      return `<div class="loja-count-card">
-        <div class="lc-ring" style="background:${corPorPct(pct)};">${pct}%</div>
-        <div class="lc-info"><b>${comColunaRegional ? `${l.regional} · ${l.loja}` : l.loja}</b><span>${l.pendentes} de ${l.total} com pendência de curso</span></div>
-      </div>`;
-    }).join('');
-    cabecalho.innerHTML = comColunaRegional
-      ? `<th>Regional</th><th>Loja</th><th>Colaboradores</th><th>Com pendência de curso</th>`
-      : `<th>Loja</th><th>Colaboradores</th><th>Com pendência de curso</th>`;
-    corpo.innerHTML = linhasPorLoja.map(l => comColunaRegional
-      ? `<tr><td>${l.regional}</td><td>${l.loja}</td><td>${l.total}</td><td><span class="jornada-pill ${l.pendentes ? 'pendente' : 'ok'}">${l.pendentes}</span></td></tr>`
-      : `<tr><td>${l.loja}</td><td>${l.total}</td><td><span class="jornada-pill ${l.pendentes ? 'pendente' : 'ok'}">${l.pendentes}</span></td></tr>`
-    ).join('');
-  }
-
-  // Filtro do Gerente de Operações: "Todas as regionais" volta pro comparativo agregado; escolher
-  // uma regional específica abre o detalhe por loja só dela — pedido da Nayuri (setembro/2026):
-  // "quero que o gerente de operações tenha uma visão boa comparativa de todas as regionais, mesmo
-  // que precise filtrar".
-  window.filtrarVisaoGeralRegional = function(regionalEscolhida){
-    if (!__visaoGeralEscopoCache) return;
-    const titulo = document.getElementById('jornadaTabelaTitulo');
-    if (!regionalEscolhida) {
-      if (titulo) titulo.textContent = 'Comparativo entre regionais';
-      renderizarTabelaPorRegional(__visaoGeralEscopoCache.linhasPorRegional);
-    } else {
-      if (titulo) titulo.textContent = `Lojas da regional ${regionalEscolhida}`;
-      const filtradas = __visaoGeralEscopoCache.linhasPorLoja.filter(l => l.regional === regionalEscolhida);
-      renderizarTabelaPorLoja(filtradas, false);
-    }
-  };
-
-  async function carregarVisaoGeralRegional(){
-    const cardsWrap = document.getElementById('jornadaCardsAgregado');
-    const cabecalho = document.getElementById('jornadaTabelaCabecalho');
-    const corpo = document.getElementById('jornadaTabelaCorpo');
-    const resumo = document.getElementById('jornadaResumoRegional');
-    const filtro = document.getElementById('jornadaFiltroRegional');
-    const titulo = document.getElementById('jornadaTabelaTitulo');
-    if (!cardsWrap || !corpo || !cabecalho) return;
-    cardsWrap.innerHTML = `<p class="jornada-vazio">Carregando…</p>`;
-    corpo.innerHTML = '';
-    if (resumo) resumo.innerHTML = '';
-    if (filtro) { filtro.style.display = 'none'; filtro.innerHTML = ''; }
-    if (titulo) titulo.textContent = 'Pendências de curso por loja';
-    __visaoGeralEscopoCache = null;
-    const ehGO = cargoColaboradorAtual === 'GERENTE DE OPERAÇÕES';
-    try {
-      // Só entra gente de loja de verdade nessa agregação (Local === 'Loja') — cargo administrativo
-      // (o próprio coordenador, gerente de operações, etc.) não é "uma loja" e só poluiria a tabela
-      // com uma linha "—" sem sentido.
-      let escopo = [];
-      if (ehGO) {
-        const regionais = [...new Set((window.MINHA_EQUIPE || []).map(c => c.Regional).filter(Boolean))];
-        if (!regionais.length) { cardsWrap.innerHTML = `<p class="jornada-vazio">Nenhuma regional encontrada pros seus coordenadores.</p>`; return; }
-        const lotes = [];
-        for (let i = 0; i < regionais.length; i += 30) lotes.push(regionais.slice(i, i + 30));
-        for (const lote of lotes) {
-          const snap = await getDocs(query(collection(db, 'colaboradores'), where('Regional', 'in', lote)));
-          snap.forEach(d => { const dados = d.data(); if (dados.Status !== 'inativo' && dados.Local === 'Loja') escopo.push({ cpf: d.id, ...dados }); });
-        }
-      } else {
-        const snap = await getDocs(query(collection(db, 'colaboradores'), where('Regional', '==', regionalColaboradorAtual)));
-        escopo = snap.docs.map(d => ({ cpf: d.id, ...d.data() })).filter(c => c.Status !== 'inativo' && c.Local === 'Loja');
-      }
-
-      if (!escopo.length) { cardsWrap.innerHTML = `<p class="jornada-vazio">Nenhum colaborador encontrado ${ehGO ? 'nas regionais dos seus coordenadores' : 'nessa regional'} ainda.</p>`; return; }
-
-      const linhas = await calcularPendenciaCursosParaLista(escopo);
-      const comPendencia = new Set(linhas.filter(l => l.cursosVencidos.length || l.cursosReprovados.length || l.cursosPendentes.length).map(l => l.cpf));
-
-      const porLoja = {};
-      escopo.forEach(c => {
-        const chave = ehGO ? `${c.Regional || '—'} · ${c.Loja || '—'}` : (c.Loja || '—');
-        if (!porLoja[chave]) porLoja[chave] = { loja: c.Loja || '—', regional: c.Regional || '—', total: 0, pendentes: 0 };
-        porLoja[chave].total++;
-        if (comPendencia.has(c.cpf)) porLoja[chave].pendentes++;
-      });
-      const linhasPorLoja = Object.values(porLoja).sort((a, b) => b.pendentes - a.pendentes);
-
-      // resumo geral no topo (uma regional só, ou todas juntas) — leitura rápida antes de entrar no detalhe
-      const totalGeral = escopo.length;
-      const pendentesGeral = comPendencia.size;
-      const pctGeral = totalGeral ? Math.round(((totalGeral - pendentesGeral) / totalGeral) * 100) : 100;
-      if (resumo) {
-        resumo.innerHTML = `<div class="pendencia-card" style="background:var(--cream); border:none;">
-          <div class="pendencia-info"><b>${ehGO ? 'Todas as regionais' : (regionalColaboradorAtual || 'Sua regional')}</b><span>${totalGeral} colaborador${totalGeral === 1 ? '' : 'es'} de loja · ${pendentesGeral} com pendência de curso</span></div>
-          <div class="jornada-pill ${pctGeral === 100 ? 'ok' : 'atrasado'}" style="font-size:13px; padding:6px 14px;">${pctGeral}% em dia</div>
-        </div>`;
-      }
-
-      if (!ehGO) {
-        renderizarTabelaPorLoja(linhasPorLoja, false);
-        return;
-      }
-
-      // Gerente de Operações: comparativo por regional é a visão padrão (uma linha por regional
-      // inteira), com filtro pra abrir o detalhe por loja de uma regional específica.
-      const porRegional = {};
-      escopo.forEach(c => {
-        const r = c.Regional || '—';
-        if (!porRegional[r]) porRegional[r] = { regional: r, total: 0, pendentes: 0 };
-        porRegional[r].total++;
-        if (comPendencia.has(c.cpf)) porRegional[r].pendentes++;
-      });
-      const linhasPorRegional = Object.values(porRegional).sort((a, b) => b.pendentes - a.pendentes);
-
-      __visaoGeralEscopoCache = { linhasPorLoja, linhasPorRegional };
-
-      if (filtro) {
-        filtro.style.display = 'inline-block';
-        filtro.innerHTML = `<option value="">Todas as regionais (comparar)</option>` + linhasPorRegional.map(r => `<option value="${r.regional}">${r.regional}</option>`).join('');
-        filtro.value = '';
-      }
-      renderizarTabelaPorRegional(linhasPorRegional);
-    } catch (err) {
-      console.error('Erro ao carregar visão geral da regional:', err);
-      cardsWrap.innerHTML = `<p class="jornada-vazio">Não deu pra carregar agora.</p>`;
-    }
-  }
-
-  // ================================================================================
-  // Visões de gestão da Jornada (outubro/2026): Coordenador Regional e Gerente de Operações
-  // veem NÚMEROS (integração, checklist, trilhas, ponto de checagem) por gerente/coordenador e por
-  // loja/regional — nunca o checklist individual nem o parecer de desligamento (isso é do gestor
-  // direto e do DHO). Reaproveita calcularPendenciaCursosParaLista + checklistIntegracao.
-  // ================================================================================
   async function escopoRegionalJornada(){
     const ehGO = cargoColaboradorAtual === 'GERENTE DE OPERAÇÕES';
     let escopo = [];
@@ -5206,139 +5011,102 @@ function configurarGateConclusao(c){
     return colabs.map(c => {
       const l = porCpf[c.cpf] || null;
       const novo = emIntegracao(c);
-      return { c, l, novo, r: novo ? resumoChecklist(c, l) : null,
-        trilhasPend: !!(l && (l.cursosPendentes.length || l.cursosVencidos.length || l.cursosReprovados.length)),
-        pendCheckin: candSet.has(c.cpf) && !feitos.has(c.cpf) };
+      const r = novo ? resumoChecklist(c, l) : null;
+      const trAt = trilhaAtrasada(c, l);
+      const pendCheckin = candSet.has(c.cpf) && !feitos.has(c.cpf);
+      return { c, l, novo, r, trAt, pendCheckin, atencao: !!((r && r.atraso) || trAt || pendCheckin) };
     });
   }
 
+  // todos os números abaixo contam PESSOAS, sempre a partir da mesma lista — por isso o total do topo é a soma das linhas
   function agregarJornada(ps){
     const novos = ps.filter(p => p.novo);
     return {
       total: ps.length, novos: novos.length,
       atrasados: novos.filter(p => p.r.atraso).length,
-      checklistPct: novos.length ? Math.round(novos.reduce((s, p) => s + p.r.pct, 0) / novos.length) : null,
-      trilhasPend: ps.filter(p => p.trilhasPend).length,
-      trilhasPct: ps.length ? Math.round(((ps.length - ps.filter(p => p.trilhasPend).length) / ps.length) * 100) : 100,
-      checkin: ps.filter(p => p.pendCheckin).length
+      trilhas: ps.filter(p => p.trAt).length,
+      checkin: ps.filter(p => p.pendCheckin).length,
+      atencao: ps.filter(p => p.atencao).length
     };
   }
-
-  const barraPct = (pct, aviso) => pct === null ? '<span style="color:var(--ink-soft);">—</span>' : `<div class="mini"><div class="ck-prog ${aviso !== undefined ? (aviso ? 'atraso' : '') : (pct < 60 ? 'atraso' : '')}"><i style="width:${pct}%"></i></div><b>${pct}%</b></div>`;
 
   function kpisJornada(a, rotuloTotal){
     return `<div class="eq-kpis">
       <div class="eq-kpi"><b>${a.total}</b><span>${rotuloTotal}</span></div>
-      <div class="eq-kpi"><b>${a.novos}</b><span>Em integração</span></div>
-      <div class="eq-kpi ${a.atrasados ? 'alerta' : ''}"><b>${a.checklistPct === null ? '—' : a.checklistPct + '%'}</b><span>Checklist médio${a.atrasados ? ' · ' + a.atrasados + ' atrasado' + (a.atrasados === 1 ? '' : 's') : ''}</span></div>
-      <div class="eq-kpi"><b>${a.trilhasPct}%</b><span>Trilhas em dia</span></div>
-      <div class="eq-kpi ${a.checkin ? 'alerta' : ''}"><b>${a.checkin}</b><span>Check-in pendente</span></div></div>`;
+      <div class="eq-kpi"><b>${a.novos}</b><span>Em integração</span><small>chegaram há até 90 dias</small></div>
+      <div class="eq-kpi ${a.atrasados ? 'alerta' : ''}"><b>${a.atrasados}</b><span>Checklist atrasado</span><small>passo fora do prazo</small></div>
+      <div class="eq-kpi ${a.trilhas ? 'alerta' : ''}"><b>${a.trilhas}</b><span>Trilha atrasada</span><small>falta concluir</small></div>
+      <div class="eq-kpi ${a.checkin ? 'alerta' : ''}"><b>${a.checkin}</b><span>Ponto de 30 dias</span><small>conversa sem registro</small></div></div>`;
   }
 
-  // "Meus gerentes" / "Meus coordenadores"
-  async function carregarMinhaEquipeRegionalV2(){
-    const lista = document.getElementById('jornadaListaPessoas');
-    if (!lista) return;
-    lista.innerHTML = `<p class="jornada-vazio">Carregando…</p>`;
-    const diretos = window.MINHA_EQUIPE || [];
-    if (!diretos.length) { lista.innerHTML = `<p class="jornada-vazio">Ninguém reportando diretamente pra você ainda.</p>`; return; }
-    const ehGO = cargoColaboradorAtual === 'GERENTE DE OPERAÇÕES';
-    try {
-      const escopo = await escopoRegionalJornada();
-      const ps = await metricasPessoasJornada(escopo);
-      const linhas = diretos.map(d => {
-        const time = ps.filter(p => ehGO ? (p.c.Regional === d.Regional) : (p.c.CpfGestor === d.cpf && p.c.cpf !== d.cpf));
-        return { d, a: agregarJornada(time) };
-      }).sort((x, y) => (y.a.atrasados - x.a.atrasados) || ((x.a.checklistPct === null ? 101 : x.a.checklistPct) - (y.a.checklistPct === null ? 101 : y.a.checklistPct)));
-      const geral = agregarJornada(ps);
-      lista.innerHTML = kpisJornada(geral, ehGO ? 'Pessoas nas regionais' : 'Pessoas na regional') +
-        `<div class="jornada-section-label">${ehGO ? 'Cada coordenador e a regional dele' : 'Cada gerente e o time dele'}</div>` +
-        linhas.map(({ d, a }) => `<div class="eq-card ${a.atrasados ? 'atraso' : ''}">
-          <div class="eq-top"><div class="ck-avatar">${iniciaisDe(d.Nome)}</div>
-            <div class="nm"><b>${d.Nome || '—'}</b><span>${ehGO ? (d.Regional || 'Regional não informada') : (d.Loja || '—')} · ${a.total} pessoa${a.total === 1 ? '' : 's'}</span></div>
-            <span class="eq-tag ${a.novos ? '' : 'ok'}">${a.novos ? a.novos + ' em integração' : 'Ninguém em integração'}</span></div>
-          <div class="eq-barras">
-            <div class="eq-bar"><label>Checklist médio <b>${a.checklistPct === null ? '—' : a.checklistPct + '%'}</b></label><div class="ck-prog ${a.checklistPct !== null && a.checklistPct < 60 ? 'atraso' : ''}"><i style="width:${a.checklistPct || 0}%"></i></div></div>
-            <div class="eq-bar"><label>Trilhas em dia <b>${a.trilhasPct}%</b></label><div class="ck-prog ${a.trilhasPct < 60 ? 'atraso' : ''}"><i style="width:${a.trilhasPct}%"></i></div></div>
-          </div>
-          <div class="eq-acoes">
-            ${a.atrasados ? `<span class="eq-tag alerta">${a.atrasados} checklist${a.atrasados === 1 ? '' : 's'} atrasado${a.atrasados === 1 ? '' : 's'}</span>` : ''}
-            ${a.checkin ? `<span class="eq-tag alerta">${a.checkin} check-in pendente${a.checkin === 1 ? '' : 's'}</span>` : ''}
-            ${!a.atrasados && !a.checkin ? '<span class="eq-tag ok">Em dia</span>' : ''}
-          </div></div>`).join('');
-    } catch (err) {
-      console.error('Erro ao carregar visão de equipe regional:', err);
-      lista.innerHTML = `<p class="jornada-vazio">Não deu pra carregar agora.</p>`;
-    }
+  // um selo só (Em dia / N com pendência) + o detalhe em texto simples embaixo do nome — sem poluir a linha
+  function chipsJornada(a){
+    return a.atencao ? `<span class="eq-tag alerta">${pl(a.atencao, 'pessoa com pendência', 'pessoas com pendência')}</span>` : '<span class="eq-tag ok">Em dia</span>';
+  }
+  function detalheJornada(a){
+    const d = [];
+    if (a.atrasados) d.push(pl(a.atrasados, 'checklist atrasado', 'checklists atrasados'));
+    if (a.trilhas) d.push(pl(a.trilhas, 'trilha atrasada', 'trilhas atrasadas'));
+    if (a.checkin) d.push(pl(a.checkin, 'ponto de 30 dias pendente', 'pontos de 30 dias pendentes'));
+    return d.length ? `<span class="pend">${d.join(' · ')}</span>` : '';
   }
 
-  // "Visão geral": por loja (coordenador) ou comparativo entre regionais (gerente de operações)
-  let __jornadaGeralCache = null;
-  function renderTabelaJornada(grupos, rotulo1, titulo){
-    const cabecalho = document.getElementById('jornadaTabelaCabecalho');
-    const corpo = document.getElementById('jornadaTabelaCorpo');
-    const tit = document.getElementById('jornadaTabelaTitulo');
-    if (tit) tit.textContent = titulo;
-    const wrap = corpo.closest('.jornada-bloco'); if (wrap) wrap.style.overflowX = 'auto';
-    cabecalho.innerHTML = `<th>${rotulo1}</th><th>Pessoas</th><th>Em integração</th><th>Checklist médio</th><th>Trilhas em dia</th><th>Check-in pend.</th>`;
-    corpo.className = 'eq-tabela';
-    corpo.innerHTML = grupos.map(g => `<tr>
-      <td><b>${g.nome}</b>${g.sub ? `<br><span style="font-size:11.5px; color:var(--ink-soft);">${g.sub}</span>` : ''}</td>
-      <td>${g.a.total}</td>
-      <td>${g.a.novos}${g.a.atrasados ? ` <span class="jornada-pill atrasado">${g.a.atrasados} atrasado${g.a.atrasados === 1 ? '' : 's'}</span>` : ''}</td>
-      <td>${barraPct(g.a.checklistPct)}</td>
-      <td>${barraPct(g.a.trilhasPct)}</td>
-      <td><span class="jornada-pill ${g.a.checkin ? 'atrasado' : 'ok'}">${g.a.checkin}</span></td></tr>`).join('');
+  const nomeCurto = n => String(n || '').split(' ').filter(Boolean).slice(0, 2).join(' ');
+  function agruparPs(ps, chave){
+    const m = {}; ps.forEach(p => { const k = chave(p); (m[k] = m[k] || []).push(p); });
+    return Object.keys(m).map(k => ({ k, ps: m[k], a: agregarJornada(m[k]) }))
+      .sort((x, y) => (y.a.atencao - x.a.atencao) || (y.a.total - x.a.total) || String(x.k).localeCompare(String(y.k), 'pt'));
+  }
+  const ehGerenteDeLoja = p => /GERENTE/i.test(p.c.Cargo || '') && !/OPERA|REGION|COORD/i.test(p.c.Cargo || '');
+  function linhaLojaHtml(g){
+    const loja = g.ps[0].c.Loja || 'Loja não informada';
+    const gerentes = [...new Set(g.ps.filter(ehGerenteDeLoja).map(p => nomeCurto(p.c.Nome)))].slice(0, 2);
+    const info = [gerentes.length ? 'Gerente: ' + gerentes.join(' e ') : '', pl(g.a.total, 'pessoa', 'pessoas'), g.a.novos ? g.a.novos + ' em integração' : ''].filter(Boolean).join(' · ');
+    return `<div class="eq-linha folha ${g.a.atencao ? 'aten' : ''}"><div class="nm"><b>${loja}</b><span>${info}</span>${detalheJornada(g.a)}</div><div class="eq-chips">${chipsJornada(g.a)}</div></div>`;
   }
 
-  window.filtrarVisaoGeralRegional = function(regional){
-    if (!__jornadaGeralCache) return;
-    const { porLoja, porRegional, ps, ehGO } = __jornadaGeralCache;
+  let __jr = null;
+  window.filtrarJornadaRegional = function(modo){ if (__jr) { __jr.modo = modo; renderJornadaRegional(); } };
+
+  function renderJornadaRegional(){
+    const { ps, ehGO, modo } = __jr;
     const resumo = document.getElementById('jornadaResumoRegional');
-    if (!regional) {
-      renderTabelaJornada(porRegional, 'Regional', 'Comparativo entre regionais');
-      if (resumo) resumo.innerHTML = `<div class="jornada-section-label" style="margin-bottom:10px;">Todas as regionais</div>` + kpisJornada(agregarJornada(ps), 'Pessoas de loja');
+    const lista = document.getElementById('jornadaListaRegional');
+    const soPend = modo === 'pend';
+    resumo.innerHTML = kpisJornada(agregarJornada(ps), ehGO ? 'Pessoas nas regionais' : 'Pessoas na regional');
+    const filtros = `<div class="eq-filtros"><div class="jornada-section-label" style="margin:0 8px 0 0;">${ehGO ? 'Cada regional' : 'Cada loja'}</div>
+      <button class="${soPend ? '' : 'on'}" onclick="window.filtrarJornadaRegional('todas')">Todas</button>
+      <button class="${soPend ? 'on' : ''}" onclick="window.filtrarJornadaRegional('pend')">Só com pendência</button></div>`;
+    const lojas = (arr) => agruparPs(arr, p => `${p.c.Regional || '—'}|${p.c.Loja || '—'}`).filter(g => !soPend || g.a.atencao);
+    let corpo = '';
+    if (!ehGO) {
+      const gs = lojas(ps);
+      corpo = gs.length ? gs.map(linhaLojaHtml).join('') : `<p class="jornada-vazio">Nenhuma loja com pendência. 👏</p>`;
     } else {
-      renderTabelaJornada(porLoja.filter(g => g.regional === regional), 'Loja', `Lojas · ${regional}`);
-      if (resumo) resumo.innerHTML = `<div class="jornada-section-label" style="margin-bottom:10px;">${regional}</div>` + kpisJornada(agregarJornada(ps.filter(p => (p.c.Regional || '—') === regional)), 'Pessoas de loja');
+      const regs = agruparPs(ps, p => p.c.Regional || 'Regional não informada').filter(g => !soPend || g.a.atencao);
+      corpo = regs.length ? regs.map(g => {
+        const coord = [...new Set((window.MINHA_EQUIPE || []).filter(c => (c.Regional || 'Regional não informada') === g.k).map(c => nomeCurto(c.Nome)))].slice(0, 2);
+        const info = [coord.length ? 'Coordenador: ' + coord.join(' e ') : '', pl(g.a.total, 'pessoa', 'pessoas'), g.a.novos ? g.a.novos + ' em integração' : ''].filter(Boolean).join(' · ');
+        const gl = lojas(g.ps);
+        return `<details class="eq-linha ${g.a.atencao ? 'aten' : ''}"><summary><div class="nm"><b>${g.k}</b><span>${info}</span>${detalheJornada(g.a)}</div><div class="eq-chips">${chipsJornada(g.a)}</div><i class="eq-seta"></i></summary><div class="eq-sub-lista">${gl.map(linhaLojaHtml).join('')}</div></details>`;
+      }).join('') : `<p class="jornada-vazio">Nenhuma regional com pendência. 👏</p>`;
     }
-  };
+    lista.innerHTML = filtros + corpo;
+  }
 
-  async function carregarVisaoGeralRegionalV2(){
-    const cardsWrap = document.getElementById('jornadaCardsAgregado');
-    const cabecalho = document.getElementById('jornadaTabelaCabecalho');
-    const corpo = document.getElementById('jornadaTabelaCorpo');
-    const resumo = document.getElementById('jornadaResumoRegional');
-    const filtro = document.getElementById('jornadaFiltroRegional');
-    if (!cardsWrap || !corpo || !cabecalho) return;
-    cardsWrap.innerHTML = ''; corpo.innerHTML = ''; cabecalho.innerHTML = '';
-    if (resumo) resumo.innerHTML = `<p class="jornada-vazio">Carregando…</p>`;
-    if (filtro) { filtro.style.display = 'none'; filtro.innerHTML = ''; }
-    __jornadaGeralCache = null;
+  async function carregarJornadaRegional(){
+    const lista = document.getElementById('jornadaListaRegional');
     const ehGO = cargoColaboradorAtual === 'GERENTE DE OPERAÇÕES';
+    __jr = null;
     try {
       const escopo = await escopoRegionalJornada();
-      if (!escopo.length) { if (resumo) resumo.innerHTML = `<p class="jornada-vazio">Nenhum colaborador encontrado ${ehGO ? 'nas regionais dos seus coordenadores' : 'nessa regional'} ainda.</p>`; return; }
+      if (!escopo.length) { document.getElementById('jornadaResumoRegional').innerHTML = ''; lista.innerHTML = `<p class="jornada-vazio">Nenhum colaborador de loja encontrado ${ehGO ? 'nas suas regionais' : 'na sua regional'} ainda.</p>`; return; }
       const ps = await metricasPessoasJornada(escopo);
-      const agrupar = (chave, montar) => {
-        const m = {}; ps.forEach(p => { const k = chave(p); (m[k] = m[k] || []).push(p); });
-        return Object.keys(m).map(k => ({ ...montar(k, m[k][0]), a: agregarJornada(m[k]) }))
-          .sort((x, y) => (y.a.atrasados - x.a.atrasados) || ((x.a.checklistPct === null ? 101 : x.a.checklistPct) - (y.a.checklistPct === null ? 101 : y.a.checklistPct)));
-      };
-      const porLoja = agrupar(p => `${p.c.Regional || '—'}|${p.c.Loja || '—'}`, (k, p) => ({ nome: p.c.Loja || '—', regional: p.c.Regional || '—', sub: '' }));
-      if (resumo) resumo.innerHTML = `<div class="jornada-section-label" style="margin-bottom:10px;">${ehGO ? 'Todas as regionais' : (regionalColaboradorAtual || 'Sua regional')}</div>` + kpisJornada(agregarJornada(ps), 'Pessoas de loja');
-      if (!ehGO) { __jornadaGeralCache = { porLoja, porRegional: [], ps, ehGO }; renderTabelaJornada(porLoja, 'Loja', 'Cada loja da regional'); return; }
-      const porRegional = agrupar(p => p.c.Regional || '—', (k) => ({ nome: k, regional: k, sub: '' }));
-      __jornadaGeralCache = { porLoja, porRegional, ps, ehGO };
-      if (filtro) {
-        filtro.style.display = 'inline-block';
-        filtro.innerHTML = `<option value="">Todas as regionais (comparar)</option>` + porRegional.map(r => `<option value="${r.nome}">${r.nome}</option>`).join('');
-        filtro.value = '';
-      }
-      renderTabelaJornada(porRegional, 'Regional', 'Comparativo entre regionais');
+      __jr = { ps, ehGO, modo: 'todas' };
+      renderJornadaRegional();
     } catch (err) {
-      console.error('Erro ao carregar visão geral da regional:', err);
-      if (resumo) resumo.innerHTML = `<p class="jornada-vazio">Não deu pra carregar agora.</p>`;
+      console.error('Erro ao carregar a visão da regional:', err);
+      lista.innerHTML = `<p class="jornada-vazio">Não deu pra carregar agora.</p>`;
     }
   }
 
