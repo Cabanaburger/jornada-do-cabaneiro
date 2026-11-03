@@ -1767,6 +1767,7 @@ window.cdCertificado = async function(o){
 window.cdDataExtenso = function(d){ try { return d.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' }); } catch (e) { return ''; } };
 window.cdSemPrefixo = function(t){ return String(t || '').replace(/^\s*Jornada do Cabaneiro\s*-\s*/i, ''); };
 
+window.LL = function(pt, es){ return (typeof IDIOMA !== 'undefined' && IDIOMA === 'es') ? es : pt; };
 window.cdEsquilo = function(){ var M = window.MARCA || {}; return (M.layout === 'cd' && M.esquilo) ? '<img class="cd-esquilo-vazio" src="' + M.esquilo + '" alt="">' : ''; };
 window.corTextoCert = function(){ return (window.MARCA && window.MARCA.certCor) || '#1E1A14'; };
 window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && String(c).toUpperCase() === '#4F9C40') ? window.MARCA.cor : c; };
@@ -3346,6 +3347,12 @@ window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && S
   html.cd .eq-kpis{ grid-template-columns:repeat(5,minmax(0,1fr)); }
   @media (max-width:700px){ html.cd .eq-kpis{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
   html.cd .cd-deslig{ margin-bottom:var(--espaco-4); }
+
+  /* Admin: todas as trilhas, com o público de cada uma */
+  html.oculta-cursos #cursos.admin-todas{ display:block; }
+  .publico-trilha{ font-size:12px; color:var(--ink-soft); margin-top:2px; }
+  html.cd .publico-trilha{ font-size:0.8125rem; color:var(--texto-secundario); background:var(--superficie-2); border-radius:var(--raio-xs); padding:var(--espaco-1) var(--espaco-2); align-self:flex-start; }
+  html.cd .publico-trilha b{ color:var(--texto); font-weight:600; }
 </style>
 </head>
 <body>
@@ -4487,6 +4494,16 @@ let TRILHAS = TRILHAS_PADRAO;
 
 let DOCS = [];
 
+// para quem a trilha aparece (só mostrado para Admin): tipo de local, contratação, cargos e lojas
+function publicoDaTrilha(c){
+  var partes = [];
+  if (c.tipoLocalRestrito && (c.tiposLocalPermitidos || []).length) partes.push(c.tiposLocalPermitidos.join(', '));
+  if (c.contratacaoRestrita && (c.tiposContratacaoPermitidos || []).length) partes.push('só ' + c.tiposContratacaoPermitidos.join('/'));
+  if (c.restrito && (c.cargosPermitidos || []).length) partes.push(c.cargosPermitidos.length <= 2 ? c.cargosPermitidos.join(', ') : c.cargosPermitidos.length + ' cargos');
+  if (c.localRestrito) partes.push(LL('lojas específicas', 'tiendas específicas'));
+  return partes.length ? partes.join(' · ') : LL('Todo mundo', 'Todos');
+}
+window.publicoDaTrilha = publicoDaTrilha;
 function cardHTML(c, ordinal){
   const badge = c.obrigatorio && !c.concluido ? `<span class="badge" style="background:#B4462B; color:#fff;">${t('badge_obrigatorio')}</span>`
               : c.status === "destaque" ? `<span class="badge destaque">${t('badge_destaque')}</span>`
@@ -4514,6 +4531,7 @@ function cardHTML(c, ordinal){
           <span>⏱ ${c.duracao}</span>
           <span>${c.categoria}</span>
         </div>
+        ${window.__ehAdmin ? `<div class="publico-trilha">${LL('Para', 'Para')}: <b>${publicoDaTrilha(c)}</b></div>` : ''}
         <div class="card-progress">
           <div class="mini-bar"><div style="width:${c.progresso}%; background:${c.concluido ? 'var(--ink-soft)' : 'var(--green)'}"></div></div>
           <small>${c.progresso}%</small>
@@ -4544,7 +4562,7 @@ function renderCards(lista){
   }
   // na visão padrão (Em destaque), os obrigatórios pendentes já aparecem na seção própria acima —
   // aqui só evita duplicar. Se for uma lista filtrada (categoria, busca), mostra tudo normalmente.
-  const dados = lista || CURSOS.filter(c => !(c.obrigatorio && ((window.MARCA && window.MARCA.fasesOnboarding) || !c.concluido)));
+  const dados = lista || (window.__ehAdmin ? CURSOS.slice() : CURSOS.filter(c => !(c.obrigatorio && ((window.MARCA && window.MARCA.fasesOnboarding) || !c.concluido))));
   grid.innerHTML = dados.length
     ? dados.map(c => cardHTML(c)).join('')
     : `<p style="font-size:13.5px; color:var(--ink-soft);">${t('nenhum_curso_publicado')}</p>`;
@@ -8041,6 +8059,17 @@ function configurarGateConclusao(c){
     cargoColaboradorAtual = cargo;
     macrocargoColaboradorAtual = dados.Macrocargo || '';
     nivelColaboradorAtual = nivel;
+    window.__ehAdmin = (nivel === 'Admin');
+    if (window.__ehAdmin) {
+      const sc = document.getElementById('cursos');
+      if (sc) {
+        sc.classList.add('admin-todas');
+        const h = sc.querySelector('.block-head h2'), pp = sc.querySelector('.block-head p'), ver = sc.querySelector('.see-all');
+        if (h) { h.removeAttribute('data-i18n'); h.textContent = LL('Todas as trilhas', 'Todas las rutas'); }
+        if (pp) { pp.removeAttribute('data-i18n'); pp.textContent = LL('Só quem é Admin vê esta lista. Cada trilha mostra para quem ela aparece.', 'Solo los Admin ven esta lista. Cada ruta muestra para quién aparece.'); }
+        if (ver) ver.style.display = 'none';
+      }
+    }
     lojaColaboradorAtual = loja;
     regionalColaboradorAtual = dados.Regional || '';
     carregarCategorias();
