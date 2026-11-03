@@ -1,19 +1,29 @@
 {
   "name": "Jornada do Cabaneiro",
   "short_name": "Jornada",
-  "start_url": "./home.html",
+  "description": "Sua chegada ao Cabana começa aqui.",
+  "start_url": "index.html",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#FAF4E9",
+  "background_color": "#00630F",
   "theme_color": "#00630F",
+  "lang": "pt-BR",
   "icons": [
     {
       "src": "icon192-jornada.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "icon512-jornada.png",
       "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon180-jornada.png",
+      "sizes": "180x180",
       "type": "image/png"
     }
   ]
