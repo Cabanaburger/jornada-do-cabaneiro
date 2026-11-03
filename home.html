@@ -6238,6 +6238,20 @@ function configurarGateConclusao(c){
   // Núcleo do cálculo de pendência de curso, extraído pra aceitar QUALQUER lista de colaboradores
   // (não só window.MINHA_EQUIPE) — a Jornada do Cabaneiro (setembro/2026) reaproveita isso tanto
   // pro painel do gestor quanto pras visões agregadas de Coordenador/Gerente de Operações.
+  // Lê o progresso de um lote de CPFs. Primeiro tenta a consulta em lote; se a regra do Firebase negar
+  // (acontece com gerente que não é Admin), lê cada documento {cpf}_{cursoId} um a um, que a regra aceita.
+  async function lerProgressoLote(lote, cursosIds){
+    try {
+      const snap = await getDocs(query(collection(db, 'progresso'), where('Cpf', 'in', lote)));
+      return snap.docs.map(d => d.data());
+    } catch (e) {
+      console.warn('progresso: leitura em lote negada, lendo um a um', e && e.code);
+      const lidos = await Promise.all(lote.flatMap(cpf => (cursosIds || []).map(id =>
+        getDoc(doc(db, 'progresso', `${cpf}_${id}`)).then(s => (s.exists() ? s.data() : null)).catch(() => null))));
+      return lidos.filter(Boolean);
+    }
+  }
+
   async function calcularPendenciaCursosParaLista(lista){
     if (!lista.length) return [];
     const cursosSnap = await getDocs(query(collection(db, 'cursos'), where('Status', '==', 'publicado')));
@@ -6250,9 +6264,8 @@ function configurarGateConclusao(c){
     for (let i = 0; i < cpfs.length; i += 30) lotes.push(cpfs.slice(i, i + 30));
     for (const lote of lotes) {
       if (!lote.length) continue;
-      const progSnap = await getDocs(query(collection(db, 'progresso'), where('Cpf', 'in', lote)));
-      progSnap.forEach(d => {
-        const p = d.data();
+      const progLote = await lerProgressoLote(lote, cursosPublicados.map(cu => cu.id));
+      progLote.forEach(p => {
         if (!p.Cpf || !p.CursoId) return;
         if (!progressoPorPessoa[p.Cpf]) progressoPorPessoa[p.Cpf] = {};
         progressoPorPessoa[p.Cpf][p.CursoId] = p;
@@ -6562,9 +6575,8 @@ function configurarGateConclusao(c){
       for (let i = 0; i < cpfs.length; i += 30) lotes.push(cpfs.slice(i, i + 30));
       for (const lote of lotes) {
         if (!lote.length) continue;
-        const progSnap = await getDocs(query(collection(db, 'progresso'), where('Cpf', 'in', lote)));
-        progSnap.forEach(d => {
-          const p = d.data();
+        const progLote = await lerProgressoLote(lote, obrigatorios.map(cu => cu.id));
+        progLote.forEach(p => {
           if (!p.Cpf || !p.CursoId) return;
           if (!progressoPorPessoa[p.Cpf]) progressoPorPessoa[p.Cpf] = {};
           progressoPorPessoa[p.Cpf][p.CursoId] = p;
