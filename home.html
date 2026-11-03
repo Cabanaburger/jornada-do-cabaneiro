@@ -3285,6 +3285,13 @@ window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && S
     html.cd-home-loja .level-count{ font-size:3.5rem; line-height:3.25rem; }
   }
   html.cd-home-loja .level-hint b:first-child{ color:var(--sobre-atencao) !important; }
+
+  /* Minha equipe: ponto de 30 dias dentro da linha da pessoa */
+  html.cd .eq-ponto30{ display:flex; align-items:center; justify-content:space-between; gap:var(--espaco-3); flex-wrap:wrap; font-size:0.9375rem; color:var(--texto-descricao); padding:var(--espaco-1) 0 var(--espaco-2); }
+  html.cd .eq-ponto30 .btn-primary{ min-height:var(--ctl-pequeno); font-size:0.8125rem; }
+  html.cd .eq-kpis{ grid-template-columns:repeat(5,minmax(0,1fr)); }
+  @media (max-width:700px){ html.cd .eq-kpis{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  html.cd .cd-deslig{ margin-bottom:var(--espaco-4); }
 </style>
 </head>
 <body>
@@ -6370,7 +6377,7 @@ function configurarGateConclusao(c){
     corpo.innerHTML = `<p style="text-align:center; color:var(--ink-soft); padding:20px; font-size:13.5px;">${t('carregando')}</p>`;
     if (window.openModal) window.openModal('modalEquipe');
     try {
-      const linhas = await calcularEquipeDetalhada();
+      const [linhas] = await Promise.all([calcularEquipeDetalhada(), carregarCheckin30Equipe(window.MINHA_EQUIPE || [])]);
       window.__equipeDetalhada = linhas;
       atualizarBadgeAtalhoEquipe(linhas);
       if (window.MARCA && window.MARCA.fasesOnboarding) { try { await carregarChecklists((window.MINHA_EQUIPE || []).filter(emIntegracao).map(c => c.cpf)); } catch (e) { console.error('checklist:', e); } }
@@ -6400,7 +6407,8 @@ function configurarGateConclusao(c){
         if (!snap.exists() && !c.Afastado) pendentes.push(c); // ainda não tem parecer nem foi descartado como engano — afastado não saiu da empresa, não pergunta
       }
       filaDesligadosPendentes = pendentes;
-      mostrarProximoDesligadoPendente();
+      renderDesligadosListas();
+      if (!window.__semAvisoDesligamento) mostrarProximoDesligadoPendente();
     } catch (err) {
       console.error('Erro ao verificar desligamentos pendentes:', err);
     }
@@ -6415,6 +6423,40 @@ function configurarGateConclusao(c){
     document.getElementById('desligadoPergTitulo').textContent = `Confirmar desligamento de ${c.Nome || 'colaborador'}`;
     openModal('modalDesligadoPergunta');
   }
+
+  // lista de quem saiu e ainda não tem parecer: em Minha equipe e em Pendências, para não depender só do aviso ao entrar
+  function htmlDesligados(){
+    if (!filaDesligadosPendentes.length) return '';
+    return `<div class="jornada-bloco cd-deslig"><div class="jornada-section-label">Saíram do time: falta o parecer <span class="contagem">${filaDesligadosPendentes.length}</span></div>` +
+      filaDesligadosPendentes.map(c => `<div class="pendencia-card"><div class="pendencia-info"><b>${c.Nome || '—'}</b><span>${[c.Cargo, c.Loja].filter(Boolean).join(' · ')}</span></div>
+        <button class="btn-secondary" style="padding:8px 14px; font-size:12.5px; white-space:nowrap;" onclick="window.abrirDesligamentoDe('${c.cpf}')">Registrar parecer</button></div>`).join('') + `</div>`;
+  }
+  function renderDesligadosListas(){
+    const h = htmlDesligados();
+    const pend = document.getElementById('pendChecklistLista');
+    if (pend) {
+      const bloco = pend.closest('.jornada-bloco');
+      let alvo = document.getElementById('pendDesligadosBloco');
+      if (!alvo && bloco) { alvo = document.createElement('div'); alvo.id = 'pendDesligadosBloco'; bloco.parentNode.insertBefore(alvo, bloco); }
+      if (alvo) alvo.innerHTML = h;
+    }
+    const eq = document.getElementById('equipeCardsLista');
+    if (eq) {
+      let alvo2 = document.getElementById('equipeDesligadosBloco');
+      if (!alvo2) { alvo2 = document.createElement('div'); alvo2.id = 'equipeDesligadosBloco'; alvo2.style.marginTop = '16px'; eq.parentNode.insertBefore(alvo2, eq.nextSibling); }
+      alvo2.innerHTML = h;
+    }
+  }
+  window.renderDesligadosListas = renderDesligadosListas;
+  window.mostrarAvisoDesligamento = function(){ mostrarProximoDesligadoPendente(); };
+  window.abrirDesligamentoDe = function(cpf){
+    const i = filaDesligadosPendentes.findIndex(c => c.cpf === cpf);
+    if (i < 0) return;
+    filaDesligadosPendentes.unshift(filaDesligadosPendentes.splice(i, 1)[0]);
+    const c = filaDesligadosPendentes[0];
+    document.getElementById('desligadoPergTitulo').textContent = `Confirmar desligamento de ${c.Nome || 'colaborador'}`;
+    openModal('modalDesligadoPergunta');
+  };
 
   window.abrirParecerDesligamento = function(){
     closeModal('modalDesligadoPergunta');
@@ -6444,7 +6486,8 @@ function configurarGateConclusao(c){
       }
     }
     filaDesligadosPendentes.shift();
-    mostrarProximoDesligadoPendente();
+    renderDesligadosListas();
+    if (!window.__semAvisoDesligamento) mostrarProximoDesligadoPendente();
   };
 
   window.salvarParecerDesligamento = async function(){
@@ -6485,7 +6528,8 @@ function configurarGateConclusao(c){
     }
     closeModal('modalParecerDesligamento');
     filaDesligadosPendentes.shift();
-    mostrarProximoDesligadoPendente();
+    renderDesligadosListas();
+    if (!window.__semAvisoDesligamento) mostrarProximoDesligadoPendente();
   };
 
   // ---------- painel de pendências do gestor ----------
@@ -6773,11 +6817,13 @@ function configurarGateConclusao(c){
     const unicos = [...new Set((cpfs || []).filter(Boolean))];
     const lotes = [];
     for (let i = 0; i < unicos.length; i += 30) lotes.push(unicos.slice(i, i + 30));
-    unicos.forEach(c => { window.__checklistCache[c] = {}; });
+    const novo = {};
+    unicos.forEach(c => { novo[c] = {}; });
     for (const lote of lotes) {
       const snap = await getDocs(query(collection(db, 'checklistIntegracao'), where('Cpf', 'in', lote)));
-      snap.forEach(d => { const x = d.data(); window.__checklistCache[x.Cpf || d.id] = x.Itens || {}; });
+      snap.forEach(d => { const x = d.data(); novo[x.Cpf || d.id] = x.Itens || {}; });
     }
+    Object.assign(window.__checklistCache, novo);   // troca de uma vez, depois de ler tudo: a tela nunca vê o checklist vazio no meio
   }
 
   // resumo de uma pessoa: feitos/total, por bloco, e se já passou do prazo de algum bloco
@@ -6879,9 +6925,12 @@ function configurarGateConclusao(c){
   window.fecharChecklist = function(){
     closeModal('modalChecklist');
     ckPessoaAtual = null;
-    atualizarPainelPendenciasGestor();
     const me = document.getElementById('modalEquipe');
     if (me && me.style.display === 'flex') renderizarListaEquipe(window.__equipeDetalhada || []);
+    Promise.resolve(atualizarPainelPendenciasGestor()).then(() => {
+      const me2 = document.getElementById('modalEquipe');
+      if (me2 && me2.style.display === 'flex') renderizarListaEquipe(window.__equipeDetalhada || []);
+    });
   };
 
   // Pendências > checklist de integração do time
@@ -6937,6 +6986,27 @@ function configurarGateConclusao(c){
     return ckAtraso || trilhaAtrasada(c, l);
   }
 
+  // ponto de 30 dias de cada pessoa do time (só loja): 'antes' (dia < 30), 'pendente' (30 a 90 sem registro), 'feito', ou '' (não se aplica)
+  window.__checkin30Cache = window.__checkin30Cache || {};
+  async function carregarCheckin30Equipe(equipe){
+    const alvos = (equipe || []).filter(c => (c.Local || 'Loja') === 'Loja' && (() => { const d = diasDeCasa(c); return d !== null && d >= 30 && d <= 90; })());
+    await Promise.all(alvos.map(async c => {
+      try { const s = await getDoc(doc(db, 'checkins30', c.cpf)); window.__checkin30Cache[c.cpf] = s.exists() ? (s.data() || {}) : null; }
+      catch (e) { window.__checkin30Cache[c.cpf] = window.__checkin30Cache[c.cpf] === undefined ? null : window.__checkin30Cache[c.cpf]; }
+    }));
+  }
+  function statusPonto30(c){
+    if ((c.Local || 'Loja') !== 'Loja') return '';
+    const d = diasDeCasa(c);
+    if (d === null || d < -15) return '';
+    if (d < 30) return 'antes';
+    const reg = window.__checkin30Cache[c.cpf];
+    if (reg) return 'feito';
+    if (d <= 90 && reg === null) return 'pendente';
+    return '';
+  }
+  window.statusPonto30 = statusPonto30;
+
   // Minha equipe (versão Jornada): números no topo + uma linha por pessoa (abre ao toque); quem está em dia fica recolhido
   function linhaEquipeHtml(x){
     const { l, c, r } = x;
@@ -6950,6 +7020,7 @@ function configurarGateConclusao(c){
     if (r && r.atraso) chips.push('<span class="eq-tag alerta">Checklist atrasado</span>');
     if (x.trAt) chips.push(`<span class="eq-tag alerta">${pl(falta.length, 'trilha atrasada', 'trilhas atrasadas')}</span>`);
     else if (l.cursosPendentes.length) chips.push(`<span class="eq-tag">${pl(l.cursosPendentes.length, 'trilha a fazer', 'trilhas a fazer')}</span>`);
+    if (x.p30 === 'pendente') chips.push('<span class="eq-tag alerta">Ponto de 30 dias pendente</span>');
     if (x.novo && !fase) chips.push('<span class="eq-tag">Ainda não acessou</span>');
     if (!x.atencao && !l.cursosPendentes.length) chips.push('<span class="eq-tag ok">Em dia</span>');
     const tagFase = x.novo && fase ? `<span class="eq-tag ${fase === 4 ? 'ok' : ''}">Fase ${fase} de 4 · ${nomeNivel(nomesFase[fase - 1])}</span>` : '';
@@ -6959,11 +7030,16 @@ function configurarGateConclusao(c){
     const lista = falta.length
       ? `<h5>Trilhas que faltam</h5><ul class="eq-falta">${falta.map(f => `<li><span>${nomeTrilhaCurto(f.n)}</span><span class="eq-tag ${f.k}">${f.t}</span></li>`).join('')}</ul>`
       : (l.total ? `<h5>Trilhas</h5><p class="jornada-vazio" style="text-align:left; padding:6px 0 0;">Todas concluídas.</p>` : '');
+    const reg30 = window.__checkin30Cache[l.cpf];
+    const ponto = !x.p30 ? '' : `<h5>Conversa de 30 dias</h5><div class="eq-ponto30">${
+      x.p30 === 'pendente' ? `<span>Já pode fazer a conversa a sós e registrar o ponto de checagem.</span><button class="btn-primary" style="padding:8px 14px; font-size:12.5px;" onclick="window.abrirCheckin30('${l.cpf}')">Preencher ponto de 30 dias</button>`
+      : x.p30 === 'feito' ? `<span class="eq-tag ok">Registrado${reg30 && reg30.DataConversa ? ' · conversa em ' + String(reg30.DataConversa).split('-').reverse().slice(0, 2).join('/') : ''}</span>`
+      : `<span>Libera no dia 30 de casa${x.dias !== null && x.dias < 30 ? ' (faltam ' + (30 - Math.max(x.dias, 0)) + ' dias)' : ''}.</span>`}</div>`;
     return `<details class="eq-linha ${x.atencao ? 'aten' : ''}">
       <summary><div class="ck-avatar">${iniciaisDe(l.nome)}</div>
         <div class="nm"><b>${l.nome}</b><span>${[l.cargo, x.dias !== null ? textoDias(x.dias) : ''].filter(Boolean).join(' · ')}</span></div>
         <div class="eq-chips">${chips.join('')}</div><i class="eq-seta"></i></summary>
-      <div class="eq-det">${barras}${lista}
+      <div class="eq-det">${barras}${lista}${ponto}
         <div class="eq-acoes">${tagFase}<span class="espaco"></span>${x.novo ? `<button class="btn-secondary" style="padding:8px 14px; font-size:12.5px;" onclick="window.abrirChecklist('${l.cpf}')">${r.feitos === r.total ? 'Ver checklist' : 'Abrir checklist'} →</button>` : ''}</div>
       </div></details>`;
   }
@@ -6978,16 +7054,19 @@ function configurarGateConclusao(c){
       const novo = emIntegracao(c);
       const r = novo ? resumoChecklist(c, l) : null;
       const trAt = trilhaAtrasada(c, l);
-      return { l, c, novo, r, trAt, atencao: !!((r && r.atraso) || trAt), dias: diasDeCasa(c) };
+      const p30 = statusPonto30(c);
+      return { l, c, novo, r, trAt, p30, atencao: !!((r && r.atraso) || trAt || p30 === 'pendente'), dias: diasDeCasa(c) };
     }).sort((a, b) => ((b.atencao ? 1 : 0) - (a.atencao ? 1 : 0)) || ((b.novo ? 1 : 0) - (a.novo ? 1 : 0)) || ((a.r ? a.r.pct : a.l.pct) - (b.r ? b.r.pct : b.l.pct)));
     const novos = itens.filter(x => x.novo);
     const ckAtr = novos.filter(x => x.r.atraso).length;
     const trAtr = itens.filter(x => x.trAt).length;
+    const p30Pend = itens.filter(x => x.p30 === 'pendente').length;
     if (resumo) resumo.innerHTML = `<div class="eq-kpis">
       <div class="eq-kpi"><b>${itens.length}</b><span>Pessoas no time</span></div>
       <div class="eq-kpi"><b>${novos.length}</b><span>Em integração</span><small>chegaram há até 90 dias</small></div>
       <div class="eq-kpi ${ckAtr ? 'alerta' : ''}"><b>${ckAtr}</b><span>Checklist atrasado</span><small>passo fora do prazo</small></div>
-      <div class="eq-kpi ${trAtr ? 'alerta' : ''}"><b>${trAtr}</b><span>Trilha atrasada</span><small>falta concluir</small></div></div>`;
+      <div class="eq-kpi ${trAtr ? 'alerta' : ''}"><b>${trAtr}</b><span>Trilha atrasada</span><small>falta concluir</small></div>
+      <div class="eq-kpi ${p30Pend ? 'alerta' : ''}"><b>${p30Pend}</b><span>Ponto de 30 dias</span><small>conversa sem registro</small></div></div>`;
     if (!itens.length) { corpo.innerHTML = `<p style="text-align:center; color:var(--ink-soft); padding:20px; font-size:13.5px;">${t('equipe_vazia')}</p>`; return; }
     const aten = itens.filter(x => x.atencao), ok = itens.filter(x => !x.atencao);
     corpo.innerHTML =
@@ -7116,8 +7195,11 @@ function configurarGateConclusao(c){
       return;
     }
     closeModal('modalCheckin30');
+    window.__checkin30Cache[c.cpf] = { DataConversa: dataConv };
     checkin30ColaboradorAtual = null;
     await atualizarPainelPendenciasGestor();
+    const meq = document.getElementById('modalEquipe');
+    if (meq && meq.style.display === 'flex') renderizarListaEquipe(window.__equipeDetalhada || []);
   };
 
   // ---------- Coordenador Regional ("Meus gerentes"/"Visão geral da regional") e Gerente de
