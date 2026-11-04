@@ -3353,6 +3353,37 @@ window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && S
   .publico-trilha{ font-size:12px; color:var(--ink-soft); margin-top:2px; }
   html.cd .publico-trilha{ font-size:0.8125rem; color:var(--texto-secundario); background:var(--superficie-2); border-radius:var(--raio-xs); padding:var(--espaco-1) var(--espaco-2); align-self:flex-start; }
   html.cd .publico-trilha b{ color:var(--texto); font-weight:600; }
+
+  /* Seu 1º mês: cartão na home e perguntas */
+  .pm-cartao{ display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-top:16px; padding:18px 20px; border-radius:16px; background:#fff; }
+  .pm-cartao div{ display:flex; flex-direction:column; gap:2px; }
+  html.cd .pm-cartao{ background:var(--superficie); border-radius:var(--raio-grande); padding:var(--espaco-5) var(--espaco-6); }
+  html.cd .pm-rotulo{ font-size:0.9375rem; font-weight:600; color:var(--acao-texto); }
+  html.cd .pm-cartao b{ font-size:1.375rem; line-height:1.75rem; font-weight:700; color:var(--texto); }
+  html.cd .pm-cartao span{ font-size:0.9375rem; color:var(--texto-secundario); }
+  html.cd .pm-cartao .btn-primary{ min-height:var(--ctl-grande); padding:0 var(--espaco-6); }
+  .pm-grupo{ margin-top:14px; }
+  .pm-perg{ font-weight:600; margin:0 0 8px; display:block; }
+  .pm-ops{ display:flex; gap:8px; flex-wrap:wrap; }
+  .pm-op{ border:0; border-radius:999px; padding:10px 16px; cursor:pointer; background:#F2F2F7; font:inherit; font-weight:600; }
+  .pm-op.on{ background:#00630F; color:#fff; }
+  html.cd .pm-caixa h3{ font-family:var(--font-sans); font-size:1.375rem; font-weight:700; color:var(--texto); }
+  html.cd .pm-intro{ color:var(--texto-secundario); font-size:0.9375rem; }
+  html.cd .pm-perg{ font-size:1rem; color:var(--texto); }
+  html.cd .pm-op{ background:var(--controle); color:var(--texto); min-height:var(--ctl-medio); font-size:0.9375rem; }
+  html.cd .pm-op.on{ background:var(--acao); color:var(--sobre-acao); }
+  html.cd .pm-op:focus-visible{ outline:2px solid var(--foco); outline-offset:2px; }
+  html.cd .pm-erro{ color:var(--erro); font-size:0.9375rem; font-weight:500; }
+  html.cd #pmComentario{ background:var(--controle); border:0; border-radius:var(--raio-controle); padding:var(--espaco-3); font-family:var(--font-sans); font-size:1rem; color:var(--texto); }
+  html.cd .eq-contou{ font-size:0.8125rem; color:var(--sucesso-texto); background:var(--sucesso-suave); border-radius:var(--raio-xs); padding:var(--espaco-1) var(--espaco-2); display:inline-block; margin:0 0 var(--espaco-2); }
+
+  /* "Trilha de admissão" no menu do topo */
+  nav.mainnav #navTrilhaAdmissao{ display:inline-flex; align-items:center; gap:4px; }
+  nav.mainnav #navTrilhaAdmissao[style*="none"]{ display:none !important; }
+  #navTrilhaAdmissao .ico-externo{ flex:none; opacity:.8; }
+  .sr-only{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+  html.cd #menuTrilhaAdmissao{ font-weight:500 !important; color:var(--texto) !important; min-height:var(--toque-minimo); display:flex; align-items:center; }
+  html.cd #menuTrilhaAdmissao[style*="none"]{ display:none !important; }
 </style>
 </head>
 <body>
@@ -3405,6 +3436,7 @@ window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && S
     <a href="#cursos" data-i18n="nav_cursos">Todos os cursos</a>
     <a href="#" onclick="openBiblioteca('Todos'); return false;" data-i18n="nav_biblioteca">Biblioteca</a>
     <a href="#sobre" data-i18n="nav_sobre">Sobre</a>
+    <a id="navTrilhaAdmissao" class="so-lideranca" href="https://cabana-rh.bi-253.workers.dev/" target="_blank" rel="noopener" style="display:none;">Trilha de admissão<svg class="ico-externo" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg><span class="sr-only"> (abre em outra aba)</span></a>
   </nav>
   <div class="topbar-right">
     <div class="search-mini" onclick="document.getElementById('heroSearch').scrollIntoView({behavior:'smooth', block:'center'}); document.getElementById('heroSearch').focus();" style="cursor:pointer;">
@@ -3456,6 +3488,7 @@ window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && S
       <div id="avatarMenu" style="display:none; position:absolute; right:0; top:48px; background:var(--paper); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow); width:200px; padding:8px; z-index:60;">
         <div id="avatarMenuInfo" style="padding:10px 12px; font-size:12.5px; color:var(--ink-soft); border-bottom:1px solid var(--line); margin-bottom:6px;"><b style="color:var(--ink);">&nbsp;</b><br>&nbsp;</div>
         <div id="menuAdminBtn" onclick="location.href='admin.html'" style="display:none; padding:10px 12px; font-size:13.5px; font-weight:700; border-radius:8px; cursor:pointer;" data-i18n="menu_admin">🛠️ Painel Admin</div>
+        <div id="menuTrilhaAdmissao" class="so-lideranca" onclick="window.open('https://cabana-rh.bi-253.workers.dev/', '_blank', 'noopener')" style="display:none; padding:10px 12px; font-size:13.5px; font-weight:600; border-radius:8px; cursor:pointer;">Trilha de admissão</div>
         <div onclick="abrirMeusCertificados()" style="padding:10px 12px; font-size:13.5px; font-weight:600; border-radius:8px; cursor:pointer;" data-i18n="menu_certificados">🏆 Meus certificados</div>
         <div onclick="abrirRanking()" style="padding:10px 12px; font-size:13.5px; font-weight:600; border-radius:8px; cursor:pointer;" data-i18n="menu_ranking">🏅 Ranking Cabana</div>
         <div onclick="fazerLogout()" style="padding:10px 12px; font-size:13.5px; font-weight:600; color:var(--ink-soft); border-radius:8px; cursor:pointer;" data-i18n="menu_sair">🚪 Sair</div>
@@ -5574,6 +5607,81 @@ function configurarGateConclusao(c){
   }
   let marcoPesquisaAtual = null; // 45 ou 90, pra saber qual campo marcar como "fechado" ao dispensar
 
+  // ===== Seu 1º mês (visão do colaborador) =====
+  const PM_PERGUNTAS = [
+    ['Chegada', LL('Como está sendo chegar no time?', '¿Cómo está siendo llegar al equipo?')],
+    ['Seguranca', LL('Você já se sente seguro(a) no seu trabalho do dia a dia?', '¿Ya te sientes seguro(a) en tu trabajo del día a día?')],
+    ['Tratamento', LL('Você se sente bem tratado(a) pelo seu gerente e pelo time?', '¿Te sientes bien tratado(a) por tu gerente y por el equipo?')]];
+  const PM_OPCOES = [['verde', LL('Indo bem', 'Va bien')], ['amarelo', LL('Mais ou menos', 'Más o menos')], ['vermelho', LL('Difícil', 'Difícil')]];
+  const PM_FUTURO = [['sim', LL('Sim', 'Sí')], ['talvez', LL('Talvez', 'Tal vez')], ['nao', LL('Não', 'No')]];
+  let pmDados = null, pmCpf = null;
+  function montarModalPrimeiroMes(){
+    if (document.getElementById('modalPrimeiroMes')) return;
+    const grupo = (campo, perg, ops) => `<div class="pm-grupo"><p class="pm-perg">${perg}</p><div class="pm-ops" role="radiogroup" aria-label="${perg}">${ops.map(([v, r]) => `<button type="button" class="pm-op" role="radio" aria-checked="false" data-campo="${campo}" data-valor="${v}">${r}</button>`).join('')}</div></div>`;
+    const m = document.createElement('div');
+    m.id = 'modalPrimeiroMes';
+    m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true'); m.setAttribute('aria-labelledby', 'pmTitulo');
+    m.style.cssText = 'display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:1000; align-items:center; justify-content:center; padding:16px;';
+    m.innerHTML = `<div class="pm-caixa" style="background:#fff; border-radius:20px; width:min(560px,100%); max-height:90vh; overflow:auto; padding:24px;">
+      <h3 id="pmTitulo" style="margin:0 0 6px;">${LL('Seu 1º mês no Cabana', 'Tu 1er mes en Cabana')}</h3>
+      <p class="pm-intro" style="margin:0 0 16px;">${LL('Responda com sinceridade. As respostas ficam só com o DHO: o seu gerente não vê.', 'Responde con sinceridad. Las respuestas quedan solo con DHO: tu gerente no las ve.')}</p>
+      ${PM_PERGUNTAS.map(([c, q]) => grupo(c, q, PM_OPCOES)).join('')}
+      ${grupo('Futuro', LL('Você se vê no Cabana daqui a alguns meses?', '¿Te ves en Cabana dentro de algunos meses?'), PM_FUTURO)}
+      <div class="pm-grupo"><label class="pm-perg" for="pmComentario">${LL('O que te ajudou até aqui, ou o que podia ser melhor? (opcional)', '¿Qué te ayudó hasta ahora, o qué podría ser mejor? (opcional)')}</label>
+        <textarea id="pmComentario" rows="3" maxlength="800" style="width:100%; margin-top:6px;"></textarea></div>
+      <p id="pmErro" class="pm-erro" style="display:none; margin:8px 0 0;"></p>
+      <div class="pm-acoes" style="display:flex; gap:8px; justify-content:flex-end; margin-top:16px;">
+        <button type="button" class="btn-secondary" onclick="closeModal('modalPrimeiroMes')">${LL('Agora não', 'Ahora no')}</button>
+        <button type="button" class="btn-primary" id="pmEnviar" onclick="window.enviarPrimeiroMes()">${LL('Enviar', 'Enviar')}</button></div></div>`;
+    document.body.appendChild(m);
+    m.addEventListener('click', ev => {
+      const b = ev.target.closest('.pm-op'); if (!b) return;
+      m.querySelectorAll(`.pm-op[data-campo="${b.dataset.campo}"]`).forEach(x => { x.classList.remove('on'); x.setAttribute('aria-checked', 'false'); });
+      b.classList.add('on'); b.setAttribute('aria-checked', 'true');
+      const er = document.getElementById('pmErro'); if (er) er.style.display = 'none';
+    });
+  }
+  function mostrarCartaoPrimeiroMes(){
+    if (document.getElementById('pmCartao')) return;
+    const alvo = document.querySelector('.level-block') || document.getElementById('obrigatorios');
+    if (!alvo) return;
+    const c = document.createElement('div');
+    c.id = 'pmCartao'; c.className = 'pm-cartao';
+    c.innerHTML = `<div><small class="pm-rotulo">${LL('Seu 1º mês', 'Tu 1er mes')}</small><b>${LL('Como está sendo até aqui?', '¿Cómo va hasta ahora?')}</b>
+      <span>${LL('São 4 perguntas rápidas. As respostas ficam só com o DHO.', 'Son 4 preguntas rápidas. Las respuestas quedan solo con DHO.')}</span></div>
+      <button type="button" class="btn-primary" onclick="window.abrirPrimeiroMes()">${LL('Responder', 'Responder')}</button>`;
+    alvo.appendChild(c);
+  }
+  async function verificarPrimeiroMes(cpf, dados){
+    try {
+      if (!dados || dados.Status === 'inativo' || dados.Checkin30ColabEm || !dados.Admissao || !dados.Admissao.toDate) return;
+      const d = Math.floor((Date.now() - dados.Admissao.toDate().getTime()) / 86400000);
+      if (d < 28 || d > 75) return;
+      pmDados = dados; pmCpf = cpf;
+      mostrarCartaoPrimeiroMes();
+    } catch (e) { console.error('1º mês:', e); }
+  }
+  window.abrirPrimeiroMes = function(){ montarModalPrimeiroMes(); document.getElementById('pmErro').style.display = 'none'; openModal('modalPrimeiroMes'); };
+  window.enviarPrimeiroMes = async function(){
+    const m = document.getElementById('modalPrimeiroMes'), erro = document.getElementById('pmErro');
+    const r = {}; ['Chegada', 'Seguranca', 'Tratamento', 'Futuro'].forEach(k => { const b = m.querySelector(`.pm-op.on[data-campo="${k}"]`); r[k] = b ? b.dataset.valor : ''; });
+    if (Object.values(r).some(v => !v)) { erro.textContent = LL('Responda as 4 perguntas para enviar.', 'Responde las 4 preguntas para enviar.'); erro.style.display = 'block'; return; }
+    const btn = document.getElementById('pmEnviar'); btn.disabled = true;
+    try {
+      const dd = pmDados || {}, adm = dd.Admissao && dd.Admissao.toDate ? dd.Admissao.toDate() : null;
+      await setDoc(doc(db, 'checkins30Colab', pmCpf), { Cpf: pmCpf, Nome: dd.Nome || '', Loja: dd.Loja || '', Regional: dd.Regional || '', Local: dd.Local || 'Loja', Cargo: dd.Cargo || '',
+        CpfGestor: dd.CpfGestor || '', DiasDeCasa: adm ? Math.floor((Date.now() - adm.getTime()) / 86400000) : null, ...r,
+        Comentario: (document.getElementById('pmComentario').value || '').trim(), RespondidoEm: serverTimestamp(), Versao: 1 });
+      await setDoc(doc(db, 'colaboradores', pmCpf), { Checkin30ColabEm: serverTimestamp() }, { merge: true });
+      closeModal('modalPrimeiroMes');
+      const c = document.getElementById('pmCartao');
+      if (c) { c.innerHTML = `<div><b>${LL('Obrigado por contar!', '¡Gracias por contarnos!')}</b><span>${LL('Suas respostas foram para o DHO.', 'Tus respuestas fueron a DHO.')}</span></div>`; setTimeout(() => c.remove(), 6000); }
+    } catch (e) {
+      console.error('1º mês: erro ao salvar', e);
+      erro.textContent = LL('Não conseguimos enviar agora. Tente de novo em instantes.', 'No pudimos enviar ahora. Intenta de nuevo en un momento.'); erro.style.display = 'block';
+    } finally { btn.disabled = false; }
+  };
+
   async function verificarPesquisasMarco(cpf, dados){
     if (!dados.Admissao || !dados.Admissao.toDate) return; // sem data de admissão cadastrada, não dá pra calcular
     try {
@@ -6885,7 +6993,8 @@ function configurarGateConclusao(c){
       { id: 'c1', t: 'Feedback ao fim de cada turno', d: 'Ao fim de cada turno, você ou o orientador conta em poucos minutos o que foi bem e o que ajustar no próximo.' },
       { id: 'c2', t: 'Conversa de fechamento da semana', d: 'No fim da primeira semana, converse a sós com a pessoa: como ela se sentiu, o que está difícil e onde precisa de apoio.' } ] },
     { id: 'd30', titulo: '30 dias', sub: 'Fechando o primeiro mês', prazo: 35, itens: [
-      { id: 'd1', t: 'Conversa de 30 dias realizada', d: 'Conversa a sós com a pessoa para dar feedback sobre o 1º mês: o que está indo bem, o que melhorar e como ela se sente. O resumo dessa conversa é registrado no ponto de checagem, logo abaixo.' } ] }
+      { id: 'd1', t: 'Conversa de 30 dias realizada', d: 'Conversa a sós com a pessoa para dar feedback sobre o 1º mês: o que está indo bem, o que melhorar e como ela se sente. O resumo dessa conversa é registrado no ponto de checagem, logo abaixo.' },
+      { id: 'd2', auto: 'primeiroMes', t: 'Colaborador respondeu o "Seu 1º mês" na Jornada', d: 'Entre o dia 28 e o 75 de casa, a Jornada pede para a pessoa contar como está sendo o 1º mês. As respostas vão só para o DHO: aqui você vê apenas se ela já respondeu. Se ainda não respondeu, lembre a pessoa.' } ] }
   ];
   window.CHECKLIST_BLOCOS = CHECKLIST_BLOCOS;
   window.__checklistCache = window.__checklistCache || {};
@@ -6925,10 +7034,15 @@ function configurarGateConclusao(c){
     const blocos = {};
     CHECKLIST_BLOCOS.forEach(b => {
       let f = 0;
-      b.itens.forEach(it => { if ((itens[it.id] && itens[it.id].feito) || (it.auto === 'trilhas' && trilhasOk)) f++; });
-      blocos[b.id] = { feitos: f, total: b.itens.length };
+      let fObrig = 0, tObrig = 0;
+      b.itens.forEach(it => {
+        const ok = (itens[it.id] && itens[it.id].feito) || (it.auto === 'trilhas' && trilhasOk) || (it.auto === 'primeiroMes' && !!c.Checkin30ColabEm);
+        if (ok) f++;
+        if (it.auto !== 'primeiroMes') { tObrig++; if (ok) fObrig++; }
+      });
+      blocos[b.id] = { feitos: f, total: b.itens.length, atrasa: fObrig < tObrig };
       feitos += f; total += b.itens.length;
-      if (dias !== null && dias > b.prazo && f < b.itens.length) atraso = true;
+      if (dias !== null && dias > b.prazo && fObrig < tObrig) atraso = true;
     });
     return { feitos, total, pct: Math.round((feitos / total) * 100), atraso, blocos, dias, trilhasOk };
   }
@@ -6970,13 +7084,13 @@ function configurarGateConclusao(c){
     if (!ckEditavel) h += `<p style="font-size:12.5px; color:var(--ink-soft); margin:-4px 0 14px;">Só o gestor direto desta pessoa marca os itens. Você está vendo o andamento.</p>`;
     CHECKLIST_BLOCOS.forEach(b => {
       const bl = r.blocos[b.id];
-      const atrasado = r.dias !== null && r.dias > b.prazo && bl.feitos < bl.total;
+      const atrasado = r.dias !== null && r.dias > b.prazo && bl.atrasa;
       h += `<div class="ck-bloco"><div class="ck-bloco-h"><div><b>${b.titulo}</b><small>${b.sub}</small></div><span class="ck-cont ${bl.feitos === bl.total ? 'ok' : atrasado ? 'atraso' : ''}">${bl.feitos === bl.total ? '✓ ' : ''}${bl.feitos}/${bl.total}${atrasado ? ' · atrasado' : ''}</span></div>`;
       b.itens.forEach(it => {
         const x = itens[it.id];
-        const auto = it.auto === 'trilhas' && r.trilhasOk;
+        const auto = (it.auto === 'trilhas' && r.trilhasOk) || (it.auto === 'primeiroMes' && !!c.Checkin30ColabEm);
         const feito = !!(x && x.feito) || auto;
-        const meta = auto ? '<span class="ck-auto">Automático</span>' : (feito && x && x.em ? `<span class="ck-meta">${dataCurta(x.em)}${x.por ? '<br>' + String(x.por).split(' ')[0] : ''}</span>` : (it.auto === 'trilhas' ? '<span class="ck-meta">marca sozinho quando<br>concluir na Jornada</span>' : ''));
+        const meta = auto ? '<span class="ck-auto">Automático</span>' : (feito && x && x.em ? `<span class="ck-meta">${dataCurta(x.em)}${x.por ? '<br>' + String(x.por).split(' ')[0] : ''}</span>` : (it.auto === 'trilhas' ? '<span class="ck-meta">marca sozinho quando<br>concluir na Jornada</span>' : it.auto === 'primeiroMes' ? '<span class="ck-meta">marca sozinho quando<br>a pessoa responder</span>' : ''));
         const clicavel = ckEditavel && !auto;
         h += `<${clicavel ? 'button' : 'div'} class="ck-item ${feito ? 'feito' : ''} ${clicavel ? '' : 'somente'}" ${clicavel ? `onclick="window.alternarItemChecklist('${it.id}')"` : ''}><span class="ck-box">${feito ? '✓' : ''}</span><span class="ck-txt"><b class="ck-tit">${it.t}</b>${it.d ? `<span class="ck-det">${it.d}</span>` : ''}</span>${meta}</${clicavel ? 'button' : 'div'}>`;
       });
@@ -7121,7 +7235,8 @@ function configurarGateConclusao(c){
       ? `<h5>Trilhas que faltam</h5><ul class="eq-falta">${falta.map(f => `<li><span>${nomeTrilhaCurto(f.n)}</span><span class="eq-tag ${f.k}">${f.t}</span></li>`).join('')}</ul>`
       : (l.total ? `<h5>Trilhas</h5><p class="jornada-vazio" style="text-align:left; padding:6px 0 0;">Todas concluídas.</p>` : '');
     const reg30 = window.__checkin30Cache[l.cpf];
-    const ponto = !x.p30 ? '' : `<h5>Conversa de 30 dias</h5><div class="eq-ponto30">${
+    const contou = x.c && x.c.Checkin30ColabEm ? `<p class="eq-contou">${LL('Já contou como está sendo o 1º mês (as respostas ficam com o DHO).', 'Ya contó cómo va su 1er mes (las respuestas quedan con DHO).')}</p>` : '';
+    const ponto = !x.p30 ? '' : `<h5>Conversa de 30 dias</h5>${contou}<div class="eq-ponto30">${
       x.p30 === 'pendente' ? `<span>Já pode fazer a conversa a sós e registrar o ponto de checagem.</span><button class="btn-primary" style="padding:8px 14px; font-size:12.5px;" onclick="window.abrirCheckin30('${l.cpf}')">Preencher ponto de 30 dias</button>`
       : x.p30 === 'feito' ? `<span class="eq-tag ok">Registrado${reg30 && reg30.DataConversa ? ' · conversa em ' + String(reg30.DataConversa).split('-').reverse().slice(0, 2).join('/') : ''}</span>`
       : `<span>Libera no dia 30 de casa${x.dias !== null && x.dias < 30 ? ' (faltam ' + (30 - Math.max(x.dias, 0)) + ' dias)' : ''}.</span>`}</div>`;
@@ -8060,6 +8175,17 @@ function configurarGateConclusao(c){
     macrocargoColaboradorAtual = dados.Macrocargo || '';
     nivelColaboradorAtual = nivel;
     window.__ehAdmin = (nivel === 'Admin');
+    {
+      // quem vê "Trilha de admissão": Admin, diretoria de RH, gerente e coordenador de loja, coordenador e gerente de operações
+      const cg = String(cargo || '').toUpperCase(), dir = String(dados.Diretoria || '').toLowerCase();
+      const lojaLideranca = (dados.Local || 'Loja') === 'Loja' && (cg.startsWith('GERENTE') || cg.startsWith('COORDENADOR'));
+      const operacoes = cg.includes('DE OPERAÇÕES') || cg.includes('DE OPERACOES') || cg.includes('REGIONAL');
+      const rh = dir.includes('recursos humanos');
+      const ve = nivel === 'Admin' || rh || lojaLideranca || operacoes;
+      const nav = document.getElementById('navTrilhaAdmissao'), menu = document.getElementById('menuTrilhaAdmissao');
+      if (nav) nav.style.display = ve ? '' : 'none';
+      if (menu) menu.style.display = ve ? '' : 'none';
+    }
     if (window.__ehAdmin) {
       const sc = document.getElementById('cursos');
       if (sc) {
@@ -8079,6 +8205,7 @@ function configurarGateConclusao(c){
     iniciarBanners();
     iniciarLojaVisibilidade();
     verificarPesquisasMarco(cpf, dados);
+    verificarPrimeiroMes(cpf, dados);
     carregarEstadoFases(cpf, dados);
     iniciarCarta(dados);
     iniciarPainelGestor(cpf);

@@ -672,6 +672,7 @@ window.MARCA_ATIVA = 'jornada';
           <div class="ptab" data-sub="acompanhamento" onclick="mudarSubRelatorio('acompanhamento', this)">Acompanhamento</div>
           <div class="ptab" data-sub="desligamentos" onclick="mudarSubRelatorio('desligamentos', this)">Pareceres de desligamento</div>
           <div class="ptab" data-sub="checkin30" onclick="mudarSubRelatorio('checkin30', this)">Ponto de 30 dias</div>
+          <div class="ptab" data-sub="primeiroMes" onclick="mudarSubRelatorio('primeiroMes', this)">1º mês · colaborador</div>
         </div>
       </div>
 
@@ -887,6 +888,29 @@ window.MARCA_ATIVA = 'jornada';
           <table class="tb-base">
             <thead><tr><th>Colaborador</th><th>Loja · Regional</th><th>Conversa em</th><th>Integração</th><th>Aprendizado</th><th>Comportamento</th><th>Potencial</th></tr></thead>
             <tbody id="relCheckin30Body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== 1º MÊS NA VISÃO DO COLABORADOR (só o DHO vê) ===== -->
+      <div id="relSub-primeiroMes" class="rel-subview" style="display:none;">
+        <p class="muted" style="margin:0 0 14px; font-size:13px; color:var(--ink-soft);">O que a própria pessoa respondeu por volta do dia 30, ao lado do ponto de 30 dias do gerente. Só o DHO vê estas respostas: o gerente sabe apenas que a pessoa respondeu.</p>
+        <div class="kpi-row" id="pmKpis" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin-bottom:18px;"></div>
+        <div class="filtros-linha" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px;">
+          <select id="pmFLocal" onchange="renderPrimeiroMes()"><option value="">Local: todos</option><option>Loja</option><option>Casa Cabana</option><option>Cozinha Central</option></select>
+          <label class="flt-check"><input type="checkbox" id="pmFAlerta" onchange="renderPrimeiroMes()"> Só com alerta</label>
+          <label class="flt-check"><input type="checkbox" id="pmFDiv" onchange="renderPrimeiroMes()"> Só onde gerente e pessoa discordam</label>
+          <input id="pmFBusca" type="search" placeholder="Buscar nome…" oninput="renderPrimeiroMes()">
+          <button class="ghost-btn" onclick="exportarPrimeiroMes()">⬇ Exportar</button>
+        </div>
+        <details class="rep-card" style="margin-bottom:18px;">
+          <summary style="cursor:pointer; font-family:var(--display); font-size:15.5px;">Aguardando a resposta da pessoa <span class="cnt-pill" id="pmPendCnt">0</span></summary>
+          <div id="pmPendentes" style="margin-top:12px;"></div>
+        </details>
+        <div class="panel-card" style="overflow-x:auto;">
+          <table class="tb-base">
+            <thead><tr><th>Colaborador</th><th>Loja · local</th><th>Respondeu em</th><th>Chegada no time</th><th>Segurança no trabalho</th><th>Como é tratado(a)</th><th>Se vê no Cabana</th><th>Gerente (ponto de 30 dias)</th></tr></thead>
+            <tbody id="pmBody"></tbody>
           </table>
         </div>
       </div>
@@ -2130,6 +2154,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     iniciarRelatorios();
     iniciarDesligamentos();
     iniciarCheckin30();
+    iniciarPrimeiroMes();
     iniciarBiblioteca();
     iniciarBanners();
     iniciarIdentidade();
@@ -5070,7 +5095,10 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
       }
 
       let adicionados = 0, atualizados = 0, contasCriadas = 0;
-      const batch = writeBatch(db);
+      // O Firebase aceita no máximo 500 gravações por lote. As gravações entram numa fila e são
+      // enviadas em lotes de 400, para a sincronização funcionar com qualquer tamanho de planilha.
+      const fila = [];
+      const batch = { set: (...a) => fila.push(b => b.set(...a)), update: (...a) => fila.push(b => b.update(...a)) };
 
       for (const l of linhasValidas) {
         const jaExistia = cpfsExistentesAntes.has(l.cpf);
@@ -5113,7 +5141,11 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
         }
       });
 
-      await batch.commit();
+      for (let k = 0; k < fila.length; k += 400) {
+        const lote = writeBatch(db);
+        fila.slice(k, k + 400).forEach(f => f(lote));
+        await lote.commit();
+      }
 
       // cria login só pra quem é realmente novo (evita mexer em quem já tinha conta)
       // usa cpfsExistentesAntes (fixo, de antes do commit) e não colaboradoresCache,
@@ -5184,6 +5216,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     onSnapshot(collection(db, 'checkins30'), (snapshot) => {
       checkins30Cache = snapshot.docs.map(d => ({ cpf: d.id, ...d.data() }));
       renderCheckin30Relatorio();
+      if (window.renderPrimeiroMes) window.renderPrimeiroMes();
       renderDesligamentos();
     }, (err) => console.error('Erro ao carregar check-ins de 30 dias:', err));
   }
@@ -5368,6 +5401,81 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     if (reg.length === 1) reg.push(['Nenhum parecer com esses filtros.']);
     const pend = [['Colaborador', 'Cargo', 'Loja'], ...(ultimoDesligamentosCache.pendentes.length ? ultimoDesligamentosCache.pendentes.map(c => [c.Nome || c.cpf, c.Cargo || '', c.Loja || '']) : [['Ninguém aguardando parecer.', '', '']])];
     baixarXLSXMultiAba([{ nome: 'Pareceres', linhas: reg }, { nome: 'Aguardando parecer', linhas: pend }], `pareceres-desligamento-${new Date().toISOString().slice(0, 10)}.xlsx`);
+  };
+
+
+  /* ================== 1º MÊS NA VISÃO DO COLABORADOR ================== */
+  let primeiroMesCache = [];
+  const PM_ROT = { verde: 'Indo bem', amarelo: 'Mais ou menos', vermelho: 'Difícil' };
+  const PM_FUT = { sim: 'Sim', talvez: 'Talvez', nao: 'Não' };
+  const PM_FUT_COR = { sim: '#4F9C40', talvez: '#D89840', nao: '#B4462B' };
+  function iniciarPrimeiroMes(){
+    onSnapshot(collection(db, 'checkins30Colab'), (snapshot) => {
+      primeiroMesCache = snapshot.docs.map(d => ({ cpf: d.id, ...d.data() }));
+      renderPrimeiroMes();
+    }, (err) => console.error('Erro ao carregar o 1º mês dos colaboradores:', err));
+  }
+  const pmNota = { verde: 2, amarelo: 1, vermelho: 0 };
+  function pmEnriquecer(){
+    return primeiroMesCache.map(r => {
+      const col = colaboradoresCache.find(x => x.cpf === r.cpf) || {};
+      const g = checkins30Cache.find(x => x.cpf === r.cpf) || null;
+      const alertas = [];
+      [['Chegada', 'chegada'], ['Seguranca', 'segurança no trabalho'], ['Tratamento', 'como é tratado(a)']].forEach(([k, n]) => { if (r[k] === 'vermelho') alertas.push(n + ': difícil'); });
+      if (r.Futuro === 'nao') alertas.push('não se vê no Cabana'); else if (r.Futuro === 'talvez') alertas.push('talvez continue');
+      // discordância: a média da pessoa fica bem abaixo da média do gerente (ou o contrário)
+      let div = false;
+      if (g) {
+        const mp = ['Chegada', 'Seguranca', 'Tratamento'].map(k => pmNota[r[k]]).filter(v => v !== undefined);
+        const mg = ['Integracao', 'Treinamento', 'Comportamento'].map(k => pmNota[g[k]]).filter(v => v !== undefined);
+        if (mp.length && mg.length) div = Math.abs(mp.reduce((a, b) => a + b, 0) / mp.length - mg.reduce((a, b) => a + b, 0) / mg.length) >= 1;
+        if ((r.Futuro === 'nao' || r.Futuro === 'talvez') && (g.Potencial === 'sim' || g.Potencial === 'sim_desenvolver')) div = true;
+      }
+      return { ...r, _col: col, _g: g, _alertas: alertas, _div: div, _em: aTs(r.RespondidoEm),
+        Nome: r.Nome || col.Nome || r.cpf, Loja: r.Loja || col.Loja || '', Local: r.Local || col.Local || 'Loja' };
+    });
+  }
+  let ultimoPrimeiroMes = null;
+  window.renderPrimeiroMes = function renderPrimeiroMes(){
+    const corpo = document.getElementById('pmBody');
+    if (!corpo) return;
+    const todos = pmEnriquecer();
+    const fLocal = document.getElementById('pmFLocal').value, fAl = document.getElementById('pmFAlerta').checked,
+          fDiv = document.getElementById('pmFDiv').checked, fBusca = document.getElementById('pmFBusca').value.trim().toLowerCase();
+    const lista = todos.filter(r => (!fLocal || r.Local === fLocal) && (!fAl || r._alertas.length) && (!fDiv || r._div) && (!fBusca || String(r.Nome).toLowerCase().includes(fBusca)))
+      .sort((a, b) => (b._em || 0) - (a._em || 0));
+    const agora = new Date(), feitos = new Set(primeiroMesCache.map(r => r.cpf));
+    const pendentes = colaboradoresCache.filter(c => {
+      if (c.Status === 'inativo' || !c.Admissao || !c.Admissao.toDate || c.Nivel === 'Admin') return false;
+      const d = Math.floor((agora - c.Admissao.toDate()) / 86400000);
+      return d >= 28 && d <= 75 && !feitos.has(c.cpf);
+    });
+    document.getElementById('pmPendentes').innerHTML = renderListaCard(pendentes.map(c => linhaSimples(c.Nome || c.cpf, [c.Loja, c.Local || 'Loja'].filter(Boolean).join(' · '))), 'Ninguém aguardando agora.', 12);
+    document.getElementById('pmPendCnt').textContent = pendentes.length;
+    const comAl = lista.filter(r => r._alertas.length).length, comDiv = lista.filter(r => r._div).length;
+    document.getElementById('pmKpis').innerHTML =
+      aKpi('Respostas', lista.length, lista.length !== todos.length ? `de ${todos.length} no total` : 'pessoas que responderam') +
+      aKpi('Aguardando', pendentes.length, 'entre 28 e 75 dias de casa', pendentes.length ? '#D89840' : '') +
+      aKpi('Com sinal de alerta', comAl, '"difícil" ou dúvida sobre continuar', comAl ? '#B4462B' : '') +
+      aKpi('Gerente e pessoa discordam', comDiv, 'olhar com atenção', comDiv ? '#B4462B' : '');
+    const cel = v => `<span class="farol-cel"><i class="fdot" style="background:${A_COR[v] || '#CFC8B8'}"></i>${PM_ROT[v] || '—'}</span>`;
+    const ger = (g, r) => (r && r.Local && r.Local !== 'Loja') ? '<span class="muted">não se aplica (fora de loja)</span>' : g ? `<span class="farol-cel"><i class="fdot" style="background:${A_COR[g.Integracao] || '#CFC8B8'}"></i><i class="fdot" style="background:${A_COR[g.Treinamento] || '#CFC8B8'}"></i><i class="fdot" style="background:${A_COR[g.Comportamento] || '#CFC8B8'}"></i> ${aEsc(A_POT_ROT[g.Potencial] || '')}</span>` : '<span class="muted">ainda não registrou</span>';
+    corpo.innerHTML = lista.length ? lista.map(r => `<tr${r._div ? ' style="background:#FBEDE8;"' : ''}>
+        <td><b>${aEsc(r.Nome)}</b>${r._div ? '<br><small style="color:#B4462B; font-weight:700;">gerente e pessoa discordam</small>' : ''}${r.Comentario ? `<br><small class="muted" title="${aEsc(r.Comentario)}">“${aEsc(String(r.Comentario).slice(0, 90))}${String(r.Comentario).length > 90 ? '…' : ''}”</small>` : ''}</td>
+        <td>${aEsc([r.Loja, r.Local].filter((v, i, a) => v && a.indexOf(v) === i).join(' · '))}</td><td>${r._em ? r._em.toLocaleDateString('pt-BR') : '—'}</td>
+        <td>${cel(r.Chegada)}</td><td>${cel(r.Seguranca)}</td><td>${cel(r.Tratamento)}</td>
+        <td><span class="farol-cel"><i class="fdot" style="background:${PM_FUT_COR[r.Futuro] || '#CFC8B8'}"></i>${PM_FUT[r.Futuro] || '—'}</span></td>
+        <td>${ger(r._g, r)}</td></tr>`).join('')
+      : `<tr><td colspan="8" style="color:var(--ink-soft); font-size:13px;">Nenhuma resposta ${todos.length ? 'com esses filtros' : 'ainda'}.</td></tr>`;
+    ultimoPrimeiroMes = { lista, pendentes };
+  };
+  window.exportarPrimeiroMes = function(){
+    if (!ultimoPrimeiroMes) { alert('Ainda não há dados pra exportar.'); return; }
+    const linhas = [['Colaborador', 'CPF', 'Loja', 'Local', 'Respondeu em', 'Chegada no time', 'Segurança no trabalho', 'Como é tratado(a)', 'Se vê no Cabana', 'Comentário', 'Gerente: integração', 'Gerente: aprendizado', 'Gerente: comportamento', 'Gerente: potencial', 'Discordam']];
+    ultimoPrimeiroMes.lista.forEach(r => linhas.push([r.Nome, r.cpf, r.Loja, r.Local, r._em ? r._em.toLocaleDateString('pt-BR') : '', PM_ROT[r.Chegada] || '', PM_ROT[r.Seguranca] || '', PM_ROT[r.Tratamento] || '', PM_FUT[r.Futuro] || '', r.Comentario || '',
+      r._g ? (A_FAROL_ROT[r._g.Integracao] || '') : '', r._g ? (A_FAROL_ROT[r._g.Treinamento] || '') : '', r._g ? (A_FAROL_ROT[r._g.Comportamento] || '') : '', r._g ? (A_POT_ROT[r._g.Potencial] || '') : '', r._div ? 'Sim' : 'Não']));
+    const pend = [['Colaborador', 'Loja', 'Local'], ...ultimoPrimeiroMes.pendentes.map(c => [c.Nome || c.cpf, c.Loja || '', c.Local || 'Loja'])];
+    baixarXLSXMultiAba([{ nome: '1º mês', linhas }, { nome: 'Aguardando', linhas: pend }], `primeiro-mes-colaborador-${new Date().toISOString().slice(0, 10)}.xlsx`);
   };
 
   /* ================== PONTO DE CHECAGEM · 30 DIAS ================== */
