@@ -3355,7 +3355,7 @@ window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && S
   html.cd .publico-trilha b{ color:var(--texto); font-weight:600; }
 
   /* Seu 1º mês: cartão na home e perguntas */
-  .pm-cartao{ display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-top:16px; padding:18px 20px; border-radius:16px; background:#fff; }
+  .pm-cartao{ display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin:0 0 16px; padding:18px 20px; border-radius:16px; background:#fff; }
   .pm-cartao div{ display:flex; flex-direction:column; gap:2px; }
   html.cd .pm-cartao{ background:var(--superficie); border-radius:var(--raio-grande); padding:var(--espaco-5) var(--espaco-6); }
   html.cd .pm-rotulo{ font-size:0.9375rem; font-weight:600; color:var(--acao-texto); }
@@ -3364,7 +3364,8 @@ window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && S
   html.cd .pm-cartao .btn-primary{ min-height:var(--ctl-grande); padding:0 var(--espaco-6); }
   .pm-grupo{ margin-top:14px; }
   .pm-perg{ font-weight:600; margin:0 0 8px; display:block; }
-  .pm-ops{ display:flex; gap:8px; flex-wrap:wrap; }
+  .pm-ops{ display:flex; gap:8px; }
+  .pm-ops .pm-op{ flex:1 1 0; min-width:0; text-align:center; padding-left:8px; padding-right:8px; }
   .pm-op{ border:0; border-radius:999px; padding:10px 16px; cursor:pointer; background:#F2F2F7; font:inherit; font-weight:600; }
   .pm-op.on{ background:#00630F; color:#fff; }
   html.cd .pm-caixa h3{ font-family:var(--font-sans); font-size:1.375rem; font-weight:700; color:var(--texto); }
@@ -5643,14 +5644,15 @@ function configurarGateConclusao(c){
   }
   function mostrarCartaoPrimeiroMes(){
     if (document.getElementById('pmCartao')) return;
-    const alvo = document.querySelector('.level-block') || document.getElementById('obrigatorios');
+    const lc = document.querySelector('.level-card');
+    const alvo = lc ? lc.parentNode : (document.querySelector('.level-block') || document.getElementById('obrigatorios'));
     if (!alvo) return;
     const c = document.createElement('div');
     c.id = 'pmCartao'; c.className = 'pm-cartao';
     c.innerHTML = `<div><small class="pm-rotulo">${LL('Seu 1º mês', 'Tu 1er mes')}</small><b>${LL('Como está sendo até aqui?', '¿Cómo va hasta ahora?')}</b>
       <span>${LL('São 4 perguntas rápidas. As respostas ficam só com o DHO.', 'Son 4 preguntas rápidas. Las respuestas quedan solo con DHO.')}</span></div>
       <button type="button" class="btn-primary" onclick="window.abrirPrimeiroMes()">${LL('Responder', 'Responder')}</button>`;
-    alvo.appendChild(c);
+    if (lc) alvo.insertBefore(c, lc); else alvo.appendChild(c);   // antes do cartão "Sua chegada": aparece logo no começo, também no celular
   }
   async function verificarPrimeiroMes(cpf, dados){
     try {
@@ -5659,6 +5661,15 @@ function configurarGateConclusao(c){
       if (d < 28 || d > 75) return;
       pmDados = dados; pmCpf = cpf;
       mostrarCartaoPrimeiroMes();
+      // abre sozinho uma vez por dia, se não houver outro aviso na tela (o cartão continua lá para responder depois)
+      const hoje = new Date().toISOString().slice(0, 10), chave = 'jornada-1mes-' + cpf;
+      let ultimo = ''; try { ultimo = localStorage.getItem(chave) || ''; } catch (e) {}
+      if (ultimo !== hoje) setTimeout(() => {
+        const ocupado = [...document.querySelectorAll('[id^="modal"]')].some(m => m.style.display === 'flex');
+        if (ocupado || document.getElementById('pmCartao') === null) return;
+        try { localStorage.setItem(chave, hoje); } catch (e) {}
+        window.abrirPrimeiroMes();
+      }, 1800);
     } catch (e) { console.error('1º mês:', e); }
   }
   window.abrirPrimeiroMes = function(){ montarModalPrimeiroMes(); document.getElementById('pmErro').style.display = 'none'; openModal('modalPrimeiroMes'); };
