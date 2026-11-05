@@ -5697,12 +5697,15 @@ function configurarGateConclusao(c){
       // esse e abrir de novo depois, ainda pega o de 45 (nunca fechado), parecendo que o popup não
       // para de aparecer. diasMax limita cada marco à janela em que a mensagem faz sentido; fora
       // dela, nenhum dos dois aparece, mesmo que nunca tenha sido fechado.
+      const lojaNova = Array.isArray(config.LojasPesquisa20) && config.LojasPesquisa20.includes(dados.Loja);
       const marcos = [
         { dias: 90, diasMax: 134, campo: 'Pesquisa90Fechada', link: config.Link90, emoji: '🎉', titulo: 'Você está há 90 dias no Cabana!',
           texto: 'Já faz três meses! Queremos ouvir como você está se sentindo nessa fase. A pesquisa é confidencial e leva poucos minutos — sua opinião ajuda a construir um Cabana cada vez melhor.' },
         { dias: 45, diasMax: 89, campo: 'Pesquisa45Fechada', link: config.Link45, emoji: '🎉', titulo: 'Você está há 45 dias no Cabana!',
           texto: 'Queremos saber como está sendo essa experiência até aqui. Responda nossa pesquisa — é rápida, confidencial, e ajuda a gente a melhorar cada vez mais o dia a dia de quem trabalha com a gente.' },
       ];
+      if (lojaNova && config.Link20) marcos.push({ dias: 20, diasMax: 44, campo: 'Pesquisa20Fechada', link: config.Link20, emoji: '🎉', titulo: 'Você está há 20 dias no Cabana!',
+        texto: 'Sua loja é nova e a gente quer saber como estão sendo esses primeiros dias. A pesquisa é confidencial e leva poucos minutos.' });
 
       // mostra o marco mais recente que a pessoa já atingiu, ainda dentro da janela, e ainda não dispensou
       // (90 tem prioridade sobre 45)
@@ -5753,7 +5756,7 @@ function configurarGateConclusao(c){
     const E = window.__fasesEstado;
     if (!currentCpf) return;
     if (!semConfirmar && !confirm(IDIOMA === 'es' ? '¿Confirmas que respondiste la encuesta de ' + n + ' días?' : 'Confirma que você respondeu a pesquisa de ' + n + ' dias?')) return;
-    const campo = n === 45 ? 'Pesquisa45Respondida' : 'Pesquisa90Respondida';
+    const campo = 'Pesquisa' + n + 'Respondida';
     try {
       await setDoc(doc(db, 'colaboradores', currentCpf), { [campo]: serverTimestamp(), ['Pesquisa' + n + 'Fechada']: true }, { merge: true });
     } catch (err) {
@@ -5761,7 +5764,7 @@ function configurarGateConclusao(c){
       alert(IDIOMA === 'es' ? 'No se pudo guardar ahora. Inténtalo de nuevo.' : 'Não deu pra salvar agora. Tenta de novo em instantes.');
       return;
     }
-    E[n === 45 ? 'p45' : 'p90'] = new Date();
+    if (n === 45 || n === 90) E[n === 45 ? 'p45' : 'p90'] = new Date();
     if (window.renderJornada) window.renderJornada();
   };
   // o gestor vê em que fase cada pessoa do time está: a própria pessoa grava a fase quando ela muda (só quando muda)
@@ -5830,7 +5833,7 @@ function configurarGateConclusao(c){
     const m = marcoPesquisaAtual;
     document.getElementById('modalPesquisaMarco').style.display = 'none';
     marcoPesquisaAtual = null;
-    if (m) await window.__marcarPesquisaRespondida(m.dias === 45 ? 45 : 90, true);
+    if (m) await window.__marcarPesquisaRespondida(m.dias, true);
   };
 
   function carregarCategorias(){
