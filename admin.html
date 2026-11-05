@@ -598,6 +598,22 @@ window.MARCA_ATIVA = 'jornada';
               <input type="text" id="pesquisaLink90Input" placeholder="Cole o link do Google Forms">
             </div>
           </div>
+          <div class="upload-block" style="margin-top:6px;">
+            <div class="txt">
+              <b>Pesquisa de 20 dias (só lojas novas)</b>
+              <span>Aparece do dia 20 ao 44 de casa só para quem é das lojas marcadas abaixo. Quando a loja deixar de ser nova, é só desmarcar.</span>
+            </div>
+          </div>
+          <div class="field-row" style="margin-bottom:10px;">
+            <div class="field">
+              <label>Link da pesquisa de 20 dias</label>
+              <input type="text" id="pesquisaLink20Input" placeholder="Cole o link do Google Forms">
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:14px;">
+            <label>Lojas novas</label>
+            <div id="lojasPesquisa20Chips" style="display:flex; flex-wrap:wrap; gap:6px;"></div>
+          </div>
           <button class="new-btn" onclick="salvarLinksPesquisa()">Salvar links das pesquisas</button>
           <div id="pesquisaLinksResultado" style="display:none; margin:10px 0 18px; font-size:13px; font-weight:600;"></div>
         </div>
@@ -618,7 +634,14 @@ window.MARCA_ATIVA = 'jornada';
             <div class="ptab" data-filtro="admin" onclick="filtrarColaboradores('admin', this)">Admins (0)</div>
           </div>
         </div>
-        <input type="text" class="search-in-panel" id="colabBusca" placeholder="🔎 Buscar por nome, loja ou cargo..." oninput="renderColaboradores()" style="width:100%; border:none; background:transparent; font:inherit; outline:none;">
+        <div class="colab-filtros" style="display:flex; gap:8px; flex-wrap:wrap; padding:12px 16px 0;">
+          <select id="colabFStatus" onchange="renderColaboradores()" aria-label="Status"><option value="ativo">Só ativos</option><option value="inativo">Só inativos</option><option value="">Ativos e inativos</option></select>
+          <select id="colabFLoja" onchange="renderColaboradores()" aria-label="Loja"><option value="">Todas as lojas</option></select>
+          <select id="colabFRegional" onchange="renderColaboradores()" aria-label="Regional"><option value="">Todas as regionais</option></select>
+          <select id="colabFLocal" onchange="renderColaboradores()" aria-label="Local"><option value="">Todos os locais</option><option>Loja</option><option>Casa Cabana</option><option>Cozinha Central</option></select>
+          <span id="colabContagem" style="align-self:center; font-size:12.5px; color:var(--ink-soft); margin-left:auto;"></span>
+        </div>
+        <input type="text" class="search-in-panel" id="colabBusca" placeholder="🔎 Buscar por nome, CPF, loja, cargo ou gestor..." oninput="renderColaboradores()" style="width:100%; border:none; background:transparent; font:inherit; outline:none;">
         <table>
           <thead>
             <tr><th>Colaborador</th><th>CPF</th><th>Loja</th><th>Cargo</th><th>Status</th><th>Último acesso</th><th>Acessos</th><th>Nível</th><th></th></tr>
@@ -1699,8 +1722,9 @@ window.MARCA_ATIVA = 'jornada';
       </div>
       <div class="field-row">
         <div class="field">
-          <label>Cargo</label>
-          <select id="colabCargoInput" onchange="atualizarMacrocargoVisivelDoColaborador()">
+          <label for="colabCargoBusca">Cargo</label>
+          <input type="search" id="colabCargoBusca" placeholder="Digite para buscar o cargo" autocomplete="off" oninput="filtrarCargoColab()" style="margin-bottom:6px;">
+          <select id="colabCargoInput" aria-label="Cargo" onchange="atualizarMacrocargoVisivelDoColaborador()">
             <option>Atendente de Salão</option><option>Atendente de Caixa</option><option>Cozinheiro(a)</option>
             <option>Auxiliar de Cozinha</option><option>Entregador(a) / Delivery</option><option>Líder de Loja</option>
             <option>Gerente de Loja</option><option>Gerente Regional</option><option>Administrativo</option>
@@ -2182,15 +2206,35 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
       const input90 = document.getElementById('pesquisaLink90Input');
       if (input45 && document.activeElement !== input45) input45.value = dados.Link45 || '';
       if (input90 && document.activeElement !== input90) input90.value = dados.Link90 || '';
+      const input20 = document.getElementById('pesquisaLink20Input');
+      if (input20 && document.activeElement !== input20) input20.value = dados.Link20 || '';
+      lojasPesquisa20 = Array.isArray(dados.LojasPesquisa20) ? dados.LojasPesquisa20.slice() : [];
+      renderLojasPesquisa20();
     }, (err) => console.error('Erro ao carregar configurações de pesquisa:', err));
   }
+  let lojasPesquisa20 = [];
+  function renderLojasPesquisa20(){
+    const el = document.getElementById('lojasPesquisa20Chips');
+    if (!el) return;
+    const nomes = [...new Set([...(lojasCache || []).map(l => l.nome), ...lojasPesquisa20])].filter(Boolean).sort((a, b) => a.localeCompare(b));
+    el.innerHTML = nomes.length ? nomes.map(n => `<button type="button" class="chip-toggle ${lojasPesquisa20.includes(n) ? 'on' : ''}" aria-pressed="${lojasPesquisa20.includes(n)}"
+      onclick="alternarLojaPesquisa20(this.dataset.loja)" data-loja="${n.replace(/"/g, '&quot;')}"
+      style="border:1.5px solid ${lojasPesquisa20.includes(n) ? 'var(--green)' : 'var(--line)'}; background:${lojasPesquisa20.includes(n) ? 'var(--green)' : '#fff'}; color:${lojasPesquisa20.includes(n) ? '#fff' : 'var(--ink)'}; border-radius:999px; padding:6px 12px; font-size:12.5px; font-weight:600; cursor:pointer;">${n}</button>`).join('')
+      : '<span style="font-size:13px; color:var(--ink-soft);">Nenhuma loja cadastrada ainda.</span>';
+  }
+  window.alternarLojaPesquisa20 = function(nome){
+    const i = lojasPesquisa20.indexOf(nome);
+    if (i >= 0) lojasPesquisa20.splice(i, 1); else lojasPesquisa20.push(nome);
+    renderLojasPesquisa20();
+  };
 
   window.salvarLinksPesquisa = async function(){
     const link45 = document.getElementById('pesquisaLink45Input').value.trim();
     const link90 = document.getElementById('pesquisaLink90Input').value.trim();
+    const link20 = (document.getElementById('pesquisaLink20Input') || { value: '' }).value.trim();
     const resultadoEl = document.getElementById('pesquisaLinksResultado');
     try {
-      await setDoc(doc(db, 'configuracoes', 'pesquisas'), { Link45: link45, Link90: link90 }, { merge: true });
+      await setDoc(doc(db, 'configuracoes', 'pesquisas'), { Link45: link45, Link90: link90, Link20: link20, LojasPesquisa20: lojasPesquisa20.slice() }, { merge: true });
       resultadoEl.textContent = '✅ Links salvos.';
       resultadoEl.style.color = 'var(--green-dark)';
       resultadoEl.style.display = 'block';
@@ -2207,6 +2251,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
       lojasCache = snapshot.docs.map(d => ({ nome: d.data().Nome, regional: d.data().Regional || '' })).sort((a, b) => a.nome.localeCompare(b.nome));
       renderRegionalSelect();
       renderLojaRegionalChips();
+      renderLojasPesquisa20();
     }, (err) => console.error('Erro ao carregar lojas:', err));
   }
 
@@ -2433,14 +2478,9 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     const cargos = cargosParaExibir();
     const macrocargos = macrocargosParaExibir();
 
-    // select do cadastro de colaborador
-    const colabSelect = document.getElementById('colabCargoInput');
-    if (colabSelect) {
-      const valorAtual = colabSelect.value;
-      colabSelect.innerHTML = cargos.map(nome => `<option>${nome}</option>`).join('');
-      if (valorAtual && cargos.includes(valorAtual)) colabSelect.value = valorAtual;
-      atualizarMacrocargoVisivelDoColaborador();
-    }
+    // select do cadastro de colaborador: em ordem alfabética, com busca digitando (campo logo acima)
+    window.__cargosColab = [...cargos].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+    if (document.getElementById('colabCargoInput')) window.filtrarCargoColab();
 
     // chips de "quem pode ver este curso"
     const visibChips = document.getElementById('visibChips');
@@ -2477,6 +2517,19 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     if (datalist) datalist.innerHTML = [...macrocargos, ...cargos].map(nome => `<option value="${nome}">`).join('');
   }
 
+  const semAcento = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  window.filtrarCargoColab = function(){
+    const sel = document.getElementById('colabCargoInput'), busca = document.getElementById('colabCargoBusca');
+    if (!sel) return;
+    const todos = window.__cargosColab || [];
+    const q = semAcento(busca ? busca.value.trim() : '');
+    const valorAtual = sel.value;
+    const lista = q ? todos.filter(n => semAcento(n).includes(q)) : todos;
+    sel.innerHTML = lista.length ? lista.map(n => `<option>${n}</option>`).join('') : '<option value="" disabled>Nenhum cargo com esse nome</option>';
+    if (valorAtual && lista.includes(valorAtual)) sel.value = valorAtual; else if (lista.length) sel.value = lista[0];
+    sel.size = q ? Math.min(8, Math.max(2, lista.length)) : 1;   // buscando: mostra a lista aberta para tocar no cargo
+    atualizarMacrocargoVisivelDoColaborador();
+  };
   // mostra, ao lado do select de Cargo no cadastro de colaborador, qual macrocargo esse cargo já carrega
   // (só informativo — o Macrocargo em si é definido na tela de Cargos, não aqui)
   function atualizarMacrocargoVisivelDoColaborador(){
@@ -4527,14 +4580,34 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     if (filtroColabAtual === 'nunca') lista = lista.filter(c => !c.UltimoAcesso);
     if (filtroColabAtual === 'admin') lista = lista.filter(c => c.Nivel === 'Admin');
 
-    const busca = (document.getElementById('colabBusca')?.value || '').toLowerCase().trim();
+    // filtros (status, loja, regional, local) e busca por nome, CPF, loja, cargo ou gestor, sem se importar com acento
+    const sa = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    const preencherSelect = (id, valores, rotuloTodos) => {
+      const el = document.getElementById(id); if (!el) return;
+      const atual = el.value;
+      el.innerHTML = `<option value="">${rotuloTodos}</option>` + valores.map(v => `<option>${v}</option>`).join('');
+      if (valores.includes(atual)) el.value = atual;
+    };
+    preencherSelect('colabFLoja', [...new Set(colaboradoresCache.map(c => c.Loja).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt-BR')), 'Todas as lojas');
+    preencherSelect('colabFRegional', [...new Set(colaboradoresCache.map(c => c.Regional).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt-BR')), 'Todas as regionais');
+    const fSt = document.getElementById('colabFStatus')?.value ?? 'ativo', fLj = document.getElementById('colabFLoja')?.value || '',
+          fRg = document.getElementById('colabFRegional')?.value || '', fLc = document.getElementById('colabFLocal')?.value || '';
+    if (fSt === 'ativo') lista = lista.filter(c => c.Status !== 'inativo');
+    if (fSt === 'inativo') lista = lista.filter(c => c.Status === 'inativo');
+    if (fLj) lista = lista.filter(c => c.Loja === fLj);
+    if (fRg) lista = lista.filter(c => c.Regional === fRg);
+    if (fLc) lista = lista.filter(c => (c.Local || 'Loja') === fLc);
+    const busca = sa(document.getElementById('colabBusca')?.value || '').trim();
     if (busca) {
+      const digitos = busca.replace(/\D/g, '');
       lista = lista.filter(c =>
-        (c.Nome || '').toLowerCase().includes(busca) ||
-        (c.Loja || '').toLowerCase().includes(busca) ||
-        (c.Cargo || '').toLowerCase().includes(busca)
+        sa(c.Nome).includes(busca) || sa(c.Loja).includes(busca) || sa(c.Cargo).includes(busca) || sa(c.Gestor).includes(busca) ||
+        (digitos.length >= 3 && String(c.cpf || '').includes(digitos))
       );
     }
+    lista = [...lista].sort((a, b) => String(a.Nome || '').localeCompare(String(b.Nome || ''), 'pt-BR'));
+    const cont = document.getElementById('colabContagem');
+    if (cont) cont.textContent = `${lista.length} ${lista.length === 1 ? 'pessoa' : 'pessoas'}`;
 
     if (!lista.length) {
       tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--ink-soft); padding:24px;">Nenhum colaborador encontrado.</td></tr>`;
@@ -4569,6 +4642,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     document.getElementById('colabCpfInput').value = '';
     document.getElementById('colabCpfInput').disabled = false;
     document.getElementById('colabAdmissaoInput').value = '';
+    { const cb = document.getElementById('colabCargoBusca'); if (cb) cb.value = ''; window.filtrarCargoColab(); }
     document.getElementById('colabCargoInput').selectedIndex = 0;
     atualizarMacrocargoVisivelDoColaborador();
     document.getElementById('colabNivelInput').selectedIndex = 0;
@@ -4604,6 +4678,8 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     document.getElementById('colabCpfInput').value = cpf;
     document.getElementById('colabCpfInput').disabled = true; // CPF é o identificador, não muda depois de criado
     document.getElementById('colabAdmissaoInput').value = (c.Admissao && c.Admissao.toDate) ? c.Admissao.toDate().toISOString().slice(0, 10) : '';
+    const cargoBusca = document.getElementById('colabCargoBusca'); if (cargoBusca) cargoBusca.value = '';
+    window.filtrarCargoColab();
     const cargoSelect = document.getElementById('colabCargoInput');
     [...cargoSelect.options].forEach((opt,i)=>{ if(opt.textContent === c.Cargo) cargoSelect.selectedIndex = i; });
     atualizarMacrocargoVisivelDoColaborador();
