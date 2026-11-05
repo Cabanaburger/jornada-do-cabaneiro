@@ -560,7 +560,20 @@ window.MARCA_ATIVA = 'jornada';
               <span><b>Só adicionar e atualizar.</b> Use para subir uma planilha só com as pessoas novas: ninguém que esteja fora dela é desativado.
               Deixe desmarcado quando a planilha tiver a base inteira e você quiser desativar quem saiu.</span>
             </label>
-            <button type="button" class="ghost-btn" style="align-self:flex-start;" onclick="baixarModeloColaboradores()">⬇ Baixar modelo da planilha</button>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <button type="button" class="ghost-btn" onclick="baixarModeloColaboradores()">⬇ Baixar modelo da planilha</button>
+              <button type="button" class="ghost-btn" onclick="gerarArquivoAcessos()">⬇ Gerar arquivo de acessos (carga grande)</button>
+            </div>
+            <span id="arquivoAcessosResultado" style="font-size:12.5px; color:var(--ink-soft);">Para subir mais de 100 pessoas novas de uma vez: escolha a planilha, gere o arquivo de acessos, importe no Firebase e só depois sincronize.</span>
+          </div>
+          <div id="acessosPendentesBloco" style="display:none; margin:-6px 0 18px; padding:12px 14px; border:1px solid #E8C9A0; border-radius:12px; background:#FBF1DC;">
+            <b style="font-size:13.5px;">Acessos que faltaram criar</b>
+            <p style="font-size:12.5px; color:var(--ink-soft); margin:4px 0 8px;">Um CPF por linha (ou separados por vírgula). O Firebase cria cerca de 100 acessos por hora do mesmo computador: se passar disso, espere 1 hora e tente de novo. A senha inicial é sempre os 6 últimos dígitos do CPF.</p>
+            <textarea id="acessosPendentesInput" rows="3" style="width:100%; font-family:monospace; font-size:12.5px;"></textarea>
+            <div style="display:flex; gap:8px; align-items:center; margin-top:8px; flex-wrap:wrap;">
+              <button type="button" class="new-btn" id="btnAcessosPendentes" onclick="criarAcessosPendentes()">Criar os acessos que faltaram</button>
+              <span id="acessosPendentesResultado" style="font-size:12.5px;"></span>
+            </div>
           </div>
           <div id="sincronizarResultado" style="display:none; margin:-6px 0 18px; font-size:13px; font-weight:600;"></div>
 
@@ -4903,6 +4916,80 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
 
   let arquivoExcelEscolhido = null;
   // modelo da planilha de colaboradores, com as colunas que a sincronização lê
+  function mostrarAcessosPendentes(){
+    let lista = []; try { lista = JSON.parse(localStorage.getItem('jornada-acessos-pendentes') || '[]'); } catch (e) {}
+    const bloco = document.getElementById('acessosPendentesBloco'), inp = document.getElementById('acessosPendentesInput');
+    if (!bloco || !inp) return;
+    bloco.style.display = 'block';
+    if (lista.length && !inp.value.trim()) inp.value = lista.join('\n');
+  }
+  window.mostrarAcessosPendentes = mostrarAcessosPendentes;
+  window.criarAcessosPendentes = async function(){
+    const inp = document.getElementById('acessosPendentesInput'), res = document.getElementById('acessosPendentesResultado'), btn = document.getElementById('btnAcessosPendentes');
+    const cpfs = [...new Set(inp.value.split(/[\s,;]+/).map(x => x.replace(/\D/g, '')).filter(x => x.length === 11))];
+    if (!cpfs.length) { res.textContent = 'Cole pelo menos um CPF.'; return; }
+    btn.disabled = true; let criados = 0, jaTinham = 0; const restantes = [];
+    for (let i = 0; i < cpfs.length; i++) {
+      const cpf = cpfs[i];
+      res.textContent = `Criando ${i + 1} de ${cpfs.length}…`;
+      try {
+        const r = await criarContaSeNaoExistir(cpf);
+        if (r.criada) { criados++; await setDoc(doc(db, 'colaboradores', cpf), { PrecisaTrocarSenha: true, CriadoEm: serverTimestamp() }, { merge: true }); }
+        else jaTinham++;
+      } catch (err) {
+        console.error('Acesso pendente ' + cpf, err);
+        restantes.push(cpf);
+        if (err && err.code === 'auth/too-many-requests') { restantes.push(...cpfs.slice(i + 1)); break; }
+      }
+      await new Promise(r => setTimeout(r, 400));
+    }
+    try { localStorage.setItem('jornada-acessos-pendentes', JSON.stringify(restantes)); } catch (e) {}
+    inp.value = restantes.join('\n');
+    res.textContent = `✅ ${criados} criado(s)` + (jaTinham ? `, ${jaTinham} já tinha(m) acesso` : '') + (restantes.length ? `. ⚠️ ${restantes.length} ainda faltam: espere 1 hora e clique de novo.` : '. Pronto, todos com acesso.');
+    btn.disabled = false;
+  };
+
+  // arquivo para "firebase auth:import": cria de uma vez o acesso de todo CPF novo da planilha (senha = 6 últimos dígitos)
+  function carregarBcrypt(){
+    return new Promise((ok, erro) => {
+      if (window.dcodeIO && window.dcodeIO.bcrypt) return ok(window.dcodeIO.bcrypt);
+      const sc = document.createElement('script');
+      sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/bcryptjs/2.4.3/bcrypt.min.js';
+      sc.onload = () => ok(window.dcodeIO.bcrypt); sc.onerror = () => erro(new Error('não carregou o bcrypt'));
+      document.head.appendChild(sc);
+    });
+  }
+  window.gerarArquivoAcessos = async function(){
+    const res = document.getElementById('arquivoAcessosResultado');
+    if (!arquivoExcelEscolhido) { res.textContent = 'Escolha a planilha primeiro (botão "Escolher arquivo" acima).'; res.style.color = '#B4462B'; return; }
+    res.style.color = 'var(--ink-soft)'; res.textContent = 'Lendo a planilha…';
+    try {
+      const wb = XLSX.read(await arquivoExcelEscolhido.arrayBuffer(), { type: 'array' });
+      const linhas = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: '' });
+      const existentes = new Set(colaboradoresCache.map(c => c.cpf));
+      const cpfs = [...new Set(linhas.map(l => {
+        const k = Object.keys(l).find(x => x.trim().toLowerCase() === 'cpf');
+        let c = soDigitos(String(k ? l[k] : '')); if (c.length === 9 || c.length === 10) c = c.padStart(11, '0');
+        return c;
+      }).filter(c => c.length === 11 && !existentes.has(c)))];
+      // inclui também os CPFs da lista "Acessos que faltaram criar" (cadastro salvo, mas sem acesso)
+      const pend = ((document.getElementById('acessosPendentesInput') || {}).value || '').split(/[\s,;]+/).map(x => x.replace(/\D/g, '')).filter(x => x.length === 11);
+      pend.forEach(c => { if (!cpfs.includes(c)) cpfs.push(c); });
+      if (!cpfs.length) { res.textContent = 'Nenhum CPF novo nessa planilha: todo mundo já está na base. Pode sincronizar direto.'; return; }
+      const bcrypt = await carregarBcrypt();
+      const users = [];
+      for (let i = 0; i < cpfs.length; i++) {
+        if (i % 20 === 0) { res.textContent = `Preparando ${i + 1} de ${cpfs.length}…`; await new Promise(r => setTimeout(r, 0)); }
+        const hash = bcrypt.hashSync(cpfs[i].slice(-6), bcrypt.genSaltSync(8));
+        users.push({ localId: 'cpf' + cpfs[i], email: cpfs[i] + '@cabana.internal', emailVerified: false, passwordHash: btoa(hash) });
+      }
+      const blob = new Blob([JSON.stringify({ users })], { type: 'application/json' });
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'acessos-jornada.json'; a.click();
+      res.textContent = `✅ Arquivo com ${cpfs.length} acesso(s) baixado (acessos-jornada.json). Importe no Firebase e depois sincronize a planilha.`;
+      res.style.color = '#17762A';
+    } catch (e) { console.error(e); res.textContent = 'Não consegui gerar o arquivo: ' + e.message; res.style.color = '#B4462B'; }
+  };
+
   window.baixarModeloColaboradores = function(){
     const cab = ['Nome', 'CPF', 'Loja', 'Regional', 'Cargo', 'Data de admissão', 'Local', 'Tipo de contratação', 'Gestor', 'Cargo do gestor', 'CPF do gestor', 'Nível', 'Diretoria'];
     const exemplo = ['Maria da Silva', '12345678901', 'Loja Paulista', 'Regional Paulista', 'ATENDENTE', '10/11/2026', 'Loja', 'CLT', 'Rafael Souza', 'GERENTE DE LOJA', '98765432100', '', ''];
@@ -4911,6 +4998,8 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Colaboradores');
     XLSX.writeFile(wb, 'modelo-colaboradores-jornada.xlsx');
   };
+
+  setTimeout(() => { try { if (JSON.parse(localStorage.getItem('jornada-acessos-pendentes') || '[]').length) mostrarAcessosPendentes(); } catch (e) {} }, 1500);
 
   window.onExcelEscolhido = function(input){
     arquivoExcelEscolhido = input.files[0] || null;
@@ -5100,7 +5189,8 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
       const cpfsNaPlanilha = new Set();
       for (const linha of linhas) {
         const nome = pegar(linha, ['nome']);
-        const cpf = soDigitos(pegar(linha, ['cpf']));
+        let cpf = soDigitos(pegar(linha, ['cpf']));
+        if (cpf.length === 9 || cpf.length === 10) cpf = cpf.padStart(11, '0');   // Excel apaga o zero da frente quando o CPF está como número
         if (!nome || cpf.length !== 11) continue; // pula linha inválida
         cpfsNaPlanilha.add(cpf);
         linhasValidas.push({
@@ -5246,25 +5336,28 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
       // usa cpfsExistentesAntes (fixo, de antes do commit) e não colaboradoresCache,
       // que a esta altura já pode ter sido atualizado pelo próprio listener em tempo real
       const falhas = [];
+      let limiteAtingido = false;
       for (const cpf of cpfsNaPlanilha) {
         const jaExistia = cpfsExistentesAntes.has(cpf);
         if (jaExistia) continue;
+        if (limiteAtingido) { falhas.push(cpf); continue; }   // depois do limite, nem tenta: guarda para criar mais tarde
         try {
           const resultado = await criarContaSeNaoExistir(cpf);
-          if (resultado.criada) {
-            await setDoc(doc(db, 'colaboradores', cpf), { PrecisaTrocarSenha: true, CriadoEm: serverTimestamp() }, { merge: true });
-            contasCriadas++;
-          }
+          if (resultado.criada) contasCriadas++;
+          // pessoa nova na base troca a senha no 1º acesso, tenha a conta sido criada agora ou importada antes pelo Firebase
+          await setDoc(doc(db, 'colaboradores', cpf), { PrecisaTrocarSenha: true, CriadoEm: serverTimestamp() }, { merge: true });
         } catch (err) {
           console.error('Erro ao criar conta pro CPF ' + cpf, err);
           falhas.push(cpf);
+          if (err && err.code === 'auth/too-many-requests') limiteAtingido = true;
         }
         // pequena pausa entre criações, pra não estourar o limite de velocidade do Firebase quando sobe muita gente de uma vez
         await new Promise(r => setTimeout(r, 400));
       }
 
+      if (falhas.length) { try { localStorage.setItem('jornada-acessos-pendentes', JSON.stringify(falhas)); } catch (e) {} mostrarAcessosPendentes(); }
       const avisoFalhas = falhas.length
-        ? ` ⚠️ ${falhas.length} conta(s) não foram criadas automaticamente (CPF: ${falhas.join(', ')}) — abre cada uma dessas pessoas na aba Colaboradores e clica em "Gerar nova senha temporária".`
+        ? ` ⚠️ ${falhas.length} acesso(s) ainda não foram criados${limiteAtingido ? ' porque o Firebase permite criar cerca de 100 acessos por hora do mesmo computador' : ''}. Espere 1 hora e clique em "Criar os acessos que faltaram", logo abaixo. O cadastro dessas pessoas já está salvo.`
         : '';
       resultadoEl.textContent = `✅ Sincronizado: ${adicionados} novo(s), ${atualizados} atualizado(s), ${desativados} desativado(s). ${contasCriadas} conta(s) de login criada(s) com senha = 6 últimos dígitos do CPF.${avisoFalhas}`;
       resultadoEl.style.color = 'var(--green-dark)';
