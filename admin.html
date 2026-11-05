@@ -554,6 +554,14 @@ window.MARCA_ATIVA = 'jornada';
               <button class="new-btn" id="btnSincronizar" onclick="sincronizarPlanilha()" disabled>Sincronizar</button>
             </div>
           </div>
+          <div class="sync-modo" style="display:flex; flex-direction:column; gap:8px; margin:-4px 0 18px; padding:12px 14px; border:1px solid var(--line); border-radius:12px; background:#fff;">
+            <label style="display:flex; gap:10px; align-items:flex-start; cursor:pointer; font-size:13.5px;">
+              <input type="checkbox" id="syncSoAdicionar" style="margin-top:3px;">
+              <span><b>Só adicionar e atualizar.</b> Use para subir uma planilha só com as pessoas novas: ninguém que esteja fora dela é desativado.
+              Deixe desmarcado quando a planilha tiver a base inteira e você quiser desativar quem saiu.</span>
+            </label>
+            <button type="button" class="ghost-btn" style="align-self:flex-start;" onclick="baixarModeloColaboradores()">⬇ Baixar modelo da planilha</button>
+          </div>
           <div id="sincronizarResultado" style="display:none; margin:-6px 0 18px; font-size:13px; font-weight:600;"></div>
 
           <div class="upload-block">
@@ -4894,6 +4902,16 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
   };
 
   let arquivoExcelEscolhido = null;
+  // modelo da planilha de colaboradores, com as colunas que a sincronização lê
+  window.baixarModeloColaboradores = function(){
+    const cab = ['Nome', 'CPF', 'Loja', 'Regional', 'Cargo', 'Data de admissão', 'Local', 'Tipo de contratação', 'Gestor', 'Cargo do gestor', 'CPF do gestor', 'Nível', 'Diretoria'];
+    const exemplo = ['Maria da Silva', '12345678901', 'Loja Paulista', 'Regional Paulista', 'ATENDENTE', '10/11/2026', 'Loja', 'CLT', 'Rafael Souza', 'GERENTE DE LOJA', '98765432100', '', ''];
+    const ws = XLSX.utils.aoa_to_sheet([cab, exemplo]);
+    ws['!cols'] = cab.map(c => ({ wch: Math.max(14, c.length + 2) }));
+    const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Colaboradores');
+    XLSX.writeFile(wb, 'modelo-colaboradores-jornada.xlsx');
+  };
+
   window.onExcelEscolhido = function(input){
     arquivoExcelEscolhido = input.files[0] || null;
     document.getElementById('excelFileNome').textContent = arquivoExcelEscolhido ? arquivoExcelEscolhido.name : 'Escolher arquivo';
@@ -5109,7 +5127,8 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
           mudancasCargo.push(`${l.nome}: "${antes.Cargo}" → "${l.cargo}"`);
         }
       });
-      const seriamDesativados = colaboradoresCache.filter(c => !cpfsNaPlanilha.has(c.cpf) && c.Status !== 'inativo');
+      const soAdicionar = !!(document.getElementById('syncSoAdicionar') || {}).checked;
+      const seriamDesativados = soAdicionar ? [] : colaboradoresCache.filter(c => !cpfsNaPlanilha.has(c.cpf) && c.Status !== 'inativo');
 
       // a Loja escrita na planilha precisa bater exatamente com o nome oficial cadastrado (aba Colaboradores
       // > Lojas) — senão a pessoa fica com uma loja "solta", que não aparece nos filtros por loja/regional
@@ -5208,7 +5227,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
       // quem estava cadastrado mas não veio na planilha nova: marca como inativo (preserva histórico)
       let desativados = 0;
       colaboradoresCache.forEach(c => {
-        if (!cpfsNaPlanilha.has(c.cpf) && c.Status !== 'inativo') {
+        if (!soAdicionar && !cpfsNaPlanilha.has(c.cpf) && c.Status !== 'inativo') {
           // InativadoEm marca quando a pessoa sumiu da base — usado pelo popup "foi desligado?"
           // na Home do gestor e pelo relatório de Desligamentos aqui no admin (Jornada do
           // Cabaneiro, setembro/2026. Ver contrato do projeto.)
