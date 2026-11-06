@@ -6548,7 +6548,10 @@ function configurarGateConclusao(c){
       }
       // Jornada do Cabaneiro (setembro/2026): popup de "foi desligado?" pra quem sumiu da base
       // (Status virou inativo e ainda não tem parecer registrado) + painel de pendências do gestor.
-      await verificarDesligadosPendentes(todos.filter(c => c.Status === 'inativo' && (c.Local || 'Loja') === 'Loja'));   // parecer de desligamento só pra loja
+      // parecer só para quem saiu dentro dos primeiros 90 dias de casa (pessoa antiga não gera cobrança)
+    const saiuNaJornada = c => { const a = c.Admissao && c.Admissao.toDate ? c.Admissao.toDate() : null; const t = c.InativadoEm && c.InativadoEm.toDate ? c.InativadoEm.toDate() : new Date();
+      return !!a && (t - a) / 86400000 <= 90; };
+    await verificarDesligadosPendentes(todos.filter(c => c.Status === 'inativo' && (c.Local || 'Loja') === 'Loja' && saiuNaJornada(c)));   // parecer de desligamento só pra loja
       await atualizarPainelPendenciasGestor();
     } catch (err) {
       console.error('Erro ao verificar equipe (painel do gestor):', err);
@@ -6812,7 +6815,7 @@ function configurarGateConclusao(c){
     const lista = document.getElementById('pendNovatosLista');
     const contagem = document.getElementById('pendNovatosContagem');
     if (!lista) return 0;
-    const candidatos = equipe.filter(c => c.Admissao && c.Admissao.toDate);   // vale pra loja, escritório e fábrica
+    const candidatos = equipe.filter(c => { if (!(c.Admissao && c.Admissao.toDate)) return false; const d = diasDeCasa(c); return d !== null && d >= -15 && d <= 90; });   // vale pra loja, escritório e fábrica; só quem está nos primeiros 90 dias
     if (!candidatos.length) {
       lista.innerHTML = `<p class="jornada-vazio">Ninguém com trilhas obrigatórias em andamento agora.</p>`;
       if (contagem) contagem.style.display = 'none';
@@ -6969,7 +6972,8 @@ function configurarGateConclusao(c){
     const lista = document.getElementById('pendCursosLista');
     const contagem = document.getElementById('pendCursosContagem');
     if (!lista) return 0;
-    const comPendencia = (linhas || []).filter(l => l.cursosVencidos.length || l.cursosReprovados.length || l.cursosPendentes.length);
+    const naJornada = l => { const c = (window.MINHA_EQUIPE || []).find(x => x.cpf === l.cpf); const d = c ? diasDeCasa(c) : null; return d !== null && d >= 0 && d <= 90; };
+    const comPendencia = (linhas || []).filter(l => naJornada(l) && (l.cursosVencidos.length || l.cursosReprovados.length || l.cursosPendentes.length));
     if (contagem) { contagem.style.display = comPendencia.length ? 'inline-flex' : 'none'; contagem.textContent = comPendencia.length; }
     lista.innerHTML = comPendencia.length ? comPendencia.map(l => {
       const qtd = l.cursosVencidos.length + l.cursosReprovados.length + l.cursosPendentes.length;
@@ -7189,10 +7193,11 @@ function configurarGateConclusao(c){
   // trilha atrasada = vencida/reprovada, ou ainda pendente depois do prazo (7 dias de casa; quem já passou de 90 dias não tem prazo de integração)
   function trilhaAtrasada(c, l){
     if (!l) return false;
+    const d = diasDeCasa(c);
+    if (d === null || d > 90) return false;          // fora da Jornada: sem cobrança
     if (l.cursosVencidos.length || l.cursosReprovados.length) return true;
     if (!l.cursosPendentes.length) return false;
-    const d = diasDeCasa(c);
-    return d === null || d > 7;
+    return d > 7;
   }
   window.trilhaAtrasada = trilhaAtrasada;
   // gerente de loja, coordenador e gerente de operações: o gestor deles só preenche o ponto de 30 dias (não há checklist de integração)
@@ -7237,7 +7242,7 @@ function configurarGateConclusao(c){
     const chips = [];
     if (r && r.atraso) chips.push('<span class="eq-tag alerta">Checklist atrasado</span>');
     if (x.trAt) chips.push(`<span class="eq-tag alerta">${pl(falta.length, 'trilha atrasada', 'trilhas atrasadas')}</span>`);
-    else if (l.cursosPendentes.length) chips.push(`<span class="eq-tag">${pl(l.cursosPendentes.length, 'trilha a fazer', 'trilhas a fazer')}</span>`);
+    else if (l.cursosPendentes.length && x.novo) chips.push(`<span class="eq-tag">${pl(l.cursosPendentes.length, 'trilha a fazer', 'trilhas a fazer')}</span>`);
     if (x.p30 === 'pendente') chips.push('<span class="eq-tag alerta">Ponto de 30 dias pendente</span>');
     if (x.novo && !fase) chips.push('<span class="eq-tag">Ainda não acessou</span>');
     if (!x.atencao && !l.cursosPendentes.length) chips.push('<span class="eq-tag ok">Em dia</span>');
