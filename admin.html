@@ -5784,7 +5784,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     // desligados: saíram do cadastro dentro do período
     const deslig = base.filter(c => c.Status === 'inativo' && (() => { const t = ijData(c.InativadoEm); return t && t.getTime() >= inicio; })());
     const deslig90 = deslig.filter(c => { const a = ijData(c.Admissao), t = ijData(c.InativadoEm); return a && t && (t - a) / IJ_DIA <= 90; });
-    const parecerPend = deslig90.filter(c => ijLoja(c) && !desl[c.cpf]);   // parecer só vale para quem saiu nos primeiros 90 dias
+    const parecerPend = deslig.filter(c => ijLoja(c) && !desl[c.cpf]);   // parecer vale para todo desligamento de loja
 
     // indicadores gerais
     const ckBase = linhas.filter(l => l.ck && l.d >= 2);
@@ -5801,7 +5801,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
       if (l.ck && l.d >= 2) { L.ck[1]++; if (!l.ck.emAtraso) L.ck[0]++; }
       if (l.p30) { L.p30[1]++; if (l.p30 === 'feito') L.p30[0]++; } });
     t7Base.forEach(c => { if (!ijLoja(c) || !c.Loja) return; const L = pegaLoja(c.Loja); L.t7[1]++; if (trilhas(c).ate7) L.t7[0]++; });
-    deslig90.forEach(c => { if (!ijLoja(c) || !c.Loja) return; const L = pegaLoja(c.Loja); L.par[1]++; if (desl[c.cpf]) L.par[0]++; });
+    deslig.forEach(c => { if (!ijLoja(c) || !c.Loja) return; const L = pegaLoja(c.Loja); L.par[1]++; if (desl[c.cpf]) L.par[0]++; });
     const listaLojas = Object.values(lojas).map(L => {
       const partes = ['ck', 't7', 'p30', 'par'].map(k => L[k][1] ? L[k][0] / L[k][1] : null).filter(v => v !== null);
       return { ...L, indice: partes.length ? Math.round(partes.reduce((a, b) => a + b, 0) / partes.length * 100) : null,
@@ -5809,7 +5809,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     }).filter(L => L.indice !== null).sort((a, b) => b.indice - a.indice);
     const lojasConf = listaLojas.filter(L => L.indice >= 80).length;
     const itensMedia = [['checklist no prazo', ijPct(ckNoPrazo, ckBase.length)], ['trilhas até o 7º dia', ijPct(t7Ok, t7Base.length)], ['ponto de 30 dias', ijPct(p30Feitos, p30Base.length)],
-      ['parecer em dia', ijPct(deslig90.filter(c => ijLoja(c) && desl[c.cpf]).length, deslig90.filter(ijLoja).length)]].filter(x => x[1] !== null).sort((a, b) => a[1] - b[1]);
+      ['parecer em dia', ijPct(deslig.filter(c => ijLoja(c) && desl[c.cpf]).length, deslig.filter(ijLoja).length)]].filter(x => x[1] !== null).sort((a, b) => a[1] - b[1]);
 
     // pendências por gestor
     const ges = {};

@@ -6548,10 +6548,7 @@ function configurarGateConclusao(c){
       }
       // Jornada do Cabaneiro (setembro/2026): popup de "foi desligado?" pra quem sumiu da base
       // (Status virou inativo e ainda não tem parecer registrado) + painel de pendências do gestor.
-      // parecer só para quem saiu dentro dos primeiros 90 dias de casa (pessoa antiga não gera cobrança)
-    const saiuNaJornada = c => { const a = c.Admissao && c.Admissao.toDate ? c.Admissao.toDate() : null; const t = c.InativadoEm && c.InativadoEm.toDate ? c.InativadoEm.toDate() : new Date();
-      return !!a && (t - a) / 86400000 <= 90; };
-    await verificarDesligadosPendentes(todos.filter(c => c.Status === 'inativo' && (c.Local || 'Loja') === 'Loja' && saiuNaJornada(c)));   // parecer de desligamento só pra loja
+      await verificarDesligadosPendentes(todos.filter(c => c.Status === 'inativo' && (c.Local || 'Loja') === 'Loja'));   // parecer de desligamento só pra loja
       await atualizarPainelPendenciasGestor();
     } catch (err) {
       console.error('Erro ao verificar equipe (painel do gestor):', err);
