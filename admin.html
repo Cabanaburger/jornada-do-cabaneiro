@@ -302,6 +302,48 @@ window.MARCA_ATIVA = 'jornada';
   .reord-setas button{ border:1px solid var(--line); background:#fff; border-radius:8px; width:28px; height:28px; font-size:12px; cursor:pointer; }
   .reord-setas button:disabled{ opacity:.35; cursor:default; }
 </style>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ===== Indicadores da Jornada (padrão de dashboard do design system Cabana) ===== */
+#tab-indicadores .ij{font-family:'Geist',system-ui,-apple-system,'Segoe UI',sans-serif;color:#121A14;font-feature-settings:"tnum";background:#F6F5F1;border:1px solid #E9E6DF;border-radius:14px;overflow:hidden;display:flex;flex-direction:column;}
+.ij-top{background:#fff;border-bottom:1px solid #E9E6DF;display:flex;align-items:center;gap:16px;padding:12px 20px;flex-wrap:wrap;}
+.ij-top h1{font-size:18px;font-weight:700;letter-spacing:-.01em;margin:0;font-family:inherit;}
+.ij-sl{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.ij-sl label{display:flex;align-items:center;gap:6px;font-size:12.5px;color:#575F56;}
+.ij-sl select{border:1px solid #E9E6DF;border-radius:8px;padding:6px 8px;font:inherit;font-size:12.5px;font-weight:600;color:#121A14;background:#fff;min-width:120px;}
+.ij-btn{border:1px solid #E9E6DF;border-radius:8px;padding:6px 12px;font:inherit;font-size:12.5px;font-weight:600;background:#fff;color:#121A14;cursor:pointer;}
+.ij-btn:hover{background:#F6F5F1;}
+.ij-pg{flex:1;padding:14px 16px;gap:12px;align-content:start;}
+.ij-p1{display:grid;grid-template-rows:auto 1fr;}
+.ij-p2{grid-template-columns:1.25fr 1fr;grid-template-rows:1fr auto;}
+.ij-p3{grid-template-columns:repeat(4,1fr);grid-auto-rows:minmax(0,auto);}
+.ij-k5{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;} .ij-k3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0;} .ij-k4{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.ij-g3{display:grid;grid-template-columns:1fr 1fr 1.35fr;gap:12px;min-height:420px;}
+.ij-v{background:#fff;border:1px solid #E9E6DF;border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;min-width:0;}
+.ij-vt{font-size:13.5px;font-weight:600;margin-bottom:2px;} .ij-vs{font-size:12px;color:#6B7269;margin-bottom:10px;}
+.ij-k{justify-content:center;} .ij-k:focus-visible,.ij-br:focus-visible,.ij-tb tr:focus-visible{outline:2px solid #00630F;outline-offset:2px;}
+.ij-kl{font-size:12.5px;color:#575F56;font-weight:500;} .ij-kv{font-size:32px;font-weight:700;letter-spacing:-.02em;margin:4px 0 2px;line-height:1.1;} .ij-kc{font-size:11.5px;color:#6B7269;}
+.ij-rol{overflow:auto;max-height:340px;}
+.ij-br{display:grid;grid-template-columns:minmax(90px,140px) 1fr 44px;align-items:center;gap:8px;padding:4px 2px;font-size:12.5px;border-radius:6px;}
+.ij-br span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;} .ij-br[role=button]:hover{background:#F6F5F1;}
+.ij-bt{height:9px;background:#EFEDE7;border-radius:3px;overflow:hidden;display:block;} .ij-bt i{display:block;height:100%;border-radius:3px;} .ij-br b{text-align:right;}
+.ij-tb{width:100%;border-collapse:collapse;font-size:12.5px;} .ij-tb th{text-align:left;font-size:11.5px;color:#575F56;font-weight:500;padding:6px 8px;border-bottom:1px solid #E9E6DF;position:sticky;top:0;background:#fff;}
+.ij-tb td{padding:7px 8px;border-bottom:1px solid #E9E6DF;} .ij-tb .num{text-align:right;} .ij-tb tr[role=button]:hover td{background:#F6F5F1;}
+.ij-mut{color:#6B7269;} .ij-tag{display:inline-block;border-radius:5px;padding:2px 7px;font-size:11.5px;font-weight:600;white-space:nowrap;}
+.ij-tag.neg{background:#FCEAE4;color:#C2321A;} .ij-tag.amb{background:#FBF1DC;color:#8F5A00;} .ij-tag.ok{background:#E6F3E6;color:#17762A;}
+.ij-ins{font-size:12.5px;background:#E8F2E5;border-radius:8px;padding:8px 12px;margin-top:auto;} .ij-v > .ij-ins{margin-top:12px;}
+.ij-fr{display:grid;grid-template-columns:210px 1fr 80px;align-items:center;gap:10px;font-size:13px;margin:7px 0;} .ij-fr .ij-bt{height:24px;}
+.ij-mix{display:flex;height:18px;border-radius:4px;overflow:hidden;margin:6px 0 8px;} .ij-mix i{display:block;height:100%;}
+.ij-leg{display:flex;gap:12px;font-size:11.5px;color:#575F56;flex-wrap:wrap;margin-top:6px;} .ij-leg i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px;}
+.ij-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:2px;}
+.ij-ax{font-size:11px;fill:#6B7269;} .ij-lb{font-size:12px;font-weight:600;}
+.ij-cmp{display:grid;grid-template-columns:1fr 1fr;gap:10px;} .ij-big{font-size:40px;font-weight:700;letter-spacing:-.03em;}
+.ij-vazio{font-size:12.5px;color:#6B7269;padding:14px 0;}
+.ij-tabs{background:#fff;border-top:1px solid #E9E6DF;display:flex;align-items:stretch;padding:0 16px;gap:4px;min-height:42px;}
+.ij-tab{appearance:none;border:0;background:none;font:inherit;font-size:13px;color:#575F56;border-top:3px solid transparent;padding:0 14px;cursor:pointer;}
+.ij-tab.on{color:#121A14;font-weight:600;border-top-color:#00630F;} .ij-atual{margin-left:auto;font-size:12px;color:#6B7269;align-self:center;}
+@media (max-width:1100px){ .ij-k5{grid-template-columns:repeat(3,1fr);} .ij-g3,.ij-p2,.ij-p3{grid-template-columns:1fr;} .ij-p2 > .ij-v{grid-row:auto !important;} .ij-p3 > .ij-v{grid-column:auto !important;} }
+</style>
 </head>
 <body>
 
@@ -325,6 +367,7 @@ window.MARCA_ATIVA = 'jornada';
     <div class="navgroup">
       <h6>Dados</h6>
       <div class="navitem" onclick="goTab('relatorios', this)"><span class="ic">📊</span> Relatórios &amp; adesão</div>
+      <div class="navitem" onclick="abrirIndicadores(this)"><span class="ic">📈</span> Indicadores da Jornada</div>
     </div>
     <div class="navgroup">
       <h6>Engajamento</h6>
@@ -956,6 +999,41 @@ window.MARCA_ATIVA = 'jornada';
             <thead><tr><th>Colaborador</th><th>Loja · local</th><th>Respondeu em</th><th>Chegada no time</th><th>Segurança no trabalho</th><th>Como é tratado(a)</th><th>Se vê no Cabana</th><th>Gerente (ponto de 30 dias)</th></tr></thead>
             <tbody id="pmBody"></tbody>
           </table>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ===================== INDICADORES DA JORNADA ===================== -->
+    <section class="tabpage" id="tab-indicadores">
+      <div class="ij">
+        <div class="ij-top">
+          <h1>Indicadores da Jornada do Cabaneiro</h1>
+          <div class="ij-sl">
+            <label>Período <select id="ijFPeriodo"><option value="30">Últimos 30 dias</option><option value="60">Últimos 60 dias</option><option value="90" selected>Últimos 90 dias</option><option value="180">Últimos 180 dias</option><option value="365">Último ano</option></select></label>
+            <label>Regional <select id="ijFRegional"><option value="">Todas</option></select></label>
+            <label>Local <select id="ijFLocal"><option value="">Todos</option><option>Loja</option><option>Casa Cabana</option><option>Cozinha Central</option></select></label>
+            <label>Loja <select id="ijFLoja"><option value="">Todas</option></select></label>
+            <button type="button" class="ij-btn" onclick="ijExportar()">Exportar</button>
+          </div>
+        </div>
+        <div class="ij-pg ij-p1" id="ijP1"></div>
+        <div class="ij-pg ij-p2" id="ijP2" style="display:none"></div>
+        <div class="ij-pg ij-p3" id="ijP3" style="display:none"></div>
+        <div class="ij-tabs">
+          <button type="button" class="ij-tab on" onclick="ijIrPagina(0)">Visão geral</button>
+          <button type="button" class="ij-tab" onclick="ijIrPagina(1)">Integração</button>
+          <button type="button" class="ij-tab" onclick="ijIrPagina(2)">Desligamentos e tendência</button>
+          <span class="ij-atual" id="ijAtualizado"></span>
+        </div>
+      </div>
+      <div id="ijModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:1000; align-items:center; justify-content:center; padding:16px;" onclick="if(event.target===this) this.style.display='none'">
+        <div style="background:#fff; border-radius:16px; width:min(760px,100%); max-height:85vh; overflow:auto; padding:22px 24px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px;">
+            <h3 id="ijModalTitulo" style="margin:0; font-size:18px;"></h3>
+            <div style="display:flex; gap:8px;"><button type="button" class="ij-btn" onclick="ijExportarLista()">Exportar</button><button type="button" class="ij-btn" onclick="document.getElementById('ijModal').style.display='none'">Fechar</button></div>
+          </div>
+          <div id="ijModalCorpo"></div>
         </div>
       </div>
     </section>
@@ -5591,6 +5669,332 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     baixarXLSXMultiAba([{ nome: 'Pareceres', linhas: reg }, { nome: 'Aguardando parecer', linhas: pend }], `pareceres-desligamento-${new Date().toISOString().slice(0, 10)}.xlsx`);
   };
 
+
+
+  /* ================== INDICADORES DA JORNADA (só Admin) ==================
+     Três páginas no formato de painel: visão geral, integração, desligamentos e tendência.
+     Tudo calculado no navegador a partir do que o painel já carrega (cadastro, trilhas, checklist,
+     ponto de 30 dias, "Seu 1º mês" e pareceres). Nenhum dado é gravado. */
+  const IJ_DIA = 86400000;
+  const IJ_BLOCOS = [
+    { id: 'antes', prazo: 1, itens: ['a1', 'a2', 'a3', 'a4', 'a5', 'a6'] },
+    { id: 'dia1', prazo: 3, itens: ['b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7'], auto: { b3: 'trilhas' } },
+    { id: 'semana', prazo: 8, itens: ['c1', 'c2'] },
+    { id: 'd30', prazo: 35, itens: ['d1'] }   // o item "respondeu o Seu 1º mês" não deixa o checklist atrasado
+  ];
+  const IJ_COR = { ink: '#121A14', mut: '#575F56', sub: '#6B7269', bd: '#E9E6DF', br: '#00630F', brs: '#E8F2E5', ac: '#FF5D31', aci: '#C23A12', pos: '#17762A', neg: '#C2321A', amb: '#D89840', s3: '#3F73B5', prev: '#A3A8A0', trk: '#EFEDE7' };
+  const IJ_MOTIVOS_INICIATIVA = { colaborador: 'Colaborador', empresa: 'Empresa', fim_contrato: 'Fim de contrato', outro: 'Outro' };
+  let ijChecklist = {};      // cpf -> Itens
+  let ijPagina = 0, ijIniciado = false, ijUltimo = null;
+
+  function ijData(v){ if (!v) return null; if (v.toDate) return v.toDate(); const d = new Date(v); return isNaN(d) ? null : d; }
+  function ijDias(c){ const a = ijData(c.Admissao); return a ? Math.floor((Date.now() - a.getTime()) / IJ_DIA) : null; }
+  function ijLider(c){ return /^(COORDENADOR|GERENTE)/i.test(String(c.Cargo || '').trim()); }
+  function ijLoja(c){ return (c.Local || 'Loja') === 'Loja'; }
+  function ijPct(n, d){ return d ? Math.round(n / d * 1000) / 10 : null; }
+  function ijFmtPct(v){ return v === null || v === undefined ? '—' : String(v).replace('.', ',') + '%'; }
+  function ijEsc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch])); }
+  function ijNomeCurto(n){ return String(n || '').toLowerCase().replace(/(^|\s)\S/g, x => x.toUpperCase()); }
+
+  // mesmo filtro de público das trilhas que a Jornada usa para o colaborador
+  function ijPodeVer(curso, c){
+    const restrito = curso.CargosEspecificos === true && Array.isArray(curso.Cargos) && curso.Cargos.length > 0;
+    const localRestrito = curso.LocalEspecifico === true && ((curso.LojasPermitidas || []).length || (curso.RegionaisPermitidas || []).length);
+    const tipoLocal = curso.TipoLocalEspecifico === true && (curso.TiposLocal || []).length;
+    const contrat = curso.TipoContratacaoEspecifico === true && (curso.TiposContratacao || []).length;
+    if (restrito && !(curso.Cargos.includes(c.Cargo) || (c.Macrocargo && curso.Cargos.includes(c.Macrocargo)))) return false;
+    if (localRestrito && !((curso.LojasPermitidas || []).includes(c.Loja) || (curso.RegionaisPermitidas || []).includes(c.Regional))) return false;
+    if (tipoLocal && !curso.TiposLocal.includes(c.Local || 'Loja')) return false;
+    if (contrat && !curso.TiposContratacao.includes(c.TipoContratacao || 'CLT')) return false;
+    return true;
+  }
+
+  function iniciarIndicadores(){
+    if (ijIniciado) return; ijIniciado = true;
+    onSnapshot(collection(db, 'checklistIntegracao'), snap => {
+      ijChecklist = {}; snap.docs.forEach(d => { const x = d.data(); ijChecklist[x.Cpf || d.id] = x.Itens || {}; });
+      renderIndicadores();
+    }, err => console.error('Indicadores: checklist', err));
+    ['ijFPeriodo', 'ijFRegional', 'ijFLocal', 'ijFLoja'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', renderIndicadores); });
+    setInterval(() => { if (document.getElementById('tab-indicadores').classList.contains('on')) renderIndicadores(); }, 60000);
+  }
+  window.abrirIndicadores = function(el){ goTab('indicadores', el); iniciarIndicadores(); renderIndicadores(); };
+  window.ijIrPagina = function(i){ ijPagina = i; document.querySelectorAll('#tab-indicadores .ij-tab').forEach((t, k) => t.classList.toggle('on', k === i)); document.querySelectorAll('#tab-indicadores .ij-pg').forEach((p, k) => p.style.display = k === i ? 'grid' : 'none'); };
+  window.ijFiltrarLoja = function(loja){ const s = document.getElementById('ijFLoja'); if (s) { s.value = (s.value === loja ? '' : loja); renderIndicadores(); } };
+
+  function ijPreencher(id, valores, rotulo){
+    const el = document.getElementById(id); if (!el) return;
+    const atual = el.value;
+    el.innerHTML = `<option value="">${rotulo}</option>` + valores.map(v => `<option>${ijEsc(v)}</option>`).join('');
+    if (valores.includes(atual)) el.value = atual;
+  }
+
+  // ---------- cálculo ----------
+  function ijCalcular(){
+    const P = parseInt(document.getElementById('ijFPeriodo').value || '90', 10);
+    const fR = document.getElementById('ijFRegional').value, fL = document.getElementById('ijFLocal').value, fJ = document.getElementById('ijFLoja').value;
+    const agora = Date.now(), inicio = agora - P * IJ_DIA;
+    const base = colaboradoresCache.filter(c => c.Nivel !== 'Admin' && (!fR || c.Regional === fR) && (!fL || (c.Local || 'Loja') === fL) && (!fJ || c.Loja === fJ));
+    const obrig = cursosCache.filter(cu => cu.Obrigatorio === true && (cu.Status || 'publicado') === 'publicado');
+    const prog = {}; progressoCache.forEach(p => { if (p && p.Cpf && p.CursoId) (prog[p.Cpf] = prog[p.Cpf] || {})[p.CursoId] = p; });
+    const c30 = {}; checkins30Cache.forEach(x => { c30[x.cpf] = x; });
+    const desl = {}; desligamentosCache.forEach(x => { desl[x.cpf] = x; });
+    const pm = {}; primeiroMesCache.forEach(x => { pm[x.cpf] = x; });
+    const porCpf = {}; colaboradoresCache.forEach(c => { porCpf[c.cpf] = c; });
+
+    const trilhas = c => {
+      const minhas = obrig.filter(cu => ijPodeVer(cu, c));
+      if (!minhas.length) return { ok: true, ate7: null, quando: null };
+      const feitas = minhas.map(cu => (prog[c.cpf] || {})[cu.id]).filter(p => p && p.Status === 'concluido');
+      const ok = feitas.length >= minhas.length;
+      const ult = ok ? Math.max(...feitas.map(p => (ijData(p.ConcluidoEm) || new Date(0)).getTime())) : null;
+      const adm = ijData(c.Admissao);
+      return { ok, quando: ult, ate7: adm ? (ok && ult <= adm.getTime() + 7 * IJ_DIA) : null };
+    };
+    const checklist = (c, tr) => {
+      const dias = ijDias(c), itens = ijChecklist[c.cpf] || {}, adm = ijData(c.Admissao);
+      let atraso = 0, emAtraso = false, noPrazoHist = true;
+      IJ_BLOCOS.forEach(b => {
+        const falta = b.itens.filter(i => !((itens[i] && itens[i].feito) || (b.auto && b.auto[i] === 'trilhas' && tr.ok)));
+        if (dias !== null && dias > b.prazo && falta.length) { emAtraso = true; atraso = Math.max(atraso, dias - b.prazo); }
+        if (adm && dias !== null && dias > b.prazo) {
+          const limite = adm.getTime() + (b.prazo + 1) * IJ_DIA;
+          const atrasou = b.itens.some(i => {
+            if (b.auto && b.auto[i] === 'trilhas') return !(tr.quando && tr.quando <= limite);
+            const x = itens[i]; const em = x && x.em ? new Date(x.em).getTime() : null;
+            return !(x && x.feito && em && em <= limite);
+          });
+          if (atrasou) noPrazoHist = false;
+        }
+      });
+      return { emAtraso, atraso, noPrazoHist };
+    };
+
+    // pessoas em integração (ativas, admitidas há até 90 dias, dentro dos filtros)
+    const ativos = base.filter(c => c.Status !== 'inativo');
+    const integ = ativos.filter(c => { const d = ijDias(c); return d !== null && d >= 0 && d <= 90; });
+    const linhas = integ.map(c => {
+      const d = ijDias(c), tr = trilhas(c), ck = ijLider(c) ? null : checklist(c, tr);
+      const reg = c30[c.cpf] || null;
+      const p30 = ijLoja(c) && d > 35 ? (reg ? 'feito' : 'pendente') : null;
+      return { c, d, tr, ck, p30, p30Atraso: p30 === 'pendente' ? d - 35 : 0 };
+    });
+    // admitidos no período (para trilhas até o 7º dia, funil, desligamentos)
+    const admPeriodo = base.filter(c => { const a = ijData(c.Admissao); return a && a.getTime() >= inicio && a.getTime() <= agora; });
+    // desligados: saíram do cadastro dentro do período
+    const deslig = base.filter(c => c.Status === 'inativo' && (() => { const t = ijData(c.InativadoEm); return t && t.getTime() >= inicio; })());
+    const deslig90 = deslig.filter(c => { const a = ijData(c.Admissao), t = ijData(c.InativadoEm); return a && t && (t - a) / IJ_DIA <= 90; });
+    const parecerPend = deslig90.filter(c => ijLoja(c) && !desl[c.cpf]);   // parecer só vale para quem saiu nos primeiros 90 dias
+
+    // indicadores gerais
+    const ckBase = linhas.filter(l => l.ck && l.d >= 2);
+    const ckNoPrazo = ckBase.filter(l => !l.ck.emAtraso).length;
+    const p30Base = linhas.filter(l => l.p30);
+    const p30Feitos = p30Base.filter(l => l.p30 === 'feito').length;
+    const t7Base = admPeriodo.filter(c => c.Status !== 'inativo' && ijDias(c) > 7);
+    const t7Ok = t7Base.filter(c => trilhas(c).ate7).length;
+
+    // conformidade por loja: média simples dos 4 itens com o mesmo peso (item sem base fica de fora da média)
+    const lojas = {};
+    const pegaLoja = n => (lojas[n] = lojas[n] || { loja: n, regional: '', ck: [0, 0], t7: [0, 0], p30: [0, 0], par: [0, 0] });
+    linhas.forEach(l => { if (!ijLoja(l.c) || !l.c.Loja) return; const L = pegaLoja(l.c.Loja); L.regional = l.c.Regional || L.regional;
+      if (l.ck && l.d >= 2) { L.ck[1]++; if (!l.ck.emAtraso) L.ck[0]++; }
+      if (l.p30) { L.p30[1]++; if (l.p30 === 'feito') L.p30[0]++; } });
+    t7Base.forEach(c => { if (!ijLoja(c) || !c.Loja) return; const L = pegaLoja(c.Loja); L.t7[1]++; if (trilhas(c).ate7) L.t7[0]++; });
+    deslig90.forEach(c => { if (!ijLoja(c) || !c.Loja) return; const L = pegaLoja(c.Loja); L.par[1]++; if (desl[c.cpf]) L.par[0]++; });
+    const listaLojas = Object.values(lojas).map(L => {
+      const partes = ['ck', 't7', 'p30', 'par'].map(k => L[k][1] ? L[k][0] / L[k][1] : null).filter(v => v !== null);
+      return { ...L, indice: partes.length ? Math.round(partes.reduce((a, b) => a + b, 0) / partes.length * 100) : null,
+        det: { ck: L.ck[1] ? Math.round(L.ck[0] / L.ck[1] * 100) : null, t7: L.t7[1] ? Math.round(L.t7[0] / L.t7[1] * 100) : null, p30: L.p30[1] ? Math.round(L.p30[0] / L.p30[1] * 100) : null, par: L.par[1] ? Math.round(L.par[0] / L.par[1] * 100) : null } };
+    }).filter(L => L.indice !== null).sort((a, b) => b.indice - a.indice);
+    const lojasConf = listaLojas.filter(L => L.indice >= 80).length;
+    const itensMedia = [['checklist no prazo', ijPct(ckNoPrazo, ckBase.length)], ['trilhas até o 7º dia', ijPct(t7Ok, t7Base.length)], ['ponto de 30 dias', ijPct(p30Feitos, p30Base.length)],
+      ['parecer em dia', ijPct(deslig90.filter(c => ijLoja(c) && desl[c.cpf]).length, deslig90.filter(ijLoja).length)]].filter(x => x[1] !== null).sort((a, b) => a[1] - b[1]);
+
+    // pendências por gestor
+    const ges = {};
+    const pegaGes = c => { const k = c.CpfGestor || 'sem'; const g = porCpf[c.CpfGestor];
+      return (ges[k] = ges[k] || { cpf: k, nome: g ? g.Nome : (c.Gestor || 'Sem gestor no cadastro'), loja: g ? g.Loja : (c.Loja || ''), ck: [0, 0], p30: [0, 0], par: [0, 0], pessoas: [] }); };
+    linhas.forEach(l => { if (l.ck && l.ck.emAtraso) { const g = pegaGes(l.c); g.ck[0]++; g.ck[1] = Math.max(g.ck[1], l.ck.atraso); g.pessoas.push([l.c, 'Checklist atrasado há ' + l.ck.atraso + ' dias']); }
+      if (l.p30 === 'pendente') { const g = pegaGes(l.c); g.p30[0]++; g.p30[1] = Math.max(g.p30[1], l.p30Atraso); g.pessoas.push([l.c, 'Ponto de 30 dias atrasado há ' + l.p30Atraso + ' dias']); } });
+    parecerPend.forEach(c => { const g = pegaGes(c); const d = Math.floor((agora - ijData(c.InativadoEm)) / IJ_DIA); g.par[0]++; g.par[1] = Math.max(g.par[1], d); g.pessoas.push([c, 'Parecer de desligamento esperando há ' + d + ' dias']); });
+    const listaGes = Object.values(ges).map(g => ({ ...g, max: Math.max(g.ck[1], g.p30[1], g.par[1]) })).sort((a, b) => b.max - a.max);
+
+    // funil e integração
+    const fases = [0, 0, 0, 0];
+    const funilBase = admPeriodo.filter(c => c.Status !== 'inativo');
+    funilBase.forEach(c => { const f = Math.max(1, Math.min(4, parseInt(c.FaseJornada || 1, 10) || 1)); for (let i = 0; i < f; i++) fases[i]++; });
+    const acesso1 = funilBase.filter(c => { const a = ijData(c.Admissao), p = ijData(c.PrimeiroAcesso); return a && p && (p - a) / IJ_DIA <= 1; }).length;
+    const semAvanco = funilBase.filter(c => (parseInt(c.FaseJornada || 1, 10) || 1) <= 1 && ijDias(c) > 14);
+    const eleg45 = funilBase.filter(c => ijDias(c) >= 45);
+
+    // percepção gestor x colaborador
+    const nota = { verde: 2, amarelo: 1, vermelho: 0 };
+    const elegPm = funilBase.filter(c => ijDias(c) >= 28);
+    const respPm = elegPm.filter(c => pm[c.cpf]);
+    const percep = respPm.map(c => {
+      const r = pm[c.cpf], g = c30[c.cpf];
+      const alertaP = ['Chegada', 'Seguranca', 'Tratamento'].some(k => r[k] === 'vermelho') || r.Futuro === 'nao';
+      let div = false;
+      if (g) {
+        const mp = ['Chegada', 'Seguranca', 'Tratamento'].map(k => nota[r[k]]).filter(v => v !== undefined);
+        const mg = ['Integracao', 'Treinamento', 'Comportamento'].map(k => nota[g[k]]).filter(v => v !== undefined);
+        if (mp.length && mg.length) div = Math.abs(mp.reduce((a, b) => a + b, 0) / mp.length - mg.reduce((a, b) => a + b, 0) / mg.length) >= 1;
+        if ((r.Futuro === 'nao' || r.Futuro === 'talvez') && (g.Potencial === 'sim' || g.Potencial === 'sim_desenvolver')) div = true;
+      }
+      return { c, r, g, div, alertaP };
+    });
+    const alertaGestor = g => g && (['Integracao', 'Treinamento', 'Comportamento'].some(k => g[k] === 'vermelho') || g.Potencial === 'duvida' || g.Potencial === 'nao');
+    const comAlerta = funilBase.filter(c => alertaGestor(c30[c.cpf]) || (pm[c.cpf] && (['Chegada', 'Seguranca', 'Tratamento'].some(k => pm[c.cpf][k] === 'vermelho') || pm[c.cpf].Futuro === 'nao')));
+
+    // desligamentos
+    const inic = {}, mot = {}, tempo = [0, 0, 0];
+    deslig90.forEach(c => { const p = desl[c.cpf]; const i = p && p.Iniciativa ? (IJ_MOTIVOS_INICIATIVA[p.Iniciativa] || 'Outro') : 'Sem parecer'; inic[i] = (inic[i] || 0) + 1;
+      const m = p && p.Motivo ? p.Motivo : 'Sem parecer'; mot[m] = (mot[m] || 0) + 1;
+      const d = (ijData(c.InativadoEm) - ijData(c.Admissao)) / IJ_DIA; tempo[d <= 30 ? 0 : d <= 60 ? 1 : 2]++; });
+    // alertas do ponto de 30 dias x desligamento até o 90º dia (todos que tiveram o ponto registrado, dentro dos filtros)
+    const comPonto = base.filter(c => c30[c.cpf]);
+    const saiu90 = c => { if (c.Status !== 'inativo') return false; const a = ijData(c.Admissao), t = ijData(c.InativadoEm); return a && t && (t - a) / IJ_DIA <= 90; };
+    const grpA = comPonto.filter(c => alertaGestor(c30[c.cpf])), grpS = comPonto.filter(c => !alertaGestor(c30[c.cpf]));
+
+    // evolução: últimos 6 meses
+    const meses = [];
+    for (let k = 5; k >= 0; k--) { const d = new Date(); d.setDate(1); d.setHours(0, 0, 0, 0); d.setMonth(d.getMonth() - k); meses.push(d); }
+    const evol = meses.map((m, idx) => {
+      const fim = idx < meses.length - 1 ? meses[idx + 1] : new Date(9e15);
+      const admM = base.filter(c => { const a = ijData(c.Admissao); return a && a >= m && a < fim; });
+      const deslM = base.filter(c => { const t = ijData(c.InativadoEm), a = ijData(c.Admissao); return c.Status === 'inativo' && t && t >= m && t < fim && a && (t - a) / IJ_DIA <= 90; });
+      const ckM = admM.filter(c => !ijLider(c) && ijDias(c) > 8);
+      const ckOk = ckM.filter(c => checklist(c, trilhas(c)).noPrazoHist).length;
+      const t7M = admM.filter(c => ijDias(c) > 7);
+      return { rot: ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'][m.getMonth()] + '/' + String(m.getFullYear()).slice(2), adm: admM.length, desl: deslM.length,
+        ck: ckM.length ? Math.round(ckOk / ckM.length * 100) : null, t7: t7M.length ? Math.round(t7M.filter(c => trilhas(c).ate7).length / t7M.length * 100) : null };
+    });
+
+    return { P, integ, linhas, ckBase, ckNoPrazo, p30Base, p30Feitos, t7Base, t7Ok, listaLojas, lojasConf, itensMedia, listaGes, parecerPend,
+      fases, funilBase, acesso1, semAvanco, eleg45, elegPm, respPm, percep, comAlerta, deslig90, admPeriodo, inic, mot, tempo, grpA, grpS, saiu90, evol };
+  }
+
+  // ---------- desenho ----------
+  function ijKpi(rot, val, comp, cor, acao){ return `<div class="ij-v ij-k"${acao ? ` role="button" tabindex="0" onclick="${acao}" style="cursor:pointer"` : ''}><div class="ij-kl">${rot}</div><div class="ij-kv"${cor ? ` style="color:${cor}"` : ''}>${val}</div><div class="ij-kc">${comp}</div></div>`; }
+  function ijBarra(rot, pct, cor, txt, acao){ return `<div class="ij-br"${acao ? ` role="button" tabindex="0" onclick="${acao}" style="cursor:pointer"` : ''}><span title="${ijEsc(rot)}">${ijEsc(rot)}</span><span class="ij-bt"><i style="width:${Math.max(0, Math.min(100, pct || 0))}%;background:${cor}"></i></span><b>${txt}</b></div>`; }
+  function ijVazio(t){ return `<div class="ij-vazio">${t}</div>`; }
+  function ijTag(n, dias){ return n ? `<span class="ij-tag ${dias >= 10 ? 'neg' : 'amb'}">${n} · há ${dias} dias</span>` : '<span class="ij-mut">—</span>'; }
+  function ijDot(v){ return `<i class="ij-dot" style="background:${v === 'verde' ? IJ_COR.pos : v === 'amarelo' ? IJ_COR.amb : v === 'vermelho' ? IJ_COR.neg : '#CFC8B8'}"></i>`; }
+
+  function renderIndicadores(){
+    const raiz = document.getElementById('tab-indicadores'); if (!raiz || !raiz.classList.contains('on')) return;
+    ijPreencher('ijFRegional', [...new Set(colaboradoresCache.map(c => c.Regional).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt-BR')), 'Todas');
+    ijPreencher('ijFLoja', [...new Set(colaboradoresCache.map(c => c.Loja).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt-BR')), 'Todas');
+    const R = ijUltimo = ijCalcular();
+    const C = IJ_COR;
+    // ===== página 1 =====
+    const pior = R.itensMedia[0];
+    document.getElementById('ijP1').innerHTML = `
+      <div class="ij-k5">
+        ${ijKpi('Lojas em conformidade', R.listaLojas.length ? ijFmtPct(ijPct(R.lojasConf, R.listaLojas.length)) : '—', `${R.lojasConf} de ${R.listaLojas.length} lojas com índice de 80% ou mais`)}
+        ${ijKpi('Colaboradores em integração', R.integ.length, 'admitidos há até 90 dias')}
+        ${ijKpi('Checklists no prazo', ijFmtPct(ijPct(R.ckNoPrazo, R.ckBase.length)), `${R.ckNoPrazo} de ${R.ckBase.length} pessoas em integração`)}
+        ${ijKpi('Pontos de 30 dias registrados', ijFmtPct(ijPct(R.p30Feitos, R.p30Base.length)), `${R.p30Feitos} de ${R.p30Base.length} conversas com prazo vencido`)}
+        ${ijKpi('Pareceres pendentes', R.parecerPend.length, R.parecerPend.length ? 'selecione para ver a lista' : 'nenhum desligamento sem parecer', R.parecerPend.length ? C.aci : '', R.parecerPend.length ? "ijLista('pareceres')" : '')}
+      </div>
+      <div class="ij-g3">
+        <div class="ij-v"><div class="ij-vt">Maior conformidade</div><div class="ij-vs">Índice de conformidade por loja · selecione para filtrar</div>
+          <div class="ij-rol">${R.listaLojas.length ? R.listaLojas.map(L => ijBarra(L.loja, L.indice, C.br, L.indice + '%', `ijFiltrarLoja('${ijEsc(L.loja).replace(/'/g, "\\'")}')`)).join('') : ijVazio('Ainda não há lojas com dados no período.')}</div>
+          <div class="ij-ins">Índice = média de checklist no prazo, trilhas até o 7º dia, ponto de 30 dias registrado e parecer em dia, com o mesmo peso.</div></div>
+        <div class="ij-v"><div class="ij-vt">Menor conformidade</div><div class="ij-vs">Lojas que precisam de apoio</div>
+          <div class="ij-rol">${R.listaLojas.length ? R.listaLojas.slice().reverse().map((L, i) => ijBarra(L.loja, L.indice, i === 0 ? C.ac : C.prev, L.indice + '%', `ijFiltrarLoja('${ijEsc(L.loja).replace(/'/g, "\\'")}')`)).join('') : ijVazio('Ainda não há lojas com dados no período.')}</div>
+          ${pior ? `<div class="ij-ins">O item com menor resultado é <b>${pior[0]} (${ijFmtPct(pior[1])})</b>.</div>` : ''}</div>
+        <div class="ij-v"><div class="ij-vt">Pendências por gestor</div><div class="ij-vs">Itens em atraso, ordenados pelo atraso mais antigo · selecione para ver as pessoas</div>
+          <div class="ij-rol">${R.listaGes.length ? `<table class="ij-tb"><tr><th>Gestor · loja</th><th>Checklist</th><th>Ponto 30 dias</th><th>Parecer</th><th class="num">Mais antigo</th></tr>
+            ${R.listaGes.map((g, i) => `<tr role="button" tabindex="0" onclick="ijLista('gestor',${i})" style="cursor:pointer"><td><b>${ijEsc(ijNomeCurto(g.nome))}</b> <span class="ij-mut">· ${ijEsc(g.loja)}</span></td><td>${ijTag(g.ck[0], g.ck[1])}</td><td>${ijTag(g.p30[0], g.p30[1])}</td><td>${ijTag(g.par[0], g.par[1])}</td><td class="num"><b>${g.max} dias</b></td></tr>`).join('')}</table>`
+            : ijVazio('Nenhuma pendência em atraso.')}</div></div>
+      </div>`;
+    // ===== página 2 =====
+    const f0 = R.fases[0] || 0;
+    const nomesF = ['Fase 1 · Gente Boa chegou', 'Fase 2 · Gente Boa na rotina', 'Fase 3 · Já faz parte', 'Fase 4 · Virou Cabana'];
+    const perda = [0, 1, 2].map(i => [i, (R.fases[i] || 0) - (R.fases[i + 1] || 0)]).sort((a, b) => b[1] - a[1])[0];
+    const divs = R.percep.filter(x => x.div);
+    document.getElementById('ijP2').innerHTML = `
+      <div class="ij-v" style="grid-row:1 / 3"><div class="ij-vt">Progressão nas fases da Jornada</div><div class="ij-vs">Admitidos nos últimos ${R.P} dias, ativos</div>
+        ${f0 ? R.fases.map((n, i) => `<div class="ij-fr"><span>${nomesF[i]}</span><span class="ij-bt"><i style="width:${n / f0 * 100}%;background:${C.br}"></i></span><span><b>${n}</b> <span class="ij-mut">${Math.round(n / f0 * 100)}%</span></span></div>`).join('') : ijVazio('Ninguém admitido no período.')}
+        <div class="ij-k3">
+          ${ijKpi('Trilhas concluídas até o 7º dia', ijFmtPct(ijPct(R.t7Ok, R.t7Base.length)), `${R.t7Ok} de ${R.t7Base.length} com mais de 7 dias de casa`)}
+          ${ijKpi('Acessaram no 1º dia', ijFmtPct(ijPct(R.acesso1, R.funilBase.length)), `${R.acesso1} de ${R.funilBase.length} admitidos`)}
+          ${ijKpi('Sem avanço na fase 1 há +14 dias', R.semAvanco.length, R.semAvanco.length ? 'selecione para ver a lista' : 'ninguém parado', R.semAvanco.length ? C.aci : '', R.semAvanco.length ? "ijLista('semavanco')" : '')}
+        </div>
+        ${f0 && perda && perda[1] > 0 ? `<div class="ij-ins">A maior redução ocorre <b>entre as fases ${perda[0] + 1} e ${perda[0] + 2}</b> (${perda[1]} pessoas).</div>` : ''}</div>
+      <div class="ij-v"><div class="ij-vt">Percepção do gestor e do colaborador</div><div class="ij-vs">Casos com divergência entre o ponto de 30 dias e o "Seu 1º mês"</div>
+        <div class="ij-rol">${divs.length ? `<table class="ij-tb"><tr><th>Colaborador · loja</th><th>Gestor</th><th>Colaborador</th><th>Permanência</th></tr>${divs.map(x => `<tr><td><b>${ijEsc(ijNomeCurto(x.c.Nome))}</b> <span class="ij-mut">· ${ijEsc(x.c.Loja || x.c.Local || '')}</span></td>
+          <td>${ijDot(x.g && x.g.Integracao)}${ijDot(x.g && x.g.Treinamento)}${ijDot(x.g && x.g.Comportamento)}</td><td>${ijDot(x.r.Chegada)}${ijDot(x.r.Seguranca)}${ijDot(x.r.Tratamento)}</td>
+          <td><span class="ij-tag ${x.r.Futuro === 'nao' ? 'neg' : x.r.Futuro === 'talvez' ? 'amb' : 'ok'}">${{ sim: 'Sim', talvez: 'Talvez', nao: 'Não' }[x.r.Futuro] || '—'}</span></td></tr>`).join('')}</table>
+          <div class="ij-leg">Gestor: integração, aprendizado, comportamento · Colaborador: chegada, segurança, tratamento</div>` : ijVazio('Nenhuma divergência entre gestor e colaborador no período.')}</div></div>
+      <div class="ij-k4">
+        ${ijKpi('Respostas ao "Seu 1º mês"', R.respPm.length, `de ${R.elegPm.length} elegíveis (${ijFmtPct(ijPct(R.respPm.length, R.elegPm.length))})`)}
+        ${ijKpi('Casos com divergência', divs.length, 'requerem análise do DHO', divs.length ? C.aci : '')}
+        ${ijKpi('Colaboradores com alerta', R.comAlerta.length, 'farol vermelho, dúvida sobre o potencial ou intenção "não"', R.comAlerta.length ? C.aci : '', R.comAlerta.length ? "ijLista('alerta')" : '')}
+        ${ijKpi('Pesquisa de 45 dias confirmada', ijFmtPct(ijPct(R.eleg45.filter(c => c.Pesquisa45Respondida).length, R.eleg45.length)), `${R.eleg45.filter(c => c.Pesquisa45Respondida).length} de ${R.eleg45.length} elegíveis`)}
+      </div>`;
+    // ===== página 3 =====
+    const tot90 = R.deslig90.length, coresI = { Colaborador: C.br, Empresa: C.ac, 'Fim de contrato': C.s3, Outro: C.prev, 'Sem parecer': '#CFC8B8' };
+    const motivos = Object.entries(R.mot).sort((a, b) => b[1] - a[1]);
+    const taxa = g => g.length ? Math.round(g.filter(R.saiu90).length / g.length * 100) : null;
+    const tA = taxa(R.grpA), tS = taxa(R.grpS), poucos = (R.grpA.length + R.grpS.length) < 20;
+    const maxE = Math.max(1, ...R.evol.map(e => Math.max(e.adm, e.desl)));
+    const ptsLinha = k => R.evol.map((e, i) => e[k] === null ? null : `${60 + i * 150},${190 - e[k] * 1.6}`).filter(Boolean).join(' ');
+    document.getElementById('ijP3').innerHTML = `
+      <div class="ij-v"><div class="ij-kl">Desligamentos até o 90º dia</div><div class="ij-kv">${tot90}</div><div class="ij-kc">${ijFmtPct(ijPct(tot90, R.admPeriodo.length))} dos ${R.admPeriodo.length} admitidos nos últimos ${R.P} dias</div>
+        <div class="ij-vt" style="margin-top:14px">Iniciativa do desligamento</div>
+        ${tot90 ? `<div class="ij-mix">${Object.entries(R.inic).map(([k, n]) => `<i style="width:${n / tot90 * 100}%;background:${coresI[k] || C.prev}" title="${k}: ${n}"></i>`).join('')}</div>
+        <div class="ij-leg">${Object.entries(R.inic).map(([k, n]) => `<span><i style="background:${coresI[k] || C.prev}"></i>${k} ${n}</span>`).join('')}</div>` : ijVazio('Nenhum desligamento no período.')}</div>
+      <div class="ij-v"><div class="ij-vt">Motivos</div><div class="ij-vs">Desligamentos até o 90º dia</div>
+        <div class="ij-rol">${motivos.length ? motivos.map(([m, n], i) => ijBarra(m, n / motivos[0][1] * 100, i === 0 ? C.br : C.prev, n)).join('') : ijVazio('Sem desligamentos no período.')}</div></div>
+      <div class="ij-v"><div class="ij-vt">Tempo de casa no desligamento</div><div class="ij-vs">Até o 90º dia</div>
+        ${tot90 ? ['Até 30 dias', '31 a 60 dias', '61 a 90 dias'].map((t, i) => ijBarra(t, R.tempo[i] / tot90 * 100, i === 0 ? C.br : C.prev, R.tempo[i])).join('') + `<div class="ij-ins">${Math.round(R.tempo[0] / tot90 * 100)}% dos desligamentos ocorrem nos primeiros 30 dias.</div>` : ijVazio('Sem desligamentos no período.')}</div>
+      <div class="ij-v"><div class="ij-vt">Alertas do 30º dia e desligamentos</div><div class="ij-vs">Taxa de desligamento até o 90º dia</div>
+        <div class="ij-cmp"><div><div class="ij-kl">Com alerta</div><div class="ij-big" style="color:${C.aci}">${ijFmtPct(tA)}</div><div class="ij-kc">${R.grpA.filter(R.saiu90).length} de ${R.grpA.length}</div></div>
+        <div><div class="ij-kl">Sem alerta</div><div class="ij-big">${ijFmtPct(tS)}</div><div class="ij-kc">${R.grpS.filter(R.saiu90).length} de ${R.grpS.length}</div></div></div>
+        <div class="ij-ins">${poucos ? 'Ainda há poucos pontos de 30 dias registrados para uma comparação confiável. O número fica mais firme com o tempo.' : (tA === null || tS === null ? 'Comparação disponível quando os dois grupos tiverem casos.' : (tS > 0 && tA >= tS * 1.2) ? `Taxa <b>${(tA / tS).toFixed(1).replace('.', ',')} vezes maior</b> com alerta. Recomenda-se contato do DHO após o registro.` : (tS === 0 && tA > 0) ? 'Só houve desligamentos entre quem teve alerta. Recomenda-se contato do DHO após o registro.' : 'Sem diferença relevante entre os dois grupos no período.')}</div></div>
+      <div class="ij-v" style="grid-column:1 / 4"><div class="ij-vt">Evolução mensal</div><div class="ij-vs">Admitidos em cada mês: checklists concluídos no prazo e trilhas concluídas até o 7º dia</div>
+        <svg viewBox="0 0 980 220" width="100%" height="210" role="img" aria-label="Evolução mensal">
+          ${[0, 25, 50, 75, 100].map(v => `<line x1="60" x2="820" y1="${190 - v * 1.6}" y2="${190 - v * 1.6}" stroke="${C.bd}"/><text x="52" y="${194 - v * 1.6}" text-anchor="end" class="ij-ax">${v}%</text>`).join('')}
+          ${R.evol.map((e, i) => `<text x="${60 + i * 150}" y="212" text-anchor="middle" class="ij-ax">${e.rot}</text>`).join('')}
+          <polyline points="${ptsLinha('t7')}" fill="none" stroke="${C.s3}" stroke-width="3"/><polyline points="${ptsLinha('ck')}" fill="none" stroke="${C.br}" stroke-width="3"/>
+          ${R.evol.map((e, i) => (e.ck !== null ? `<circle cx="${60 + i * 150}" cy="${190 - e.ck * 1.6}" r="4" fill="${C.br}"/>` : '') + (e.t7 !== null ? `<circle cx="${60 + i * 150}" cy="${190 - e.t7 * 1.6}" r="4" fill="${C.s3}"/>` : '')).join('')}
+          <text x="834" y="40" class="ij-lb" fill="${C.br}">Checklists no prazo</text><text x="834" y="62" class="ij-lb" fill="${C.s3}">Trilhas até o 7º dia</text>
+        </svg></div>
+      <div class="ij-v"><div class="ij-vt">Admissões e desligamentos</div><div class="ij-vs">Por mês (desligamentos até o 90º dia)</div>
+        <table class="ij-tb"><tr><th>Mês</th><th class="num">Admissões</th><th class="num">Desligamentos</th></tr>${R.evol.map(e => `<tr><td>${e.rot}</td><td class="num">${e.adm}</td><td class="num">${e.desl}</td></tr>`).join('')}</table></div>`;
+    window.ijIrPagina(ijPagina);
+    document.getElementById('ijAtualizado').textContent = 'Atualizado às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  // listas por trás dos números
+  window.ijLista = function(tipo, i){
+    const R = ijUltimo; if (!R) return;
+    let titulo = '', linhas = [];
+    const lin = (c, extra) => [ijNomeCurto(c.Nome), c.Loja || c.Local || '', c.Cargo || '', extra];
+    if (tipo === 'gestor') { const g = R.listaGes[i]; titulo = 'Pendências de ' + ijNomeCurto(g.nome); linhas = g.pessoas.map(([c, t]) => lin(c, t)); }
+    if (tipo === 'pareceres') { titulo = 'Desligamentos sem parecer'; linhas = R.parecerPend.map(c => lin(c, 'Gestor: ' + ijNomeCurto(c.Gestor || ''))); }
+    if (tipo === 'semavanco') { titulo = 'Sem avanço na fase 1 há mais de 14 dias'; linhas = R.semAvanco.map(c => lin(c, ijDias(c) + ' dias de casa')); }
+    if (tipo === 'alerta') { titulo = 'Colaboradores com alerta'; linhas = R.comAlerta.map(c => lin(c, ijDias(c) + ' dias de casa')); }
+    const m = document.getElementById('ijModal');
+    document.getElementById('ijModalTitulo').textContent = titulo;
+    document.getElementById('ijModalCorpo').innerHTML = linhas.length ? `<table class="ij-tb"><tr><th>Nome</th><th>Loja</th><th>Cargo</th><th>Detalhe</th></tr>${linhas.map(l => `<tr>${l.map(x => `<td>${ijEsc(x)}</td>`).join('')}</tr>`).join('')}</table>` : ijVazio('Ninguém nesta lista.');
+    window.__ijListaAtual = { titulo, linhas };
+    m.style.display = 'flex';
+  };
+  window.ijExportarLista = function(){ const x = window.__ijListaAtual; if (!x) return; baixarXLSXMultiAba([{ nome: 'Lista', linhas: [['Nome', 'Loja', 'Cargo', 'Detalhe'], ...x.linhas] }], 'indicadores-lista.xlsx'); };
+  window.ijExportar = function(){
+    const R = ijUltimo; if (!R) return;
+    baixarXLSXMultiAba([
+      { nome: 'Lojas', linhas: [['Loja', 'Regional', 'Índice de conformidade', 'Checklist no prazo', 'Trilhas até o 7º dia', 'Ponto de 30 dias', 'Parecer em dia'], ...R.listaLojas.map(L => [L.loja, L.regional, L.indice + '%', ...['ck', 't7', 'p30', 'par'].map(k => L.det[k] === null ? '' : L.det[k] + '%')])] },
+      { nome: 'Pendências por gestor', linhas: [['Gestor', 'Loja', 'Checklists atrasados', 'Atraso (dias)', 'Pontos de 30 dias atrasados', 'Atraso (dias)', 'Pareceres pendentes', 'Atraso (dias)'], ...R.listaGes.map(g => [ijNomeCurto(g.nome), g.loja, g.ck[0], g.ck[1], g.p30[0], g.p30[1], g.par[0], g.par[1]])] },
+      { nome: 'Fases', linhas: [['Fase', 'Pessoas'], ['Gente Boa chegou', R.fases[0]], ['Gente Boa na rotina', R.fases[1]], ['Já faz parte', R.fases[2]], ['Virou Cabana', R.fases[3]]] },
+      { nome: 'Desligamentos até 90 dias', linhas: [['Motivo', 'Quantidade'], ...Object.entries(R.mot)] },
+      { nome: 'Evolução mensal', linhas: [['Mês', 'Admissões', 'Desligamentos até 90 dias', 'Checklists no prazo', 'Trilhas até o 7º dia'], ...R.evol.map(e => [e.rot, e.adm, e.desl, e.ck === null ? '' : e.ck + '%', e.t7 === null ? '' : e.t7 + '%'])] }
+    ], `indicadores-jornada-${new Date().toISOString().slice(0, 10)}.xlsx`);
+  };
 
   /* ================== 1º MÊS NA VISÃO DO COLABORADOR ================== */
   let primeiroMesCache = [];
