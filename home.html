@@ -6535,6 +6535,7 @@ function configurarGateConclusao(c){
   }
 
   async function iniciarPainelGestor(cpf){
+    try { const sj = await getDoc(doc(db, 'configuracoes', 'jornada')); if (sj.exists() && sj.data().Inicio) window.__inicioJornada = sj.data().Inicio; } catch (e) {}
     try {
       const snap = await getDocs(query(collection(db, 'colaboradores'), where('CpfGestor', '==', cpf)));
       const todos = snap.docs.map(d => ({ cpf: d.id, ...d.data() }));
@@ -6548,7 +6549,8 @@ function configurarGateConclusao(c){
       }
       // Jornada do Cabaneiro (setembro/2026): popup de "foi desligado?" pra quem sumiu da base
       // (Status virou inativo e ainda não tem parecer registrado) + painel de pendências do gestor.
-      await verificarDesligadosPendentes(todos.filter(c => c.Status === 'inativo' && (c.Local || 'Loja') === 'Loja'));   // parecer de desligamento só pra loja
+      await verificarDesligadosPendentes(todos.filter(c => c.Status === 'inativo' && (c.Local || 'Loja') === 'Loja' &&
+        (() => { const t = c.InativadoEm && c.InativadoEm.toDate ? c.InativadoEm.toDate().getTime() : Date.now(); return t >= inicioJornadaMs(); })()));   // parecer de desligamento só pra loja
       await atualizarPainelPendenciasGestor();
     } catch (err) {
       console.error('Erro ao verificar equipe (painel do gestor):', err);
@@ -6883,7 +6885,7 @@ function configurarGateConclusao(c){
       if ((c.Local || 'Loja') !== 'Loja') return false;   // ponto de checagem de 30 dias só pra loja
       if (!c.Admissao || !c.Admissao.toDate) return false;
       const dias = Math.floor((agora - c.Admissao.toDate()) / (1000 * 60 * 60 * 24));
-      return dias >= 30 && dias <= 90;
+      return dias >= 30 && dias <= 90 && diasAntesInicio(c) <= 30;
     });
     if (!candidatos.length) {
       lista.innerHTML = `<p class="jornada-vazio">Nenhum ponto de checagem de 30 dias pendente agora.</p>`;
@@ -7020,6 +7022,15 @@ function configurarGateConclusao(c){
     if (!c || !c.Admissao || !c.Admissao.toDate) return null;
     return Math.floor((new Date() - c.Admissao.toDate()) / 86400000);
   }
+  function inicioJornadaMs(){ const i = new Date((window.__inicioJornada || '2026-11-11') + 'T00:00:00'); return isNaN(i) ? 0 : i.getTime(); }
+  // quantos dias de casa a pessoa já tinha quando a Jornada começou (0 se entrou depois)
+  function diasAntesInicio(c){ if (!c || !c.Admissao || !c.Admissao.toDate) return 0; return Math.max(0, Math.floor((inicioJornadaMs() - c.Admissao.toDate().getTime()) / 86400000)); }
+  // dias contados para o prazo das trilhas: da admissão ou do início da Jornada, o que for mais recente
+  function diasPrazo(c){
+    if (!c || !c.Admissao || !c.Admissao.toDate) return null;
+    return Math.floor((Date.now() - Math.max(c.Admissao.toDate().getTime(), inicioJornadaMs())) / 86400000);
+  }
+  window.diasPrazo = diasPrazo; window.diasAntesInicio = diasAntesInicio;
   // "em integração": de 15 dias antes da admissão (já cadastrado) até o dia 90
   function emIntegracao(c){ const d = diasDeCasa(c); return d !== null && d >= -15 && d <= 90; }
   function iniciaisDe(nome){ return String(nome || '').split(' ').filter(Boolean).slice(0, 2).map(p => p[0]).join('').toUpperCase() || '?'; }
@@ -7055,9 +7066,10 @@ function configurarGateConclusao(c){
         if (ok) f++;
         if (it.auto !== 'primeiroMes') { tObrig++; if (ok) fObrig++; }
       });
-      blocos[b.id] = { feitos: f, total: b.itens.length, atrasa: fObrig < tObrig };
+      const conta = diasAntesInicio(c) <= Math.min(b.prazo, 30);   // etapa vencida antes da Jornada, ou pessoa que já tinha mais de 30 dias, não é cobrada
+      blocos[b.id] = { feitos: f, total: b.itens.length, atrasa: conta && fObrig < tObrig };
       feitos += f; total += b.itens.length;
-      if (dias !== null && dias > b.prazo && fObrig < tObrig) atraso = true;
+      if (dias !== null && dias > b.prazo && conta && fObrig < tObrig) atraso = true;
     });
     return { feitos, total, pct: Math.round((feitos / total) * 100), atraso, blocos, dias, trilhasOk };
   }
@@ -7194,7 +7206,7 @@ function configurarGateConclusao(c){
     if (d === null || d > 90) return false;          // fora da Jornada: sem cobrança
     if (l.cursosVencidos.length || l.cursosReprovados.length) return true;
     if (!l.cursosPendentes.length) return false;
-    return d > 7;
+    return diasPrazo(c) > 7;
   }
   window.trilhaAtrasada = trilhaAtrasada;
   // gerente de loja, coordenador e gerente de operações: o gestor deles só preenche o ponto de 30 dias (não há checklist de integração)
@@ -7209,7 +7221,7 @@ function configurarGateConclusao(c){
   // ponto de 30 dias de cada pessoa do time (só loja): 'antes' (dia < 30), 'pendente' (30 a 90 sem registro), 'feito', ou '' (não se aplica)
   window.__checkin30Cache = window.__checkin30Cache || {};
   async function carregarCheckin30Equipe(equipe){
-    const alvos = (equipe || []).filter(c => (c.Local || 'Loja') === 'Loja' && (() => { const d = diasDeCasa(c); return d !== null && d >= 30 && d <= 90; })());
+    const alvos = (equipe || []).filter(c => (c.Local || 'Loja') === 'Loja' && (() => { const d = diasDeCasa(c); return d !== null && d >= 30 && d <= 90 && diasAntesInicio(c) <= 30; })());
     await Promise.all(alvos.map(async c => {
       try { const s = await getDoc(doc(db, 'checkins30', c.cpf)); window.__checkin30Cache[c.cpf] = s.exists() ? (s.data() || {}) : null; }
       catch (e) { window.__checkin30Cache[c.cpf] = window.__checkin30Cache[c.cpf] === undefined ? null : window.__checkin30Cache[c.cpf]; }
@@ -7218,7 +7230,7 @@ function configurarGateConclusao(c){
   function statusPonto30(c){
     if ((c.Local || 'Loja') !== 'Loja') return '';
     const d = diasDeCasa(c);
-    if (d === null || d < -15) return '';
+    if (d === null || d < -15 || d > 90 || diasAntesInicio(c) > 30) return '';
     if (d < 30) return 'antes';
     const reg = window.__checkin30Cache[c.cpf];
     if (reg) return 'feito';
@@ -7459,7 +7471,7 @@ function configurarGateConclusao(c){
     const porCpf = {}; linhas.forEach(l => { porCpf[l.cpf] = l; });
     await carregarChecklists(colabs.filter(c => emIntegracao(c) && !ehLideranca(c)).map(c => c.cpf));
     // ponto de 30 dias: só quem é de Loja (inclusive o gerente de loja, que o coordenador acompanha)
-    const cand = colabs.filter(c => { const d = diasDeCasa(c); return (c.Local || 'Loja') === 'Loja' && d !== null && d >= 30 && d <= 90; });
+    const cand = colabs.filter(c => { const d = diasDeCasa(c); return (c.Local || 'Loja') === 'Loja' && d !== null && d >= 30 && d <= 90 && diasAntesInicio(c) <= 30; });
     const feitos = new Set();
     for (let i = 0; i < cand.length; i += 30) {
       const snap = await getDocs(query(collection(db, 'checkins30'), where('Cpf', 'in', cand.slice(i, i + 30).map(c => c.cpf))));
