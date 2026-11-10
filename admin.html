@@ -638,11 +638,12 @@ window.MARCA_ATIVA = 'jornada';
           <div class="upload-block">
             <div class="txt">
               <b>Importar cargos</b>
-              <span>Planilha com uma coluna "Cargo" (ou "Nome") — um cargo por linha. Se quiser já vir agrupado, adiciona uma coluna "Macrocargo" (opcional). Cria os que ainda não existem em Configurações → Cargos; não duplica quem já está cadastrado.</span>
+              <span>Colunas: <b>Cargo</b>, <b>Macrocargo</b> (opcional) e <b>Outros nomes</b> (opcional, separados por vírgula: os jeitos diferentes como o cargo vem na planilha de colaboradores). Baixe o modelo, que já vem com os cargos cadastrados, preencha e importe. Cargo que já existe recebe os outros nomes; nada é apagado. Planilha com uma coluna "Cargo" (ou "Nome") — um cargo por linha. Se quiser já vir agrupado, adiciona uma coluna "Macrocargo" (opcional). Cria os que ainda não existem em Configurações → Cargos; não duplica quem já está cadastrado.</span>
             </div>
             <div class="actions">
               <button class="ghost-btn" onclick="document.getElementById('cargosFileInput').click()">📎 <span id="cargosFileNome">Escolher arquivo</span></button>
               <input type="file" id="cargosFileInput" accept=".xlsx,.xls,.csv" style="display:none;" onchange="onCargosExcelEscolhido(this)">
+              <button class="ghost-btn" type="button" onclick="baixarModeloCargos()">⬇ Modelo</button>
               <button class="ghost-btn" type="button" onclick="abrirModalCargo()">Ver cargos e outros nomes</button>
               <button class="new-btn" id="btnImportarCargos" onclick="importarCargosPlanilha()" disabled>Importar cargos</button>
             </div>
@@ -5119,6 +5120,14 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     XLSX.writeFile(wb, `base-jornada-${new Date().toISOString().slice(0, 10)}.xlsx`);
   };
 
+  // modelo da planilha de cargos, já com os cargos cadastrados e os outros nomes de cada um
+  window.baixarModeloCargos = function(){
+    const linhas = [['Cargo', 'Macrocargo', 'Outros nomes'], ...[...cargosCache].sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR')).map(c => [c.nome, c.macrocargo || '', (c.variacoes || []).join(', ')])];
+    if (linhas.length === 1) linhas.push(['ATENDENTE DE SALAO JUNIOR', 'Atendente', 'Atendente de Salão Jr, Atend. Salão Júnior']);
+    const ws = XLSX.utils.aoa_to_sheet(linhas); ws['!cols'] = [{ wch: 38 }, { wch: 22 }, { wch: 60 }];
+    const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Cargos'); XLSX.writeFile(wb, 'cargos-jornada.xlsx');
+  };
+
   window.baixarModeloColaboradores = function(){
     const cab = ['Nome', 'CPF', 'Loja', 'Regional', 'Cargo', 'Data de admissão', 'Local', 'Tipo de contratação', 'Gestor', 'Cargo do gestor', 'CPF do gestor', 'Nível', 'Diretoria'];
     const exemplo = ['Maria da Silva', '12345678901', 'Loja Paulista', 'Regional Paulista', 'ATENDENTE', '10/11/2026', 'Loja', 'CLT', 'Rafael Souza', 'GERENTE DE LOJA', '98765432100', '', ''];
@@ -5222,24 +5231,38 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
         return '';
       };
 
-      let criados = 0, ignorados = 0;
-      const nomesJaExistentes = new Set(cargosCache.map(c => c.nome.toLowerCase()));
-      const novosNesseArquivo = new Set(); // evita duplicar se o próprio arquivo repetir o cargo
-      const batch = writeBatch(db);
-
+      let criados = 0, ignorados = 0, comVariacoes = 0;
+      // junta tudo por cargo: a planilha pode ter "Outros nomes" separados por vírgula, ou uma linha por variação
+      const porChave = new Map();
       for (const linha of linhas) {
-        const nome = pegar(linha, ['cargo', 'cargos', 'nome', 'nome do cargo']);
+        const nome = pegar(linha, ['cargo', 'cargos', 'nome', 'nome do cargo', 'cargo oficial']);
         if (!nome) continue;
+        const k = chaveNome(nome);
+        const it = porChave.get(k) || { nome, macro: '', vars: new Set() };
         const macrocargo = pegar(linha, ['macrocargo', 'macro cargo', 'grupo', 'macro']);
-        const chave = nome.toLowerCase();
-        if (nomesJaExistentes.has(chave) || novosNesseArquivo.has(chave)) { ignorados++; continue; }
-        novosNesseArquivo.add(chave);
-        batch.set(doc(collection(db, 'cargos')), { Nome: nome, Macrocargo: macrocargo, CriadoEm: serverTimestamp() });
-        criados++;
+        if (macrocargo && !it.macro) it.macro = macrocargo;
+        pegar(linha, ['outros nomes', 'outro nome', 'variacoes', 'variações', 'variacao', 'variação', 'nome na planilha', 'como vem na planilha'])
+          .split(/[,;\n]+/).map(x => x.replace(/\s+/g, ' ').trim()).filter(x => x && chaveNome(x) !== k).forEach(x => it.vars.add(x));
+        porChave.set(k, it);
       }
-      if (criados) await batch.commit();
+      const ops = [];
+      porChave.forEach((it, k) => {
+        const existente = cargosCache.find(c => chaveNome(c.nome) === k);
+        if (existente) {
+          const juntas = [...new Set([...(existente.variacoes || []), ...it.vars])];
+          const novas = juntas.length !== (existente.variacoes || []).length;
+          if (novas || (it.macro && !existente.macrocargo)) {
+            ops.push(b => b.set(doc(db, 'cargos', existente.id), { Variacoes: juntas, ...(it.macro && !existente.macrocargo ? { Macrocargo: it.macro } : {}) }, { merge: true }));
+            if (novas) comVariacoes++;
+          } else ignorados++;
+        } else {
+          ops.push(b => b.set(doc(collection(db, 'cargos')), { Nome: it.nome, Macrocargo: it.macro, Variacoes: [...it.vars], CriadoEm: serverTimestamp() }));
+          criados++; if (it.vars.size) comVariacoes++;
+        }
+      });
+      for (let i = 0; i < ops.length; i += 400) { const b = writeBatch(db); ops.slice(i, i + 400).forEach(f => f(b)); await b.commit(); }
 
-      resultadoEl.textContent = `✅ Importado: ${criados} cargo(s) novo(s) criado(s). ${ignorados} já existiam e foram ignorados.`;
+      resultadoEl.textContent = `✅ Importado: ${criados} cargo(s) novo(s), ${comVariacoes} cargo(s) com outros nomes atualizados, ${ignorados} sem mudança.`;
       resultadoEl.style.color = 'var(--green-dark)';
       resultadoEl.style.display = 'block';
       arquivoCargosEscolhido = null;
