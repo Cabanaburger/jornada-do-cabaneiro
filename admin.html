@@ -606,6 +606,7 @@ window.MARCA_ATIVA = 'jornada';
             </label>
             <div style="display:flex; gap:8px; flex-wrap:wrap;">
               <button type="button" class="ghost-btn" onclick="baixarModeloColaboradores()">⬇ Baixar modelo da planilha</button>
+              <button type="button" class="ghost-btn" onclick="baixarBaseAtual()">⬇ Baixar a base atual</button>
               <button type="button" class="ghost-btn" onclick="gerarArquivoAcessos()">⬇ Gerar arquivo de acessos (carga grande)</button>
             </div>
             <span id="arquivoAcessosResultado" style="font-size:12.5px; color:var(--ink-soft);">Para subir mais de 100 pessoas novas de uma vez: escolha a planilha, gere o arquivo de acessos, importe no Firebase e só depois sincronize.</span>
@@ -1684,6 +1685,7 @@ window.MARCA_ATIVA = 'jornada';
         <small class="hint">O campo ao lado de cada cargo é o <b>macrocargo</b> — edita e sai do campo (Tab ou clicar fora) que já salva. <button type="button" id="btnCarregarCargosPadrao" onclick="carregarCargosPadrao()" style="background:none; border:none; padding:0; color:var(--green-dark); font-weight:700; font-size:inherit; cursor:pointer;">🌱 Carregar lista inicial de cargos</button> adiciona algumas sugestões prontas.</small>
       </div>
       <div style="border-top:1px solid var(--line); margin:2px 0 6px;"></div>
+      <small class="hint" style="display:block; margin:-4px 0 10px;">O último campo de cada cargo é <b>Outros nomes</b>: jeitos diferentes de escrever o mesmo cargo na planilha (ex.: "Atendente de Salão Jr, Atend. Salão Júnior"). Ao subir a base, eles viram o nome oficial. Maiúscula, minúscula e acento já são reconhecidos sozinhos.</small>
       <div class="field"><label>Nome do cargo</label><input type="text" id="cargoNomeInput" placeholder="Ex: Supervisor de Turno"></div>
       <div class="field">
         <label>Macrocargo (opcional)</label>
@@ -2489,7 +2491,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
 
   function iniciarCargos(){
     onSnapshot(collection(db, 'cargos'), (snapshot) => {
-      cargosCache = snapshot.docs.map(d => ({ id: d.id, nome: d.data().Nome, macrocargo: d.data().Macrocargo || '' })).filter(c => c.nome);
+      cargosCache = snapshot.docs.map(d => ({ id: d.id, nome: d.data().Nome, macrocargo: d.data().Macrocargo || '', variacoes: Array.isArray(d.data().Variacoes) ? d.data().Variacoes : [] })).filter(c => c.nome);
       renderCargosEmTodaParte();
       renderCargoListaExistentes();
     }, (err) => console.error('Erro ao carregar cargos:', err));
@@ -2510,6 +2512,9 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
         <input type="text" value="${(c.macrocargo || '').replace(/"/g, '&quot;')}" placeholder="Macrocargo…" list="macrocargosDatalist"
           onchange="atualizarMacrocargoCargo('${c.id}', this.value)"
           style="width:130px; flex:none; padding:5px 8px; font-size:12px; border-radius:6px; border:1px solid var(--line);">
+        <input type="text" value="${(c.variacoes || []).join(', ').replace(/"/g, '&quot;')}" placeholder="Outros nomes (separe por vírgula)…" title="Outros jeitos de escrever este cargo na planilha"
+          onchange="atualizarVariacoesCargo('${c.id}', this.value)"
+          style="width:210px; flex:none; padding:5px 8px; font-size:12px; border-radius:6px; border:1px solid var(--line);">
         <button type="button" onclick="removerCargo('${c.id}','${c.nome.replace(/'/g, "\\'")}')" style="background:none; color:#B4462B; font-weight:700; font-size:12px; padding:2px 6px; flex:none;">Remover</button>
       </div>`
     ).join('');
@@ -2517,6 +2522,20 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     if (datalist) datalist.innerHTML = macrocargos.map(m => `<option value="${m}">`).join('');
     atualizarBotaoRemoverSelecionados();
   }
+
+  // outros nomes do mesmo cargo: quando a planilha trouxer um deles, a sincronização grava o nome oficial
+  window.atualizarVariacoesCargo = async function(id, texto){
+    const lista = [...new Set(String(texto || '').split(/[,;\n]+/).map(x => x.replace(/\s+/g, ' ').trim()).filter(Boolean))];
+    try { await setDoc(doc(db, 'cargos', id), { Variacoes: lista }, { merge: true }); }
+    catch (e) { console.error('Erro ao salvar outros nomes do cargo', e); alert('Não consegui salvar os outros nomes desse cargo.'); }
+  };
+  function chaveNome(v){ return String(v || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[.]/g, '').replace(/\s+/g, ' ').trim(); }
+  function cargoOficial(v){
+    if (!v) return v; const k = chaveNome(v);
+    const c = cargosCache.find(x => chaveNome(x.nome) === k) || cargosCache.find(x => (x.variacoes || []).some(a => chaveNome(a) === k));
+    return c ? c.nome : v;
+  }
+  function lojaOficial(v){ if (!v) return v; const k = chaveNome(v); const l = lojasCache.find(x => chaveNome(x.nome) === k); return l ? l.nome : v; }
 
   // marcar vários cargos "errados" (ex.: os de exemplo antigos) e remover de uma vez, em vez de
   // clicar "Remover" um por um — pedido direto da Nayuri depois de subir a lista real de cargos
@@ -5084,6 +5103,20 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     } catch (e) { console.error(e); res.textContent = 'Não consegui gerar o arquivo: ' + e.message; res.style.color = '#B4462B'; }
   };
 
+  // a base que está na Jornada hoje, já no formato que a sincronização lê (dá para editar e subir de volta)
+  window.baixarBaseAtual = function(){
+    const cab = ['Nome', 'CPF', 'Loja', 'Regional', 'Cargo', 'Data de admissão', 'Local', 'Tipo de contratação', 'Gestor', 'Cargo do gestor', 'CPF do gestor', 'Nível', 'Diretoria', 'Status'];
+    const dt = v => { const d = v && v.toDate ? v.toDate() : null; return d ? d.toLocaleDateString('pt-BR') : ''; };
+    const linhas = [...colaboradoresCache].sort((a, b) => String(a.Nome || '').localeCompare(String(b.Nome || ''), 'pt-BR'))
+      .map(c => [c.Nome || '', c.cpf || '', c.Loja || '', c.Regional || '', c.Cargo || '', dt(c.Admissao), c.Local || 'Loja', c.TipoContratacao || 'CLT', c.Gestor || '', c.CargoGestor || '', c.CpfGestor || '', c.Nivel === 'Admin' ? 'Admin' : '', c.Diretoria || '', c.Status === 'inativo' ? 'Inativo' : 'Ativo']);
+    const ws = XLSX.utils.aoa_to_sheet([cab, ...linhas]);
+    // CPF como texto, para o Excel não apagar o zero da frente
+    for (let r = 1; r <= linhas.length; r++) [1, 10].forEach(col => { const ref = XLSX.utils.encode_cell({ r, c: col }); if (ws[ref]) { ws[ref].t = 's'; ws[ref].z = '@'; } });
+    ws['!cols'] = cab.map(c => ({ wch: Math.max(14, c.length + 2) }));
+    const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Colaboradores');
+    XLSX.writeFile(wb, `base-jornada-${new Date().toISOString().slice(0, 10)}.xlsx`);
+  };
+
   window.baixarModeloColaboradores = function(){
     const cab = ['Nome', 'CPF', 'Loja', 'Regional', 'Cargo', 'Data de admissão', 'Local', 'Tipo de contratação', 'Gestor', 'Cargo do gestor', 'CPF do gestor', 'Nível', 'Diretoria'];
     const exemplo = ['Maria da Silva', '12345678901', 'Loja Paulista', 'Regional Paulista', 'ATENDENTE', '10/11/2026', 'Loja', 'CLT', 'Rafael Souza', 'GERENTE DE LOJA', '98765432100', '', ''];
@@ -5302,6 +5335,9 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
           cpfGestor: soDigitos(pegar(linha, ['cpf do gestor', 'cpf gestor'])),
         });
       }
+
+      // nomes de cargo e loja escritos de outro jeito (maiúscula, acento, espaço ou um "outro nome" cadastrado) viram o nome oficial
+      linhasValidas.forEach(l => { l.cargo = cargoOficial(l.cargo); l.cargoGestor = cargoOficial(l.cargoGestor); l.loja = lojaOficial(l.loja); });
 
       // ---- monta um resumo do que vai mudar, pra confirmar antes de tocar em qualquer dado ----
       const mudancasCargo = [];
