@@ -643,6 +643,7 @@ window.MARCA_ATIVA = 'jornada';
             <div class="actions">
               <button class="ghost-btn" onclick="document.getElementById('cargosFileInput').click()">📎 <span id="cargosFileNome">Escolher arquivo</span></button>
               <input type="file" id="cargosFileInput" accept=".xlsx,.xls,.csv" style="display:none;" onchange="onCargosExcelEscolhido(this)">
+              <button class="ghost-btn" type="button" onclick="abrirModalCargo()">Ver cargos e outros nomes</button>
               <button class="new-btn" id="btnImportarCargos" onclick="importarCargosPlanilha()" disabled>Importar cargos</button>
             </div>
           </div>
@@ -1673,6 +1674,7 @@ window.MARCA_ATIVA = 'jornada';
 
 <div class="overlay" id="modalCargo" style="display:none;">
   <div class="modal" style="width:440px;">
+    <style>#modalCargo > div{ max-width:680px !important; width:94vw !important; } #cargoListaExistentes .linha-cargo > button{ order:2; } #cargoListaExistentes{ max-height:420px !important; }</style>
     <div class="modal-head"><h3>Cargos &amp; macrocargos</h3><button onclick="closeModal('modalCargo')">✕</button></div>
     <div class="modal-body">
       <div class="field">
@@ -2506,15 +2508,15 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     }
     const macrocargos = macrocargosParaExibir();
     el.innerHTML = [...cargosCache].sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR')).map(c =>
-      `<div class="linha-cargo" data-nome="${c.nome.replace(/"/g, '&quot;')}" data-id="${c.id}" style="display:flex; align-items:center; gap:8px; padding:6px 10px; background:var(--cream); border-radius:8px; font-size:13px;">
+      `<div class="linha-cargo" data-nome="${c.nome.replace(/"/g, '&quot;')}" data-id="${c.id}" style="display:flex; flex-wrap:wrap; align-items:center; gap:6px 8px; padding:8px 10px; background:var(--cream); border-radius:8px; font-size:13px;">
         <input type="checkbox" class="chk-cargo" value="${c.id}" onchange="atualizarBotaoRemoverSelecionados()" style="flex:none; width:15px; height:15px;">
-        <span style="flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${c.nome}</span>
+        <span style="flex:1 1 60%; min-width:0; font-weight:600;">${c.nome}</span>
         <input type="text" value="${(c.macrocargo || '').replace(/"/g, '&quot;')}" placeholder="Macrocargo…" list="macrocargosDatalist"
           onchange="atualizarMacrocargoCargo('${c.id}', this.value)"
-          style="width:130px; flex:none; padding:5px 8px; font-size:12px; border-radius:6px; border:1px solid var(--line);">
+          style="order:3; flex:1 1 30%; min-width:120px; padding:5px 8px; font-size:12px; border-radius:6px; border:1px solid var(--line);">
         <input type="text" value="${(c.variacoes || []).join(', ').replace(/"/g, '&quot;')}" placeholder="Outros nomes (separe por vírgula)…" title="Outros jeitos de escrever este cargo na planilha"
           onchange="atualizarVariacoesCargo('${c.id}', this.value)"
-          style="width:210px; flex:none; padding:5px 8px; font-size:12px; border-radius:6px; border:1px solid var(--line);">
+          style="order:4; flex:1 1 60%; min-width:160px; padding:5px 8px; font-size:12px; border-radius:6px; border:1px solid var(--line);">
         <button type="button" onclick="removerCargo('${c.id}','${c.nome.replace(/'/g, "\\'")}')" style="background:none; color:#B4462B; font-weight:700; font-size:12px; padding:2px 6px; flex:none;">Remover</button>
       </div>`
     ).join('');
