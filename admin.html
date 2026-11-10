@@ -810,6 +810,12 @@ window.MARCA_ATIVA = 'jornada';
             <option value="">Todas as lojas</option>
           </select>
         </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap; margin:-4px 0 14px; align-items:center;">
+          <input type="search" id="relColabBusca" placeholder="Buscar por nome, CPF ou cargo…" oninput="renderRelatorios()" style="min-width:260px; flex:1;">
+          <select id="relColabSituacao" onchange="renderRelatorios()"><option value="">Todas as situações</option><option>Em dia</option><option>Atenção</option><option>Crítico</option><option>Nunca acessou</option></select>
+          <select id="relColabConclusao" onchange="renderRelatorios()"><option value="">Concluídos e pendentes</option><option value="pend">Com trilha pendente</option><option value="ok">Tudo concluído</option></select>
+          <span id="relColabContagem" style="font-size:12.5px; color:var(--ink-soft); margin-left:auto;"></span>
+        </div>
         <div class="panel-card">
           <table>
             <thead><tr><th>Colaborador</th><th>Loja</th><th>Cargo</th><th>Concluídos</th><th>Pendentes</th><th>% concluído</th><th>Último acesso</th><th>Dias sem acessar</th><th>Situação</th></tr></thead>
@@ -5709,6 +5715,11 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
   function ijPct(n, d){ return d ? Math.round(n / d * 1000) / 10 : null; }
   function ijFmtPct(v){ return v === null || v === undefined ? '—' : String(v).replace('.', ',') + '%'; }
   function ijEsc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch])); }
+  // loja escrita de jeitos diferentes no cadastro ("ALPHAVILLE", "Alphaville") vira uma loja só, com nome padronizado
+  const IJ_MIN = new Set(['de', 'da', 'do', 'das', 'dos', 'e']);
+  function ijChave(n){ return String(n || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/\s+/g, ' ').trim(); }
+  function ijNomeLoja(n){ const t = String(n || '').replace(/\s+/g, ' ').trim(); if (!t) return '';
+    return t.toLowerCase().split(' ').map((p, i) => i > 0 && IJ_MIN.has(p) ? p : p.split('-').map(q => q ? q[0].toUpperCase() + q.slice(1) : q).join('-')).join(' '); }
   function ijNomeCurto(n){ return String(n || '').toLowerCase().replace(/(^|\s)\S/g, x => x.toUpperCase()); }
 
   // mesmo filtro de público das trilhas que a Jornada usa para o colaborador
@@ -5736,7 +5747,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
   }
   window.abrirIndicadores = function(el){ goTab('indicadores', el); iniciarIndicadores(); renderIndicadores(); };
   window.ijIrPagina = function(i){ ijPagina = i; document.querySelectorAll('#tab-indicadores .ij-tab').forEach((t, k) => t.classList.toggle('on', k === i)); document.querySelectorAll('#tab-indicadores .ij-pg').forEach((p, k) => p.style.display = k === i ? 'grid' : 'none'); };
-  window.ijFiltrarLoja = function(loja){ const s = document.getElementById('ijFLoja'); if (s) { s.value = (s.value === loja ? '' : loja); renderIndicadores(); } };
+  window.ijFiltrarLoja = function(loja){ const s = document.getElementById('ijFLoja'); if (s) { s.value = (ijChave(s.value) === ijChave(loja) ? '' : ijNomeLoja(loja)); renderIndicadores(); } };
 
   function ijPreencher(id, valores, rotulo){
     const el = document.getElementById(id); if (!el) return;
@@ -5750,7 +5761,8 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     const P = parseInt(document.getElementById('ijFPeriodo').value || '90', 10);
     const fR = document.getElementById('ijFRegional').value, fL = document.getElementById('ijFLocal').value, fJ = document.getElementById('ijFLoja').value;
     const agora = Date.now(), inicio = agora - P * IJ_DIA;
-    const base = colaboradoresCache.filter(c => c.Nivel !== 'Admin' && (!fR || c.Regional === fR) && (!fL || (c.Local || 'Loja') === fL) && (!fJ || c.Loja === fJ));
+    const base = colaboradoresCache.filter(c => c.Nivel !== 'Admin' && (!fR || ijChave(c.Regional) === ijChave(fR)) && (!fL || (c.Local || 'Loja') === fL) && (!fJ || ijChave(c.Loja) === ijChave(fJ)));
+    const LJ = c => ijNomeLoja(c.Loja);   // nome de loja padronizado para agrupar e mostrar
     const obrig = cursosCache.filter(cu => cu.Obrigatorio === true && (cu.Status || 'publicado') === 'publicado');
     const prog = {}; progressoCache.forEach(p => { if (p && p.Cpf && p.CursoId) (prog[p.Cpf] = prog[p.Cpf] || {})[p.CursoId] = p; });
     const c30 = {}; checkins30Cache.forEach(x => { c30[x.cpf] = x; });
@@ -5824,8 +5836,8 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
 
     // conformidade por loja: média simples dos 4 itens com o mesmo peso (item sem base fica de fora da média)
     const lojas = {};
-    const pegaLoja = n => (lojas[n] = lojas[n] || { loja: n, regional: '', ck: [0, 0], t7: [0, 0], p30: [0, 0], par: [0, 0] });
-    linhas.forEach(l => { if (!ijLoja(l.c) || !l.c.Loja) return; const L = pegaLoja(l.c.Loja); L.regional = l.c.Regional || L.regional;
+    const pegaLoja = n => { const k = ijChave(n); return (lojas[k] = lojas[k] || { loja: ijNomeLoja(n), regional: '', ck: [0, 0], t7: [0, 0], p30: [0, 0], par: [0, 0] }); };
+    linhas.forEach(l => { if (!ijLoja(l.c) || !l.c.Loja) return; const L = pegaLoja(l.c.Loja); L.regional = ijNomeLoja(l.c.Regional) || L.regional;
       if (l.ck && l.ck.devido) { L.ck[1]++; if (!l.ck.emAtraso) L.ck[0]++; }
       if (l.p30) { L.p30[1]++; if (l.p30 === 'feito') L.p30[0]++; } });
     t7Base.forEach(c => { if (!ijLoja(c) || !c.Loja) return; const L = pegaLoja(c.Loja); L.t7[1]++; if (trilhas(c).ate7) L.t7[0]++; });
@@ -5840,9 +5852,9 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     const conclLojas = Object.values(lojas).filter(L => L.cc && L.cc[1]).map(L => ({ loja: L.loja, regional: L.regional, pct: Math.round(L.cc[0] / L.cc[1] * 100), n: L.cc[0], t: L.cc[1] }))
       .sort((a, b) => b.pct - a.pct || b.n - a.n);
     const det = {};
-    linhas.forEach(l => { const k = l.c.Loja || l.c.Local || 'Sem loja'; const D = det[k] = det[k] || { loja: k, regional: l.c.Regional || '', pessoas: [], tr: { ok_prazo: 0, ok_fora: 0, andamento: 0, atrasada: 0 }, ck: { em_dia: 0, atrasado: 0 }, p30: { feito: 0, pendente: 0 }, par: 0 };
+    linhas.forEach(l => { const nm = ijNomeLoja(l.c.Loja) || l.c.Local || 'Sem loja', k = ijChave(nm); const D = det[k] = det[k] || { loja: nm, regional: ijNomeLoja(l.c.Regional), pessoas: [], tr: { ok_prazo: 0, ok_fora: 0, andamento: 0, atrasada: 0 }, ck: { em_dia: 0, atrasado: 0 }, p30: { feito: 0, pendente: 0 }, par: 0 };
       D.pessoas.push(l); if (l.trSt) D.tr[l.trSt]++; if (l.ckSt === 'em_dia' || l.ckSt === 'atrasado') D.ck[l.ckSt]++; if (l.p30) D.p30[l.p30]++; });
-    parecerPend.forEach(c => { const k = c.Loja || 'Sem loja'; const D = det[k] = det[k] || { loja: k, regional: c.Regional || '', pessoas: [], tr: { ok_prazo: 0, ok_fora: 0, andamento: 0, atrasada: 0 }, ck: { em_dia: 0, atrasado: 0 }, p30: { feito: 0, pendente: 0 }, par: 0 }; D.par++; });
+    parecerPend.forEach(c => { const nm = ijNomeLoja(c.Loja) || 'Sem loja', k = ijChave(nm); const D = det[k] = det[k] || { loja: nm, regional: ijNomeLoja(c.Regional), pessoas: [], tr: { ok_prazo: 0, ok_fora: 0, andamento: 0, atrasada: 0 }, ck: { em_dia: 0, atrasado: 0 }, p30: { feito: 0, pendente: 0 }, par: 0 }; D.par++; });
     const detalheLojas = Object.values(det).map(D => {
       const atrasos = D.tr.atrasada + D.ck.atrasado + D.p30.pendente + D.par;
       const Lr = listaLojas.find(L => L.loja === D.loja);
@@ -5856,7 +5868,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     // pendências por gestor
     const ges = {};
     const pegaGes = c => { const k = c.CpfGestor || 'sem'; const g = porCpf[c.CpfGestor];
-      return (ges[k] = ges[k] || { cpf: k, nome: g ? g.Nome : (c.Gestor || 'Sem gestor no cadastro'), loja: g ? g.Loja : (c.Loja || ''), ck: [0, 0], p30: [0, 0], par: [0, 0], pessoas: [] }); };
+      return (ges[k] = ges[k] || { cpf: k, nome: g ? g.Nome : (c.Gestor || 'Sem gestor no cadastro'), loja: ijNomeLoja(g ? g.Loja : c.Loja), ck: [0, 0], p30: [0, 0], par: [0, 0], pessoas: [] }); };
     linhas.forEach(l => { if (l.ck && l.ck.emAtraso) { const g = pegaGes(l.c); g.ck[0]++; g.ck[1] = Math.max(g.ck[1], l.ck.atraso); g.pessoas.push([l.c, 'Checklist atrasado há ' + l.ck.atraso + ' dias']); }
       if (l.p30 === 'pendente') { const g = pegaGes(l.c); g.p30[0]++; g.p30[1] = Math.max(g.p30[1], l.p30Atraso); g.pessoas.push([l.c, 'Ponto de 30 dias atrasado há ' + l.p30Atraso + ' dias']); } });
     parecerPend.forEach(c => { const g = pegaGes(c); const d = Math.floor((agora - ijData(c.InativadoEm)) / IJ_DIA); g.par[0]++; g.par[1] = Math.max(g.par[1], d); g.pessoas.push([c, 'Parecer de desligamento esperando há ' + d + ' dias']); });
@@ -5926,8 +5938,9 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
 
   function renderIndicadores(){
     const raiz = document.getElementById('tab-indicadores'); if (!raiz || !raiz.classList.contains('on')) return;
-    ijPreencher('ijFRegional', [...new Set(colaboradoresCache.map(c => c.Regional).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt-BR')), 'Todas');
-    ijPreencher('ijFLoja', [...new Set(colaboradoresCache.map(c => c.Loja).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt-BR')), 'Todas');
+    const unicos = arr => { const m = new Map(); arr.filter(Boolean).forEach(v => { const k = ijChave(v); if (!m.has(k)) m.set(k, ijNomeLoja(v)); }); return [...m.values()].sort((a, b) => a.localeCompare(b, 'pt-BR')); };
+    ijPreencher('ijFRegional', unicos(colaboradoresCache.map(c => c.Regional)), 'Todas');
+    ijPreencher('ijFLoja', unicos(colaboradoresCache.map(c => c.Loja)), 'Todas');
     const R = ijUltimo = ijCalcular();
     const C = IJ_COR;
     // ===== página 1 =====
@@ -5943,8 +5956,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
       <div class="ij-g3">
         <div class="ij-v"><div class="ij-vt">Maior conformidade</div><div class="ij-vs">Índice de conformidade por loja · selecione para filtrar</div>
           <div class="ij-rol">${R.listaLojas.length ? R.listaLojas.map(L => ijBarra(L.loja, L.indice, C.br, L.indice + '%', `ijFiltrarLoja('${ijEsc(L.loja).replace(/'/g, "\\'")}')`)).join('')
-            : (R.conclLojas.length ? `<div class="ij-vs" style="margin:0 0 6px;">Nenhum prazo venceu ainda. Enquanto isso: trilhas concluídas por loja</div>` + R.conclLojas.map(L => ijBarra(L.loja, L.pct, C.br, `${L.n}/${L.t}`, `ijFiltrarLoja('${ijEsc(L.loja).replace(/'/g, "\\'")}')`)).join('') : ijVazio('Ainda não há lojas com dados no período.'))}</div>
-          <div class="ij-ins">Índice = média de checklist no prazo, trilhas até o 7º dia, ponto de 30 dias registrado e parecer em dia, com o mesmo peso. Só entram itens com prazo já vencido; os prazos começam em ${ijInicio.split('-').reverse().join('/')}.</div></div>
+            : (R.conclLojas.length ? `<div class="ij-vs" style="margin:0 0 6px;">Nenhum prazo venceu ainda. Enquanto isso: trilhas concluídas por loja</div>` + R.conclLojas.map(L => ijBarra(L.loja, L.pct, C.br, `${L.n}/${L.t}`, `ijFiltrarLoja('${ijEsc(L.loja).replace(/'/g, "\\'")}')`)).join('') : ijVazio('Ainda não há lojas com dados no período.'))}</div></div>
         <div class="ij-v"><div class="ij-vt">Menor conformidade</div><div class="ij-vs">Lojas que precisam de apoio</div>
           <div class="ij-rol">${R.listaLojas.length ? R.listaLojas.slice().reverse().map((L, i) => ijBarra(L.loja, L.indice, i === 0 ? C.ac : C.prev, L.indice + '%', `ijFiltrarLoja('${ijEsc(L.loja).replace(/'/g, "\\'")}')`)).join('')
             : (R.conclLojas.length ? `<div class="ij-vs" style="margin:0 0 6px;">Nenhum prazo venceu ainda. Enquanto isso: lojas com menos trilhas concluídas</div>` + R.conclLojas.slice().reverse().map((L, i) => ijBarra(L.loja, L.pct, i === 0 ? C.ac : C.prev, `${L.n}/${L.t}`, `ijFiltrarLoja('${ijEsc(L.loja).replace(/'/g, "\\'")}')`)).join('') : ijVazio('Ainda não há lojas com dados no período.'))}</div>
@@ -5969,7 +5981,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
         </div>
         ${f0 && perda && perda[1] > 0 ? `<div class="ij-ins">A maior redução ocorre <b>entre as fases ${perda[0] + 1} e ${perda[0] + 2}</b> (${perda[1]} pessoas).</div>` : ''}</div>
       <div class="ij-v"><div class="ij-vt">Percepção do gestor e do colaborador</div><div class="ij-vs">Casos com divergência entre o ponto de 30 dias e o "Seu 1º mês"</div>
-        <div class="ij-rol">${divs.length ? `<table class="ij-tb"><tr><th>Colaborador · loja</th><th>Gestor</th><th>Colaborador</th><th>Permanência</th></tr>${divs.map(x => `<tr><td><b>${ijEsc(ijNomeCurto(x.c.Nome))}</b> <span class="ij-mut">· ${ijEsc(x.c.Loja || x.c.Local || '')}</span></td>
+        <div class="ij-rol">${divs.length ? `<table class="ij-tb"><tr><th>Colaborador · loja</th><th>Gestor</th><th>Colaborador</th><th>Permanência</th></tr>${divs.map(x => `<tr><td><b>${ijEsc(ijNomeCurto(x.c.Nome))}</b> <span class="ij-mut">· ${ijEsc(ijNomeLoja(x.c.Loja) || x.c.Local || '')}</span></td>
           <td>${ijDot(x.g && x.g.Integracao)}${ijDot(x.g && x.g.Treinamento)}${ijDot(x.g && x.g.Comportamento)}</td><td>${ijDot(x.r.Chegada)}${ijDot(x.r.Seguranca)}${ijDot(x.r.Tratamento)}</td>
           <td><span class="ij-tag ${x.r.Futuro === 'nao' ? 'neg' : x.r.Futuro === 'talvez' ? 'amb' : 'ok'}">${{ sim: 'Sim', talvez: 'Talvez', nao: 'Não' }[x.r.Futuro] || '—'}</span></td></tr>`).join('')}</table>
           <div class="ij-leg">Gestor: integração, aprendizado, comportamento · Colaborador: chegada, segurança, tratamento</div>` : ijVazio('Nenhuma divergência entre gestor e colaborador no período.')}</div></div>
@@ -6040,7 +6052,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
   window.ijLista = function(tipo, i){
     const R = ijUltimo; if (!R) return;
     let titulo = '', linhas = [];
-    const lin = (c, extra) => [ijNomeCurto(c.Nome), c.Loja || c.Local || '', c.Cargo || '', extra];
+    const lin = (c, extra) => [ijNomeCurto(c.Nome), ijNomeLoja(c.Loja) || c.Local || '', c.Cargo || '', extra];
     if (tipo === 'gestor') { const g = R.listaGes[i]; titulo = 'Pendências de ' + ijNomeCurto(g.nome); linhas = g.pessoas.map(([c, t]) => lin(c, t)); }
     if (tipo === 'pareceres') { titulo = 'Desligamentos sem parecer'; linhas = R.parecerPend.map(c => lin(c, 'Gestor: ' + ijNomeCurto(c.Gestor || ''))); }
     if (tipo === 'semavanco') { titulo = 'Sem avanço na fase 1 há mais de 14 dias'; linhas = R.semAvanco.map(c => lin(c, ijDias(c) + ' dias de casa')); }
@@ -6461,18 +6473,28 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
       else if (diasSemAcessar <= 30) { situacao = 'Atenção'; corSit = '#D89840'; }
       else { situacao = 'Crítico'; corSit = '#B4462B'; }
       return { nome: c.Nome || '—', loja: c.Loja || '—', cargo: c.Cargo || '—', concluidos, pendentes, titulosPendentes, pct, ultimoAcesso: c.UltimoAcesso, diasSemAcessar, situacao, corSit, cpf: c.cpf };
-    }).sort((a, b) => b.concluidos - a.concluidos);
+    }).sort((a, b) => String(a.nome).localeCompare(String(b.nome), 'pt-BR'));
+
+    // busca e filtros da tabela (a exportação continua com todos)
+    const semAc = v => String(v || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    const qB = semAc((document.getElementById('relColabBusca') || {}).value || '').trim(), qDig = qB.replace(/\D/g, '');
+    const fSit = (document.getElementById('relColabSituacao') || {}).value || '', fConc = (document.getElementById('relColabConclusao') || {}).value || '';
+    const linhasVisiveis = linhasColab.filter(l => (!qB || semAc(l.nome).includes(qB) || semAc(l.cargo).includes(qB) || (qDig.length >= 3 && String(l.cpf || '').includes(qDig)))
+      && (!fSit || l.situacao === fSit) && (!fConc || (fConc === 'pend' ? l.pendentes > 0 : l.pendentes === 0)));
+    const contEl = document.getElementById('relColabContagem');
+    if (contEl) contEl.textContent = `${linhasVisiveis.length} ${linhasVisiveis.length === 1 ? 'pessoa' : 'pessoas'}`;
+    const vazioRel = linhasColab.length ? 'Ninguém com esses filtros.' : 'Sem colaboradores ativos ainda.';
 
     const colabBody = document.getElementById('relColaboradorBody');
     if (colabBody) {
-      colabBody.innerHTML = linhasColab.length
-        ? linhasColab.map(l => {
+      colabBody.innerHTML = linhasVisiveis.length
+        ? linhasVisiveis.map(l => {
             const pendentesTexto = l.pendentes
               ? `<span title="${l.titulosPendentes.join(', ').replace(/"/g, '&quot;')}" style="cursor:help; border-bottom:1px dotted var(--ink-soft);">${l.pendentes}</span>`
               : '0';
             return `<tr><td>${l.nome}</td><td>${l.loja}</td><td>${l.cargo}</td><td>${l.concluidos}</td><td>${pendentesTexto}</td><td>${l.pct}%</td><td>${formatarData(l.ultimoAcesso)}</td><td>${l.diasSemAcessar === null ? '—' : l.diasSemAcessar}</td><td><span style="color:${l.corSit}; font-weight:700;">${l.situacao}</span></td></tr>`;
           }).join('')
-        : `<tr><td colspan="9" style="text-align:center; color:var(--ink-soft); padding:24px;">Sem colaboradores ativos ainda.</td></tr>`;
+        : `<tr><td colspan="9" style="text-align:center; color:var(--ink-soft); padding:24px;">${vazioRel}</td></tr>`;
     }
     ultimoRankingCache = linhasColab.map(l => ({ nome: l.nome, loja: l.loja, qtd: l.concluidos, pct: l.pct, ultimoAcesso: l.ultimoAcesso, pendentes: l.titulosPendentes.join('; ') }));
 
