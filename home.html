@@ -3385,6 +3385,41 @@ window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && S
   .sr-only{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
   html.cd #menuTrilhaAdmissao{ font-weight:500 !important; color:var(--texto) !important; min-height:var(--toque-minimo); display:flex; align-items:center; }
   html.cd #menuTrilhaAdmissao[style*="none"]{ display:none !important; }
+
+  /* carta de boas-vindas personalizada: papel bege, curta, com ícones */
+  html.cd #modalCarta > div.cc{ background:#FAF4E9 !important; border-radius:24px; width:min(560px,94vw); max-height:92vh; position:relative; overflow:hidden; display:flex; flex-direction:column; }
+  html.cd .cc-rolagem{ overflow-y:auto; }
+  html.cd .cc-fechar{ position:absolute; top:12px; right:12px; z-index:3; width:36px; height:36px; border-radius:50%; border:0; background:rgba(0,99,15,.08); color:#00630F; font-size:16px; cursor:pointer; }
+  html.cd .cl-papel{ padding:28px 30px 30px; color:#1D1D1F; font-family:var(--font-sans); }
+  html.cd .cl-topo{ position:relative; padding-right:120px; min-height:120px; margin-bottom:14px; }
+  html.cd .cl-esq{ position:absolute; right:-8px; top:6px; width:130px; }
+  html.cd .cl-selo{ display:inline-block; background:#B2F771; color:#000; font-weight:700; font-size:14px; border-radius:999px; padding:6px 14px; transform:rotate(-3deg); }
+  html.cd .cl-topo h2{ font-size:28px; line-height:33px; font-weight:700; letter-spacing:-0.02em; margin:12px 0 0; color:#00630F; }
+  html.cd .cl-nome{ display:block; font-family:'Fraunces','FrauncesCert',Georgia,serif; font-weight:700; color:#FF5D31; font-size:40px; line-height:46px; letter-spacing:-0.01em; }
+  html.cd .cl-p{ font-size:16px; line-height:24px; margin:0 0 14px; color:#3A3A3C; }
+  html.cd .cl-p b{ color:#1D1D1F; }
+  html.cd .cl-pilares{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:0 0 16px; }
+  html.cd .cl-pilares div{ background:#fff; border-radius:16px; padding:12px 10px; font-size:13.5px; line-height:18px; font-weight:600; text-align:center; color:#1D1D1F; }
+  html.cd .cl-pilares span{ display:flex; justify-content:center; color:#00630F; margin-bottom:6px; }
+  html.cd .cl-ticket{ display:flex; background:#00630F; color:#FAF4E9; border-radius:16px; padding:14px 16px; gap:14px; margin:4px 0 14px; flex-wrap:wrap; }
+  html.cd .cl-ticket div{ flex:1; min-width:120px; }
+  html.cd .cl-ticket small{ display:block; font-size:12.5px; color:#B2F771; }
+  html.cd .cl-ticket b{ font-size:15px; }
+  html.cd .cl-trilhas{ display:flex; align-items:center; gap:14px; background:#fff; border-radius:16px; padding:14px 16px; margin-bottom:6px; }
+  html.cd .cl-trilhas > div{ flex:1; font-size:14.5px; }
+  html.cd .cl-barra{ display:block; height:8px; border-radius:99px; background:#EDE6D8; margin-top:8px; overflow:hidden; }
+  html.cd .cl-barra i{ display:block; height:100%; background:#FF5D31; border-radius:99px; }
+  html.cd .cl-trilhas .btn-primary{ min-height:40px; padding:0 18px; font-size:14px; white-space:nowrap; }
+  html.cd .cl-h{ font-size:17px; font-weight:700; margin:18px 0 10px; color:#00630F; }
+  html.cd .cl-dicas{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  html.cd .cl-dicas div{ display:flex; align-items:center; gap:10px; background:#fff; border-radius:14px; padding:10px 12px; font-size:13.5px; line-height:18px; }
+  html.cd .cl-dicas span{ color:#FF5D31; display:flex; flex:none; }
+  html.cd .cl-fim{ margin-top:20px; background:#00630F; color:#FAF4E9; border-radius:18px; padding:18px 20px; position:relative; }
+  html.cd .cl-fim p{ margin:0; font-size:16px; line-height:22px; }
+  html.cd .cl-assina{ margin-top:8px !important; font-weight:700; }
+  html.cd .cl-lett{ position:absolute; right:16px; bottom:12px; } html.cd .cl-lett img{ width:118px; display:block; }
+  @media (max-width:520px){ html.cd .cl-papel{ padding:22px 18px 22px; } html.cd .cl-topo{ padding-right:96px; } html.cd .cl-esq{ width:100px; } html.cd .cl-topo h2{ font-size:23px; line-height:28px; } html.cd .cl-nome{ font-size:32px; line-height:38px; }
+    html.cd .cl-pilares div{ font-size:12px; padding:10px 6px; } html.cd .cl-dicas{ grid-template-columns:1fr; } html.cd .cl-lett img{ width:90px; } }
 </style>
 </head>
 <body>
@@ -7309,17 +7344,93 @@ function configurarGateConclusao(c){
   }
 
   // ---------- carta de boas-vindas: o R&S manda por WhatsApp e ela fica aqui pra reler ----------
+  const ICO_CAMISA = '<path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/>';
+  const ICO_TESOURA = '<circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/>';
+  const ICO_CABELO = '<path d="M12 2a7 7 0 0 0-7 7v3a7 7 0 0 0 14 0V9a7 7 0 0 0-7-7z"/><path d="M5 9c3 0 5-2 7-5 2 3 4 5 7 5"/>';
+  const ICO_AVISO = '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M12 8v4"/><path d="M12 16h.01"/>';
+  const ICO_LIVRO = '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>';
+  const ICO_BALAO = '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>';
+  const ICO_PRESENTE = '<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 0 1 0 5"/>';
+  // dicas de cada local (texto da carta original para loja e fábrica; escritório a validar com o DHO)
+  const CARTA_DICAS = {
+    'Loja': { titulo: 'Uniforme', intro: 'Use seu uniforme completo, sempre limpo e bem conservado. Ele representa a nossa identidade e faz parte do cuidado com a experiência dos nossos clientes.',
+      itens: ['Use todas as peças indicadas para a sua função.', 'Não faça cortes ou alterações nas peças.', 'Os cabelos devem estar sempre presos. Na cozinha, o uso da touca é obrigatório.', 'Em caso de perda ou dano, avise a sua liderança.'],
+      curtas: [['Uniforme completo, limpo e bem conservado', ICO_CAMISA], ['Sem cortes ou alterações nas peças', ICO_TESOURA], ['Cabelo sempre preso e touca na cozinha', ICO_CABELO], ['Perdeu ou estragou? Avise a sua liderança', ICO_AVISO]] },
+    'Cozinha Central': { titulo: 'Uniforme', intro: 'Use seu uniforme completo, sempre limpo e bem conservado. Ele faz parte do cuidado com a qualidade de tudo o que sai da Cozinha Central.',
+      itens: ['Use todas as peças indicadas para a sua função.', 'Não faça cortes ou alterações nas peças.', 'Os cabelos devem estar sempre presos e o uso da touca é obrigatório.', 'Em caso de perda ou dano, avise a sua liderança.'],
+      curtas: [['Uniforme completo, limpo e bem conservado', ICO_CAMISA], ['Sem cortes ou alterações nas peças', ICO_TESOURA], ['Cabelo sempre preso e touca sempre', ICO_CABELO], ['Perdeu ou estragou? Avise a sua liderança', ICO_AVISO]] },
+    'Casa Cabana': { titulo: 'Para começar bem', intro: 'Nos primeiros dias, aproveite para conhecer as pessoas e as áreas com quem você vai trabalhar.',
+      itens: ['Faça as trilhas da Jornada logo nos primeiros dias.', 'Na dúvida, fale com o seu gestor: ele está acompanhando a sua chegada.', 'Seus benefícios estão explicados na trilha de benefícios.'],
+      curtas: [['Faça suas trilhas nos primeiros dias', ICO_LIVRO], ['Dúvida? Fale com o seu gestor', ICO_BALAO], ['Conheça seus benefícios na trilha', ICO_PRESENTE]] }
+  };
+  window.CARTA_DICAS = CARTA_DICAS;
+  const cartaNome = n => String(n || '').trim().split(/\s+/)[0].toLowerCase().replace(/^./, x => x.toUpperCase());
+  const cartaLoja = n => String(n || '').replace(/\s+/g, ' ').trim().toLowerCase().split(' ').map((p, i) => i && ['de', 'da', 'do', 'das', 'dos', 'e'].includes(p) ? p : p.split('-').map(q => q ? q[0].toUpperCase() + q.slice(1) : q).join('-')).join(' ');
+  function montarCartaCD(){
+    const d = window.__cartaDados || {}, M = window.MARCA || {};
+    const nome = (d.Apelido && String(d.Apelido).trim()) || cartaNome(d.Nome) || '';
+    const local = d.Local || 'Loja';
+    const ondeTime = local === 'Loja' ? (d.Loja ? 'da ' + cartaLoja(d.Loja) : 'da sua loja') : (local === 'Casa Cabana' ? 'da Casa Cabana' : 'da Cozinha Central');
+    const gestor = cartaNome(d.Gestor);
+    const adm = d.Admissao && d.Admissao.toDate ? d.Admissao.toDate() : null;
+    const trilhas = (typeof CURSOS !== 'undefined' ? CURSOS : (window.CURSOS || [])).filter(c => c.obrigatorio);
+    const feitas = trilhas.filter(c => c.concluido).length;
+    const dicas = CARTA_DICAS[local] || CARTA_DICAS['Loja'];
+    const ic = p => `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+    const PIL = [
+      ['Comida de qualidade', ic('<path d="M3 11h18"/><path d="M5 11a7 7 0 0 1 14 0"/><path d="M4 15h16"/><path d="M5 19h14a1 1 0 0 0 1-1v-1H4v1a1 1 0 0 0 1 1z"/>')],
+      ['Excelência no atendimento', ic('<path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/>')],
+      ['Ambiente diferenciado', ic('<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>')]];
+    return `
+      <div class="cl-papel">
+        <div class="cl-topo">
+          ${M.esquilo ? `<img class="cl-esq" src="${M.esquilo}" alt="">` : ''}
+          <span class="cl-selo">Bem-vindo(a)!</span>
+          <h2>Que bom ter você por aqui,<span class="cl-nome">${nome || 'Cabaneiro'}!</span></h2>
+        </div>
+        <p class="cl-p">Você agora faz parte do time ${ondeTime}, e a gente está muito feliz com isso. Aqui somos uma empresa de pessoas que vende hambúrguer, e acreditamos em três coisas:</p>
+        <div class="cl-pilares">${PIL.map(([t, i]) => `<div><span>${i}</span>${t}</div>`).join('')}</div>
+        <p class="cl-p">Nos próximos dias, você vai conhecer a equipe e aprender, passo a passo, o jeito Cabana de ${local === 'Loja' ? 'receber bem' : 'trabalhar'}.${gestor ? ` <b>${gestor}</b> está acompanhando a sua chegada: qualquer dúvida, é só chamar.` : ''}</p>
+        <div class="cl-ticket">
+          <div><small>${local === 'Loja' ? 'Loja' : 'Local'}</small><b>${local === 'Loja' ? cartaLoja(d.Loja || '') : local}</b></div>
+          ${gestor ? `<div><small>Quem te acompanha</small><b>${cartaLoja(d.Gestor)}</b></div>` : ''}
+          ${adm ? `<div><small>Sua chegada</small><b>${adm.toLocaleDateString('pt-BR')}</b></div>` : ''}
+        </div>
+        ${trilhas.length ? `<div class="cl-trilhas"><div><b>${feitas === trilhas.length ? 'Trilhas da Jornada concluídas!' : `Você já fez ${feitas} de ${trilhas.length} trilhas da Jornada`}</b>
+          <span class="cl-barra"><i style="width:${Math.round(feitas / trilhas.length * 100)}%"></i></span></div>
+          <button type="button" class="btn-primary" onclick="closeModal('modalCarta'); const o = document.getElementById('obrigatorios'); if (o) o.scrollIntoView({ behavior: 'smooth' });">${feitas === trilhas.length ? 'Ver trilhas' : 'Continuar'}</button></div>` : ''}
+        <h3 class="cl-h">${dicas.titulo === 'Uniforme' ? 'Dicas de uniforme' : dicas.titulo}</h3>
+        <div class="cl-dicas">${dicas.curtas.map(([t, i]) => `<div><span>${ic(i)}</span>${t}</div>`).join('')}</div>
+        <div class="cl-fim">
+          <p>Desejamos muito sucesso nessa nova jornada.</p>
+          <p class="cl-assina">Com carinho,<br>time Cabana</p>
+          ${M.lettering ? `<div class="cl-lett"><img src="${M.lettering}" alt="a gente faz aqui."></div>` : ''}
+        </div>
+      </div>`;
+  }
   function iniciarCarta(dados){
     try {
       if (!(window.MARCA && window.MARCA.fasesOnboarding)) return;
       const adm = dados && dados.Admissao && dados.Admissao.toDate ? dados.Admissao.toDate() : null;
       if (!adm || (new Date() - adm) / 86400000 > 180) return;   // só pra quem chegou há pouco
+      if (window.MARCA.layout === 'cd') {
+        window.__cartaDados = dados;
+        const b = document.getElementById('cartaBloco'); if (b) b.style.display = '';
+        const tx = document.querySelector('#cartaBloco .carta-txt span'); if (tx) tx.textContent = 'Uma mensagem para você, com o seu time e os seus primeiros passos.';
+        return;
+      }
       const im = new Image();
       im.onload = () => { document.getElementById('cartaImg').src = im.src; document.getElementById('cartaBloco').style.display = ''; };
       im.src = 'carta-boas-vindas.png';   // arquivo ao lado do home.html; se não existir, o cartão simplesmente não aparece
     } catch (e) { console.error('carta:', e); }
   }
-  window.abrirCarta = function(){ openModal('modalCarta'); };
+  window.abrirCarta = function(){
+    if (window.MARCA && window.MARCA.layout === 'cd' && window.__cartaDados) {
+      const caixa = document.querySelector('#modalCarta > div');
+      if (caixa) { caixa.classList.add('cc'); caixa.style.background = '#FAF4E9'; caixa.style.borderRadius = '24px'; caixa.style.boxShadow = 'none'; caixa.innerHTML = `<button type="button" class="cc-fechar" aria-label="Fechar" onclick="closeModal('modalCarta')">✕</button><div class="cc-rolagem">${montarCartaCD()}</div>`; }
+    }
+    openModal('modalCarta');
+  };
 
   // ---------- ponto de checagem de 30 dias (farol + texto livre) ----------
 
