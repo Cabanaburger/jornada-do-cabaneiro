@@ -1555,7 +1555,7 @@ var JORNADA_TEXTOS = {
   nivel_novato: { pt: 'Gente Boa chegou', es: 'Llegó Gente Boa' },
   nivel_aprendiz: { pt: 'Gente Boa na rotina', es: 'Gente Boa en la rutina' },
   nivel_veterano: { pt: 'Já faz parte', es: 'Ya eres parte' },
-  nivel_referencia: { pt: 'Virou Cabana', es: 'Ya eres Cabana' },
+  nivel_referencia: { pt: 'Virou Cabaneiro', es: 'Ya eres Cabaneiro' },
   pra_virar: { pt: 'pra chegar na fase', es: 'para llegar a la fase' },
   nivel_maximo: { pt: 'Você chegou na última fase', es: 'Llegaste a la última fase' },
 
@@ -3095,7 +3095,7 @@ window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && S
     html.cd .topbar{ background:var(--superficie); -webkit-backdrop-filter:none; backdrop-filter:none; }
   }
 
-  /* ---------- telas do gestor (Minha equipe, Pendências, regional, checklist, ponto de 30 dias, parecer) ---------- */
+  /* ---------- telas do gestor (Minha equipe, Pendências, regional, checklist, feedback de 30 dias, parecer) ---------- */
   /* Status, uma tabela só (Apps): atrasado = atencao, a fazer = neutro, feito = sucesso. Sempre com palavra. */
   html.cd .eq-intro, html.cd .ck30-intro{ color:var(--texto-secundario); font-size:0.9375rem; }
   html.cd .eq-kpi{ background:var(--controle); border-radius:var(--raio-cartao); padding:var(--espaco-3) var(--espaco-4); }
@@ -3145,7 +3145,7 @@ window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && S
   html.cd .ck-item.feito .ck-box{ background:var(--acao); border-color:var(--acao); color:var(--sobre-acao); }
   html.cd .ck-tit{ font-weight:600; color:var(--texto); }
   html.cd .ck-auto{ color:var(--texto-secundario); }
-  /* ponto de 30 dias: faróis e potencial (cor + palavra) */
+  /* feedback de 30 dias: faróis e potencial (cor + palavra) */
   html.cd .farol-opt, html.cd .pot-opt{ background:var(--controle); border:2px solid transparent; border-radius:var(--raio-controle); }
   html.cd .farol-opt.sel, html.cd .pot-opt.sel{ background:var(--superficie); border-color:var(--acao); }
   html.cd .farol-opt span, html.cd .pot-opt{ color:var(--texto); font-weight:500; }
@@ -3341,7 +3341,7 @@ window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && S
   }
   html.cd-home-loja .level-hint b:first-child{ color:var(--sobre-atencao) !important; }
 
-  /* Minha equipe: ponto de 30 dias dentro da linha da pessoa */
+  /* Minha equipe: feedback de 30 dias dentro da linha da pessoa */
   html.cd .eq-ponto30{ display:flex; align-items:center; justify-content:space-between; gap:var(--espaco-3); flex-wrap:wrap; font-size:0.9375rem; color:var(--texto-descricao); padding:var(--espaco-1) 0 var(--espaco-2); }
   html.cd .eq-ponto30 .btn-primary{ min-height:var(--ctl-pequeno); font-size:0.8125rem; }
   html.cd .eq-kpis{ grid-template-columns:repeat(5,minmax(0,1fr)); }
@@ -3420,6 +3420,54 @@ window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && S
   html.cd .cl-lett{ position:absolute; right:16px; bottom:12px; } html.cd .cl-lett img{ width:118px; display:block; }
   @media (max-width:520px){ html.cd .cl-papel{ padding:22px 18px 22px; } html.cd .cl-topo{ padding-right:96px; } html.cd .cl-esq{ width:100px; } html.cd .cl-topo h2{ font-size:23px; line-height:28px; } html.cd .cl-nome{ font-size:32px; line-height:38px; }
     html.cd .cl-pilares div{ font-size:12px; padding:10px 6px; } html.cd .cl-dicas{ grid-template-columns:1fr; } html.cd .cl-lett img{ width:90px; } }
+
+  /* "Seus primeiros 15 dias": uma pergunta por vez */
+  .pm2{ background:#fff; border-radius:24px; width:min(480px,100%); max-height:92vh; overflow:auto; display:flex; flex-direction:column; box-shadow:0 20px 50px rgba(0,0,0,.25); font-family:var(--font-sans, system-ui); }
+  .pm2-topo{ position:relative; padding:20px 22px 0; }
+  .pm2-rot{ font-size:14px; font-weight:700; color:#00630F; }
+  .pm2-x{ position:absolute; top:12px; right:12px; width:36px; height:36px; border:0; border-radius:50%; background:#F2F2F7; color:#3A3A3C; font-size:15px; cursor:pointer; }
+  .pm2-barra{ height:6px; background:#EFEDE7; border-radius:99px; margin-top:12px; overflow:hidden; }
+  .pm2-barra i{ display:block; height:100%; width:0; background:#FF5D31; border-radius:99px; transition:width .3s ease; }
+  .pm2-corpo{ padding:22px 22px 8px; text-align:left; }
+  .pm2-corpo h3{ margin:6px 0 10px; font-size:22px; line-height:28px; font-weight:700; letter-spacing:-0.01em; color:#1D1D1F; }
+  .pm2-corpo p{ margin:0; font-size:15.5px; line-height:22px; color:#3A3A3C; }
+  .pm2-nome{ color:#FF5D31; }
+  .pm2-esq{ display:block; width:120px; margin:0 auto 8px; }
+  .pm2-passo{ font-size:13px; font-weight:600; color:#6E6E73; }
+  .pm2-ops{ display:flex; flex-direction:column; gap:10px; margin-top:16px; }
+  .pm2-op{ display:flex; align-items:center; gap:12px; width:100%; min-height:54px; padding:0 18px; border-radius:16px; border:2px solid #E5E5EA; background:#fff; color:#1D1D1F; font:inherit; font-size:16.5px; font-weight:600; cursor:pointer; text-align:left; transition:border-color .15s, background .15s; }
+  .pm2-op i{ width:14px; height:14px; border-radius:50%; flex:none; }
+  .pm2-op:hover{ border-color:#C7C7CC; }
+  .pm2-op.on{ border-color:#00630F; background:#EEF5EA; }
+  .pm2-op:focus-visible{ outline:2px solid #00630F; outline-offset:2px; }
+  .pm2-corpo textarea{ width:100%; margin-top:14px; border:2px solid #E5E5EA; border-radius:16px; padding:12px 14px; font:inherit; font-size:16px; resize:vertical; }
+  .pm2-rodape{ display:flex; justify-content:space-between; gap:10px; padding:16px 22px 22px; }
+  .pm2-rodape .btn-primary, .pm2-rodape .btn-secondary{ min-height:46px; padding:0 22px; border-radius:999px; }
+  .pm2-rodape .btn-primary[disabled]{ opacity:.45; cursor:default; }
+
+  /* feedbacks e pareceres (coordenador e gerente de operações) */
+  .fr-caixa{ background:#fff; border-radius:22px; width:min(900px,96vw); max-height:90vh; display:flex; flex-direction:column; overflow:hidden; font-family:var(--font-sans, system-ui); }
+  .fr-topo{ display:flex; justify-content:space-between; align-items:center; padding:18px 22px; border-bottom:1px solid #E5E5EA; }
+  .fr-topo h3{ margin:0; font-size:20px; font-weight:700; } .fr-topo button{ border:0; background:#F2F2F7; width:34px; height:34px; border-radius:50%; cursor:pointer; }
+  .fr-filtros{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; padding:12px 22px; border-bottom:1px solid #E5E5EA; }
+  .fr-filtros select, .fr-filtros input{ border:1px solid #E5E5EA; border-radius:10px; padding:8px 10px; font:inherit; font-size:14px; }
+  .fr-filtros input{ flex:1; min-width:160px; }
+  .fr-abas{ display:flex; gap:4px; background:#F2F2F7; border-radius:999px; padding:3px; }
+  .fr-abas button{ border:0; background:none; border-radius:999px; padding:7px 14px; font:inherit; font-size:13.5px; font-weight:600; color:#3A3A3C; cursor:pointer; }
+  .fr-abas button.on{ background:#fff; color:#00630F; box-shadow:0 1px 3px rgba(0,0,0,.12); }
+  .fr-corpo{ overflow-y:auto; padding:14px 22px 22px; display:flex; flex-direction:column; gap:10px; }
+  .fr-pessoa{ border:1px solid #E5E5EA; border-radius:14px; padding:12px 14px; }
+  .fr-pessoa summary{ cursor:pointer; display:flex; gap:10px; align-items:baseline; flex-wrap:wrap; list-style:none; }
+  .fr-pessoa summary span{ color:#6E6E73; font-size:13.5px; }
+  .fr-tags{ margin-left:auto; display:flex; gap:6px; } .fr-tags em{ font-style:normal; font-size:12px; font-weight:600; background:#EEF5EA; color:#00630F; border-radius:999px; padding:3px 9px; }
+  .fr-bloco{ margin-top:12px; padding-top:12px; border-top:1px solid #F2F2F7; } .fr-bloco.colab{ background:#FAF4E9; border-radius:12px; padding:12px; border-top:0; }
+  .fr-bloco h5{ margin:0 0 8px; font-size:14.5px; } .fr-bloco h5 small{ font-weight:400; color:#6E6E73; }
+  .fr-grade{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; font-size:13.5px; }
+  .fr-grade span{ display:block; color:#6E6E73; font-size:12px; } .fr-grade p{ margin:4px 0 0; color:#3A3A3C; font-size:12.5px; }
+  .fr-farol{ display:inline-flex !important; align-items:center; gap:6px; color:#1D1D1F !important; font-weight:600; font-size:13.5px !important; } .fr-farol i{ width:10px; height:10px; border-radius:50%; }
+  .fr-resumo{ margin:10px 0 0; font-size:13.5px; color:#3A3A3C; }
+  .fr-par-cab{ display:flex; gap:10px; align-items:baseline; flex-wrap:wrap; margin-bottom:10px; } .fr-par-cab span{ color:#6E6E73; font-size:13.5px; }
+  @media (max-width:640px){ .fr-grade{ grid-template-columns:1fr 1fr; } }
 </style>
 </head>
 <body>
@@ -3926,7 +3974,7 @@ window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && S
         <div id="pendNovatosLista"><p class="jornada-vazio">Carregando…</p></div>
       </div>
       <div class="jornada-bloco">
-        <div class="jornada-section-label">🚦 Ponto de checagem · 30 dias <span class="contagem" id="pendCheckinContagem" style="display:none;">0</span></div>
+        <div class="jornada-section-label">🚦 Feedbacks · 15 e 45 dias <span class="contagem" id="pendCheckinContagem" style="display:none;">0</span></div>
         <div id="pendCheckinLista"><p class="jornada-vazio">Carregando…</p></div>
       </div>
       <div class="jornada-bloco">
@@ -3983,7 +4031,7 @@ window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && S
 <div id="modalCheckin30" style="display:none; position:fixed; inset:0; background:rgba(30,26,20,0.6); backdrop-filter:blur(3px); align-items:center; justify-content:center; z-index:96;">
   <div style="background:var(--paper); border-radius:22px; box-shadow:var(--shadow); width:min(600px,94vw); max-height:90vh; overflow-y:auto;">
     <div style="padding:22px 26px; border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; background:var(--paper); z-index:2;">
-      <h3 style="margin:0; font-family:var(--display); font-weight:400; font-size:19px;">Ponto de checagem · 30 dias</h3>
+      <h3 style="margin:0; font-family:var(--display); font-weight:400; font-size:19px;">Feedback · 30 dias</h3>
       <button onclick="closeModal('modalCheckin30')" style="background:none; border:none; font-size:18px; cursor:pointer; color:var(--ink-soft);">✕</button>
     </div>
     <div style="padding:22px 26px; display:flex; flex-direction:column; gap:18px;">
@@ -3992,7 +4040,7 @@ window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && S
       <div class="ck30-intro">
         <b>Como funciona</b>
         <div class="ck30-passo"><i>1</i><span><strong>Conversa de 30 dias.</strong> Ao completar o primeiro mês, você conversa a sós com a pessoa e dá um feedback sobre como foi: o que está indo bem, o que melhorar e como ela se sente.</span></div>
-        <div class="ck30-passo"><i>2</i><span><strong>Ponto de checagem.</strong> É esta tela. Depois da conversa, você registra aqui o resumo dela. Leva poucos minutos e ajuda o DHO a acompanhar junto com você.</span></div>
+        <div class="ck30-passo"><i>2</i><span><strong>Feedback.</strong> É esta tela. Depois da conversa, você registra aqui o resumo dela. Leva poucos minutos e ajuda o DHO a acompanhar junto com você.</span></div>
       </div>
 
       <div class="field">
@@ -4058,7 +4106,7 @@ window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && S
         <textarea id="checkin30PassosInput" placeholder="O que você e a pessoa combinaram daqui para frente…" style="width:100%; padding:11px 14px; border-radius:10px; border:1px solid var(--line); font-size:13.5px; min-height:64px; resize:vertical; font-family:inherit; box-sizing:border-box;"></textarea>
       </div>
       <div id="checkin30Erro" style="display:none; color:#B4462B; font-size:13px; font-weight:600;"></div>
-      <button class="btn-primary" style="width:100%;" onclick="window.salvarCheckin30()">Salvar ponto de checagem</button>
+      <button class="btn-primary" style="width:100%;" onclick="window.salvarCheckin30()">Salvar feedback</button>
     </div>
   </div>
 </div>
@@ -4071,6 +4119,7 @@ window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && S
     </div>
     <div style="padding:20px 24px; overflow-y:auto;">
       <p class="eq-intro" id="jornadaRegionalIntro"></p>
+      <div style="margin:-4px 0 14px;"><button type="button" class="btn-secondary" style="padding:9px 16px; font-size:13px;" onclick="window.abrirFeedbacksRegional()">Ver feedbacks e pareceres</button></div>
       <div id="jornadaResumoRegional"></div>
       <div id="jornadaListaRegional"><p class="jornada-vazio">Carregando…</p></div>
     </div>
@@ -4805,7 +4854,7 @@ function renderJornada(){
 window.renderJornada = renderJornada;
 
 // fases do onboarding (perfil Jornada): 1 Gente Boa chegou (entrou) → 2 Gente Boa na rotina (todas as trilhas do perfil concluídas)
-// → 3 Já faz parte (marcou que respondeu a pesquisa de 45 dias) → 4 Virou Cabana (marcou a de 90 dias) = certificado.
+// → 3 Já faz parte (marcou que respondeu a pesquisa de 45 dias) → 4 Virou Cabaneiro (marcou a de 90 dias) = certificado.
 // Os dados das pesquisas vêm de window.__fasesEstado, preenchido no script de auth (carregarEstadoFases).
 function renderFasesOnboarding(){
   const L = function(pt, es){ return IDIOMA === 'es' ? es : pt; };
@@ -4859,7 +4908,7 @@ function renderFasesOnboarding(){
       const falta = total - concl;
       hint.innerHTML = frase(concl > 0 ? t('ritmo_bomritmo') : t('ritmo_boracomecar')) + (falta === 1 ? L('Falta ','Falta ') : L('Faltam ','Faltan ')) + '<b>' + falta + ' ' + (falta === 1 ? L('trilha','ruta') : L('trilhas','rutas')) + '</b> ' + L('pra chegar na fase ','para llegar a la fase ') + nomeNivel('Aprendiz Cabana');
     }
-    else if (m4) hint.innerHTML = frase(L('Virou Cabana! 💚','¡Ya eres Cabana! 💚')) + L('Seu certificado de boas-vindas está pronto.','Tu certificado de bienvenida está listo.');
+    else if (m4) hint.innerHTML = frase(L('Virou Cabaneiro! 💚','¡Ya eres Cabaneiro! 💚')) + L('Seu certificado de boas-vindas está pronto.','Tu certificado de bienvenida está listo.');
     else if (!r45) hint.innerHTML = frase(L('Trilhas em dia! 🤝','¡Rutas al día! 🤝')) + (lib45 ? L('Falta a pesquisa de 45 dias pra chegar na fase ','Falta la encuesta de 45 días para llegar a la fase ') + nomeNivel('Veterano') : L('A pesquisa de 45 dias libera em ','La encuesta de 45 días se libera en ') + '<b>' + dp(45 - dias) + '</b>');
     else hint.innerHTML = frase(L('Já faz parte! 🔥','¡Ya eres parte! 🔥')) + (lib90 ? L('Falta a pesquisa de 90 dias pra chegar na fase ','Falta la encuesta de 90 días para llegar a la fase ') + nomeNivel('Referência Cabana') : L('A pesquisa de 90 dias libera em ','La encuesta de 90 días se libera en ') + '<b>' + dp(90 - dias) + '</b>');
   }
@@ -4882,11 +4931,23 @@ function renderFasesOnboarding(){
           acoes += '<button class="fp-btn sec" onclick="window.__marcarPesquisaRespondida(' + n + ')">' + L('Já respondi','Ya respondí') + '</button>';
           if (!link) sub = L('O link ainda não foi publicado — fale com o RH','El enlace aún no fue publicado — habla con RR. HH.');
         }
-        return '<div class="fp-linha ' + (ok ? 'ok' : '') + '">' + ico(ok, n === 45 ? '2' : '3') + '<div class="fp-txt">' + titulo + '<small>' + sub + '</small></div><div class="fp-acoes">' + acoes + '</div></div>';
+        return '<div class="fp-linha ' + (ok ? 'ok' : '') + '">' + ico(ok, String((window.__numPesq || 2) + (n === 45 ? 0 : 1))) + '<div class="fp-txt">' + titulo + '<small>' + sub + '</small></div><div class="fp-acoes">' + acoes + '</div></div>';
       };
       let h = '<div class="fp-linha ' + (m2 ? 'ok' : '') + '">' + ico(m2, '1') + '<div class="fp-txt">' + L('Trilhas da Jornada','Rutas de la Jornada') +
         '<small>' + (m2 ? L('Tudo concluído','Todo completado') : (concl + ' ' + L('de','de') + ' ' + total + ' ' + L('concluídas','completadas'))) + '</small></div>' +
         '<div class="fp-acoes">' + ((!m2 && primeiroPend) ? '<button class="fp-btn" onclick="abrirCurso(\'' + primeiroPend.id + '\')">' + L('Continuar','Continuar') + '</button>' : '') + '</div></div>';
+      const pmOk = !!window.__pmRespondido;
+      let numPesq = 2;
+      if (dias !== null && (dias <= 44 || pmOk)) {
+        numPesq = 3;
+        const libPm = dias >= 15;
+        let subPm, acPm = '';
+        if (pmOk) subPm = L('Respondido. Obrigado!', 'Respondido. ¡Gracias!');
+        else if (!libPm) subPm = L('Libera em ' + dp(15 - dias), 'Se libera en ' + dp(15 - dias));
+        else { subPm = L('4 perguntas rápidas · seu gerente não vê', '4 preguntas rápidas · tu gerente no lo ve'); acPm = '<button class="fp-btn" onclick="window.abrirPrimeiroMes()">' + L('Responder', 'Responder') + '</button>'; }
+        h += '<div class="fp-linha ' + (pmOk ? 'ok' : '') + '">' + ico(pmOk, '2') + '<div class="fp-txt">' + L('Seus primeiros 15 dias', 'Tus primeros 15 días') + '<small>' + subPm + '</small></div><div class="fp-acoes">' + acPm + '</div></div>';
+      }
+      window.__numPesq = numPesq;
       h += linhaPesq(r45, lib45, 45, E.link45, dias === null ? 0 : 45 - dias);
       h += linhaPesq(r90, lib90, 90, E.link90, dias === null ? 0 : 90 - dias);
       if (m4) h += '<button class="fp-btn fp-cert" onclick="gerarCertificadoCabaneiro()">🏆 ' + L('Baixar meu certificado','Descargar mi certificado') + '</button>';
@@ -5651,32 +5712,55 @@ function configurarGateConclusao(c){
   const PM_OPCOES = [['verde', LL('Indo bem', 'Va bien')], ['amarelo', LL('Mais ou menos', 'Más o menos')], ['vermelho', LL('Difícil', 'Difícil')]];
   const PM_FUTURO = [['sim', LL('Sim', 'Sí')], ['talvez', LL('Talvez', 'Tal vez')], ['nao', LL('Não', 'No')]];
   let pmDados = null, pmCpf = null;
+  const PM_PASSOS = [
+    { campo: 'Chegada', q: () => LL('Como está sendo chegar no time?', '¿Cómo está siendo llegar al equipo?'), ops: () => PM_OPCOES },
+    { campo: 'Seguranca', q: () => LL('Você já se sente seguro(a) no seu trabalho do dia a dia?', '¿Ya te sientes seguro(a) en tu trabajo del día a día?'), ops: () => PM_OPCOES },
+    { campo: 'Tratamento', q: () => LL('Você se sente bem tratado(a) pelo seu gerente e pelo time?', '¿Te sientes bien tratado(a) por tu gerente y por el equipo?'), ops: () => PM_OPCOES },
+    { campo: 'Futuro', q: () => LL('Você se vê no Cabana daqui a alguns meses?', '¿Te ves en Cabana dentro de algunos meses?'), ops: () => PM_FUTURO }
+  ];
+  const PM_COR = { verde: '#17762A', amarelo: '#D89840', vermelho: '#C2321A', sim: '#17762A', talvez: '#D89840', nao: '#C2321A' };
+  let pmRespostas = {}, pmEtapa = 0;   // 0 = abertura, 1..4 = perguntas, 5 = comentário, 6 = obrigado
   function montarModalPrimeiroMes(){
     if (document.getElementById('modalPrimeiroMes')) return;
-    const grupo = (campo, perg, ops) => `<div class="pm-grupo"><p class="pm-perg">${perg}</p><div class="pm-ops" role="radiogroup" aria-label="${perg}">${ops.map(([v, r]) => `<button type="button" class="pm-op" role="radio" aria-checked="false" data-campo="${campo}" data-valor="${v}">${r}</button>`).join('')}</div></div>`;
     const m = document.createElement('div');
     m.id = 'modalPrimeiroMes';
-    m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true'); m.setAttribute('aria-labelledby', 'pmTitulo');
-    m.style.cssText = 'display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:1000; align-items:center; justify-content:center; padding:16px;';
-    m.innerHTML = `<div class="pm-caixa" style="background:#fff; border-radius:20px; width:min(560px,100%); max-height:90vh; overflow:auto; padding:24px;">
-      <h3 id="pmTitulo" style="margin:0 0 6px;">${LL('Seu 1º mês no Cabana', 'Tu 1er mes en Cabana')}</h3>
-      <p class="pm-intro" style="margin:0 0 16px;">${LL('Responda com sinceridade. As respostas ficam só com o DHO: o seu gerente não vê.', 'Responde con sinceridad. Las respuestas quedan solo con DHO: tu gerente no las ve.')}</p>
-      ${PM_PERGUNTAS.map(([c, q]) => grupo(c, q, PM_OPCOES)).join('')}
-      ${grupo('Futuro', LL('Você se vê no Cabana daqui a alguns meses?', '¿Te ves en Cabana dentro de algunos meses?'), PM_FUTURO)}
-      <div class="pm-grupo"><label class="pm-perg" for="pmComentario">${LL('O que te ajudou até aqui, ou o que podia ser melhor? (opcional)', '¿Qué te ayudó hasta ahora, o qué podría ser mejor? (opcional)')}</label>
-        <textarea id="pmComentario" rows="3" maxlength="800" style="width:100%; margin-top:6px;"></textarea></div>
-      <p id="pmErro" class="pm-erro" style="display:none; margin:8px 0 0;"></p>
-      <div class="pm-acoes" style="display:flex; gap:8px; justify-content:flex-end; margin-top:16px;">
-        <button type="button" class="btn-secondary" onclick="closeModal('modalPrimeiroMes')">${LL('Agora não', 'Ahora no')}</button>
-        <button type="button" class="btn-primary" id="pmEnviar" onclick="window.enviarPrimeiroMes()">${LL('Enviar', 'Enviar')}</button></div></div>`;
+    m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true'); m.setAttribute('aria-labelledby', 'pm2Titulo');
+    m.style.cssText = 'display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:1000; align-items:center; justify-content:center; padding:16px;';
+    m.innerHTML = `<div class="pm2">
+      <div class="pm2-topo"><span class="pm2-rot">${LL('Seus primeiros 15 dias', 'Tus primeros 15 días')}</span>
+        <button type="button" class="pm2-x" aria-label="${LL('Fechar', 'Cerrar')}" onclick="closeModal('modalPrimeiroMes')">✕</button>
+        <div class="pm2-barra" aria-hidden="true"><i id="pm2Barra"></i></div></div>
+      <div class="pm2-corpo" id="pm2Corpo" aria-live="polite"></div>
+      <div class="pm2-rodape" id="pm2Rodape"></div></div>`;
     document.body.appendChild(m);
-    m.addEventListener('click', ev => {
-      const b = ev.target.closest('.pm-op'); if (!b) return;
-      m.querySelectorAll(`.pm-op[data-campo="${b.dataset.campo}"]`).forEach(x => { x.classList.remove('on'); x.setAttribute('aria-checked', 'false'); });
-      b.classList.add('on'); b.setAttribute('aria-checked', 'true');
-      const er = document.getElementById('pmErro'); if (er) er.style.display = 'none';
-    });
   }
+  function pmDesenhar(){
+    const corpo = document.getElementById('pm2Corpo'), rod = document.getElementById('pm2Rodape'), barra = document.getElementById('pm2Barra');
+    const M = window.MARCA || {}, d = pmDados || {};
+    const nome = (d.Apelido && String(d.Apelido).trim()) || String(d.Nome || '').trim().split(/\s+/)[0].toLowerCase().replace(/^./, x => x.toUpperCase());
+    barra.style.width = Math.round(Math.min(pmEtapa, 5) / 5 * 100) + '%';
+    if (pmEtapa === 0) {
+      corpo.innerHTML = `${M.esquilo ? `<img class="pm2-esq" src="${M.esquilo}" alt="">` : ''}
+        <h3 id="pm2Titulo">${LL('Como estão sendo seus primeiros dias', 'Cómo van tus primeros días')}${nome ? ', <span class="pm2-nome">' + nome + '</span>' : ''}?</h3>
+        <p>${LL('São 4 perguntas rápidas, uma de cada vez. Responda com sinceridade: o seu gerente não vê as respostas. Elas ficam com o DHO e com a liderança da sua regional.', 'Son 4 preguntas rápidas, una a la vez. Responde con sinceridad: tu gerente no ve las respuestas. Quedan con DHO y con el liderazgo de tu regional.')}</p>`;
+      rod.innerHTML = `<button type="button" class="btn-secondary" onclick="closeModal('modalPrimeiroMes')">${LL('Agora não', 'Ahora no')}</button><button type="button" class="btn-primary" onclick="window.pmIr(1)">${LL('Começar', 'Empezar')}</button>`;
+    } else if (pmEtapa <= 4) {
+      const p = PM_PASSOS[pmEtapa - 1];
+      corpo.innerHTML = `<span class="pm2-passo">${LL('Pergunta', 'Pregunta')} ${pmEtapa} ${LL('de', 'de')} 5</span><h3 id="pm2Titulo">${p.q()}</h3>
+        <div class="pm2-ops" role="radiogroup" aria-label="${p.q()}">${p.ops().map(([v, r]) => `<button type="button" role="radio" aria-checked="${pmRespostas[p.campo] === v}" class="pm2-op ${pmRespostas[p.campo] === v ? 'on' : ''}" onclick="window.pmEscolher('${p.campo}','${v}')"><i style="background:${PM_COR[v]}"></i>${r}</button>`).join('')}</div>`;
+      rod.innerHTML = `<button type="button" class="btn-secondary" onclick="window.pmIr(${pmEtapa - 1})">${LL('Voltar', 'Volver')}</button><button type="button" class="btn-primary" ${pmRespostas[p.campo] ? '' : 'disabled'} onclick="window.pmIr(${pmEtapa + 1})">${LL('Próxima', 'Siguiente')}</button>`;
+    } else if (pmEtapa === 5) {
+      corpo.innerHTML = `<span class="pm2-passo">${LL('Pergunta 5 de 5 · opcional', 'Pregunta 5 de 5 · opcional')}</span><h3 id="pm2Titulo">${LL('O que te ajudou até aqui, ou o que podia ser melhor?', '¿Qué te ayudó hasta ahora, o qué podría ser mejor?')}</h3>
+        <textarea id="pmComentario" rows="4" maxlength="800" placeholder="${LL('Escreva se quiser…', 'Escribe si quieres…')}">${pmRespostas.Comentario || ''}</textarea><p id="pmErro" class="pm-erro" style="display:none;"></p>`;
+      rod.innerHTML = `<button type="button" class="btn-secondary" onclick="window.pmIr(4)">${LL('Voltar', 'Volver')}</button><button type="button" class="btn-primary" id="pmEnviar" onclick="window.enviarPrimeiroMes()">${LL('Enviar', 'Enviar')}</button>`;
+    } else {
+      corpo.innerHTML = `${M.esquilo ? `<img class="pm2-esq" src="${M.esquilo}" alt="">` : ''}<h3 id="pm2Titulo">${LL('Obrigado por contar!', '¡Gracias por contarnos!')}</h3><p>${LL('Suas respostas foram para o DHO. Bom trabalho e conte com a gente.', 'Tus respuestas fueron a DHO. Buen trabajo y cuenta con nosotros.')}</p>`;
+      rod.innerHTML = `<span></span><button type="button" class="btn-primary" onclick="closeModal('modalPrimeiroMes')">${LL('Fechar', 'Cerrar')}</button>`;
+    }
+    const f = corpo.querySelector('.pm2-op.on, .pm2-op, textarea, h3'); if (f && f.focus) setTimeout(() => f.focus({ preventScroll: true }), 30);
+  }
+  window.pmIr = function(n){ const t = document.getElementById('pmComentario'); if (t) pmRespostas.Comentario = t.value; pmEtapa = Math.max(0, Math.min(6, n)); pmDesenhar(); };
+  window.pmEscolher = function(campo, v){ pmRespostas[campo] = v; pmDesenhar(); setTimeout(() => window.pmIr(pmEtapa + 1), 260); };
   function mostrarCartaoPrimeiroMes(){
     if (document.getElementById('pmCartao')) return;
     const lc = document.querySelector('.level-card');
@@ -5684,34 +5768,38 @@ function configurarGateConclusao(c){
     if (!alvo) return;
     const c = document.createElement('div');
     c.id = 'pmCartao'; c.className = 'pm-cartao';
-    c.innerHTML = `<div><small class="pm-rotulo">${LL('Seu 1º mês', 'Tu 1er mes')}</small><b>${LL('Como está sendo até aqui?', '¿Cómo va hasta ahora?')}</b>
+    c.innerHTML = `<div><small class="pm-rotulo">${LL('Seus primeiros 15 dias', 'Tus primeros 15 días')}</small><b>${LL('Como está sendo até aqui?', '¿Cómo va hasta ahora?')}</b>
       <span>${LL('São 4 perguntas rápidas. As respostas ficam só com o DHO.', 'Son 4 preguntas rápidas. Las respuestas quedan solo con DHO.')}</span></div>
       <button type="button" class="btn-primary" onclick="window.abrirPrimeiroMes()">${LL('Responder', 'Responder')}</button>`;
     if (lc) alvo.insertBefore(c, lc); else alvo.appendChild(c);   // antes do cartão "Sua chegada": aparece logo no começo, também no celular
   }
   async function verificarPrimeiroMes(cpf, dados){
     try {
+      window.__pmRespondido = !!(dados && dados.Checkin30ColabEm);
+      window.__pmAdm = dados && dados.Admissao && dados.Admissao.toDate ? dados.Admissao.toDate() : null;
       if (!dados || dados.Status === 'inativo' || dados.Checkin30ColabEm || !dados.Admissao || !dados.Admissao.toDate) return;
       const d = Math.floor((Date.now() - dados.Admissao.toDate().getTime()) / 86400000);
-      if (d < 28 || d > 75) return;
+      if (d < 15 || d > 44) return;   // primeiros 15 dias: do dia 15 ao 44 (no 45 fica só a pesquisa de 45)
       pmDados = dados; pmCpf = cpf;
-      mostrarCartaoPrimeiroMes();
+      window.__pmJanela = true;
+      if (window.renderFasesOnboarding) try { window.renderFasesOnboarding(); } catch (e) {}
       // abre sozinho uma vez por dia, se não houver outro aviso na tela (o cartão continua lá para responder depois)
       const hoje = new Date().toISOString().slice(0, 10), chave = 'jornada-1mes-' + cpf;
       let ultimo = ''; try { ultimo = localStorage.getItem(chave) || ''; } catch (e) {}
       if (ultimo !== hoje) setTimeout(() => {
         const ocupado = [...document.querySelectorAll('[id^="modal"]')].some(m => m.style.display === 'flex');
-        if (ocupado || document.getElementById('pmCartao') === null) return;
+        if (ocupado || window.__pmRespondido) return;
         try { localStorage.setItem(chave, hoje); } catch (e) {}
         window.abrirPrimeiroMes();
       }, 1800);
     } catch (e) { console.error('1º mês:', e); }
   }
-  window.abrirPrimeiroMes = function(){ montarModalPrimeiroMes(); document.getElementById('pmErro').style.display = 'none'; openModal('modalPrimeiroMes'); };
+  window.abrirPrimeiroMes = function(){ montarModalPrimeiroMes(); if (pmEtapa >= 6) pmEtapa = 0; pmDesenhar(); openModal('modalPrimeiroMes'); };
   window.enviarPrimeiroMes = async function(){
-    const m = document.getElementById('modalPrimeiroMes'), erro = document.getElementById('pmErro');
-    const r = {}; ['Chegada', 'Seguranca', 'Tratamento', 'Futuro'].forEach(k => { const b = m.querySelector(`.pm-op.on[data-campo="${k}"]`); r[k] = b ? b.dataset.valor : ''; });
-    if (Object.values(r).some(v => !v)) { erro.textContent = LL('Responda as 4 perguntas para enviar.', 'Responde las 4 preguntas para enviar.'); erro.style.display = 'block'; return; }
+    const erro = document.getElementById('pmErro');
+    const r = {}; ['Chegada', 'Seguranca', 'Tratamento', 'Futuro'].forEach(k => { r[k] = pmRespostas[k] || ''; });
+    const faltando = ['Chegada', 'Seguranca', 'Tratamento', 'Futuro'].findIndex(k => !r[k]);
+    if (faltando >= 0) { window.pmIr(faltando + 1); return; }
     const btn = document.getElementById('pmEnviar'); btn.disabled = true;
     try {
       const dd = pmDados || {}, adm = dd.Admissao && dd.Admissao.toDate ? dd.Admissao.toDate() : null;
@@ -5719,9 +5807,8 @@ function configurarGateConclusao(c){
         CpfGestor: dd.CpfGestor || '', DiasDeCasa: adm ? Math.floor((Date.now() - adm.getTime()) / 86400000) : null, ...r,
         Comentario: (document.getElementById('pmComentario').value || '').trim(), RespondidoEm: serverTimestamp(), Versao: 1 });
       await setDoc(doc(db, 'colaboradores', pmCpf), { Checkin30ColabEm: serverTimestamp() }, { merge: true });
-      closeModal('modalPrimeiroMes');
-      const c = document.getElementById('pmCartao');
-      if (c) { c.innerHTML = `<div><b>${LL('Obrigado por contar!', '¡Gracias por contarnos!')}</b><span>${LL('Suas respostas foram para o DHO.', 'Tus respuestas fueron a DHO.')}</span></div>`; setTimeout(() => c.remove(), 6000); }
+      window.__pmRespondido = true; pmEtapa = 6; pmDesenhar();
+      if (window.renderFasesOnboarding) try { window.renderFasesOnboarding(); } catch (e) {}
     } catch (e) {
       console.error('1º mês: erro ao salvar', e);
       erro.textContent = LL('Não conseguimos enviar agora. Tente de novo em instantes.', 'No pudimos enviar ahora. Intenta de nuevo en un momento.'); erro.style.display = 'block';
@@ -5824,7 +5911,7 @@ function configurarGateConclusao(c){
   function linhaCabaneiroCert(){
     if (!(window.MARCA && window.MARCA.fasesOnboarding) || window.__faseIdx !== 3) return '';
     return `<div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 0; border-bottom:1px solid var(--line);">
-      <div><b style="font-size:14px;">${IDIOMA === 'es' ? 'Certificado · Virou Cabana' : 'Certificado · Virou Cabana'}</b><br>
+      <div><b style="font-size:14px;">${IDIOMA === 'es' ? 'Certificado · Virou Cabaneiro' : 'Certificado · Virou Cabaneiro'}</b><br>
       <small style="color:var(--ink-soft);">${IDIOMA === 'es' ? 'Onboarding y encuestas de 45 y 90 días' : 'Onboarding e pesquisas de 45 e 90 dias'}</small></div>
       <div style="display:flex; align-items:center; gap:10px;"><span class="pill" style="background:var(--green-tint); color:var(--green-dark);">${t('valido')}</span><button class="ghost-btn" onclick="gerarCertificadoCabaneiro()">${t('baixar')}</button></div>
     </div>`;
@@ -5845,7 +5932,7 @@ function configurarGateConclusao(c){
       const colabSnap = await getDoc(doc(db, 'colaboradores', currentCpf));
       const nomeColaborador = (colabSnap.exists() && colabSnap.data().Nome) || 'Colaborador(a)';
       if (window.MARCA && window.MARCA.layout === 'cd') {
-        await cdCertificado({ fecho: 'de boas-vindas', antes: 'Parabéns,', nome: nomeColaborador, depois: 'você virou Cabana e concluiu', destaque: '3 meses de Jornada',
+        await cdCertificado({ fecho: 'de boas-vindas', antes: 'Parabéns,', nome: nomeColaborador, depois: 'você virou Cabaneiro e concluiu', destaque: '3 meses de Jornada',
           rodape: cdDataExtenso(ultima), arquivo: 'certificado-jornada-cabaneiro.png' });
         return;
       }
@@ -6908,7 +6995,7 @@ function configurarGateConclusao(c){
     }
   }
 
-  // ponto de checagem de 30 dias — pendência é "não tem doc em checkins30 ainda"; janela de 30–90
+  // feedback de 30 dias — pendência é "não tem doc em checkins30 ainda"; janela de 30–90
   // dias desde a admissão pra não acumular gente antiga (de antes dessa funcionalidade existir)
   // pra sempre na lista — ver contrato do projeto.
   async function renderPendCheckin30(equipe){
@@ -6917,33 +7004,33 @@ function configurarGateConclusao(c){
     if (!lista) return 0;
     const agora = new Date();
     const candidatos = equipe.filter(c => {
-      if ((c.Local || 'Loja') !== 'Loja') return false;   // ponto de checagem de 30 dias só pra loja
       if (!c.Admissao || !c.Admissao.toDate) return false;
       const dias = Math.floor((agora - c.Admissao.toDate()) / (1000 * 60 * 60 * 24));
-      return dias >= 30 && dias <= 90 && diasAntesInicio(c) <= 30;
+      return dias >= 15 && dias <= 90 && MARCOS_PONTO.some(m => dias >= m && diasAntesInicio(c) <= m);
     });
     if (!candidatos.length) {
-      lista.innerHTML = `<p class="jornada-vazio">Nenhum ponto de checagem de 30 dias pendente agora.</p>`;
+      lista.innerHTML = `<p class="jornada-vazio">Nenhum feedback pendente agora.</p>`;
       if (contagem) contagem.style.display = 'none';
       return 0;
     }
     try {
-      const cpfs = candidatos.map(c => c.cpf);
-      const jaFeitos = new Set();
-      const existe = await Promise.all(cpfs.map(async cpf => { try { return (await getDoc(doc(db, 'checkins30', cpf))).exists(); } catch (e) { return false; } }));
-      cpfs.forEach((cpf, i) => { if (existe[i]) jaFeitos.add(cpf); });
-      const pendentes = candidatos.filter(c => !jaFeitos.has(c.cpf)).map(c => {
-        const dias = Math.floor((agora - c.Admissao.toDate()) / (1000 * 60 * 60 * 24));
-        return { cpf: c.cpf, nome: c.Nome || '—', loja: c.Loja || '—', diasAtraso: dias - 30 };
-      }).sort((a, b) => b.diasAtraso - a.diasAtraso);
+      const pendentes = [];
+      await Promise.all(candidatos.flatMap(c => MARCOS_PONTO.map(async m => {
+        const dias = Math.floor((agora - c.Admissao.toDate()) / 86400000);
+        if (dias < m || diasAntesInicio(c) > m) return;
+        let existe = false; try { existe = (await getDoc(doc(db, colPonto(m), c.cpf))).exists(); } catch (e) {}
+        cachePonto(m)[c.cpf] = existe ? (cachePonto(m)[c.cpf] || {}) : null;
+        if (!existe) pendentes.push({ cpf: c.cpf, nome: c.Nome || '—', loja: c.Loja || c.Local || '—', marco: m, diasAtraso: dias - (m + PRAZO_PONTO) });
+      })));
+      pendentes.sort((a, b) => b.diasAtraso - a.diasAtraso);
 
       if (contagem) { contagem.style.display = pendentes.length ? 'inline-flex' : 'none'; contagem.textContent = pendentes.length; }
       lista.innerHTML = pendentes.length ? pendentes.map(p => `
         <div class="pendencia-card ${p.diasAtraso > 0 ? 'critico' : ''}">
-          <div class="pendencia-info"><b>${p.nome}</b><span>${p.loja}</span></div>
-          <button class="btn-secondary" style="padding:8px 14px; font-size:12.5px;" onclick="window.abrirCheckin30('${p.cpf}')">Preencher →</button>
+          <div class="pendencia-info"><b>${p.nome}</b><span>${p.loja} · feedback de ${p.marco} dias${p.diasAtraso > 0 ? ' · atrasado há ' + p.diasAtraso + (p.diasAtraso === 1 ? ' dia' : ' dias') : ''}</span></div>
+          <button class="btn-secondary" style="padding:8px 14px; font-size:12.5px;" onclick="window.abrirCheckin30('${p.cpf}', ${p.marco})">Preencher →</button>
         </div>
-      `).join('') : `<p class="jornada-vazio">Nenhum ponto de checagem de 30 dias pendente agora.</p>`;
+      `).join('') : `<p class="jornada-vazio">Nenhum feedback pendente agora.</p>`;
       return pendentes.length;
     } catch (err) {
       console.error('Erro ao carregar pendências de check-in 30 dias:', err);
@@ -7044,9 +7131,11 @@ function configurarGateConclusao(c){
     { id: 'semana', titulo: 'Primeira semana', sub: 'Dias 2 a 7', prazo: 8, itens: [
       { id: 'c1', t: 'Feedback ao fim de cada turno', d: 'Ao fim de cada turno, você ou o orientador conta em poucos minutos o que foi bem e o que ajustar no próximo.' },
       { id: 'c2', t: 'Conversa de fechamento da semana', d: 'No fim da primeira semana, converse a sós com a pessoa: como ela se sentiu, o que está difícil e onde precisa de apoio.' } ] },
-    { id: 'd30', titulo: '30 dias', sub: 'Fechando o primeiro mês', prazo: 35, itens: [
-      { id: 'd1', t: 'Conversa de 30 dias realizada', d: 'Conversa a sós com a pessoa para dar feedback sobre o 1º mês: o que está indo bem, o que melhorar e como ela se sente. O resumo dessa conversa é registrado no ponto de checagem, logo abaixo.' },
-      { id: 'd2', auto: 'primeiroMes', t: 'Colaborador respondeu o "Seu 1º mês" na Jornada', d: 'Entre o dia 28 e o 75 de casa, a Jornada pede para a pessoa contar como está sendo o 1º mês. As respostas vão só para o DHO: aqui você vê apenas se ela já respondeu. Se ainda não respondeu, lembre a pessoa.' } ] }
+    { id: 'd30', titulo: '15 dias', sub: 'Primeira conversa de acompanhamento', prazo: 25, itens: [
+      { id: 'd1', t: 'Conversa de 15 dias realizada', d: 'Conversa a sós com a pessoa para dar feedback sobre as duas primeiras semanas: o que está indo bem, o que melhorar e como ela se sente. O resumo é registrado no feedback, logo abaixo.' },
+      { id: 'd2', auto: 'primeiroMes', t: 'Colaborador respondeu "Seus primeiros 15 dias" na Jornada', d: 'Entre o dia 15 e o 44 de casa, a Jornada pede para a pessoa contar como estão sendo os primeiros dias. As respostas não aparecem para você: aqui você vê apenas se ela já respondeu. Se ainda não respondeu, lembre a pessoa.' } ] },
+    { id: 'd45', titulo: '45 dias', sub: 'Segunda conversa de acompanhamento', prazo: 55, itens: [
+      { id: 'e1', t: 'Conversa de 45 dias realizada', d: 'Nova conversa a sós, com as mesmas perguntas da de 15 dias, para ver como a pessoa evoluiu. O resumo é registrado no feedback, logo abaixo.' } ] }
   ];
   window.CHECKLIST_BLOCOS = CHECKLIST_BLOCOS;
   window.__checklistCache = window.__checklistCache || {};
@@ -7120,7 +7209,8 @@ function configurarGateConclusao(c){
     renderChecklist();
     openModal('modalChecklist');
     if ((c.Local || 'Loja') === 'Loja') {
-      try { const d = await getDoc(doc(db, 'checkins30', c.cpf)); ckCheckinFeito = d.exists(); } catch (e) { ckCheckinFeito = false; }
+      ckCheckinFeito = {};
+      for (const m of MARCOS_PONTO) { try { ckCheckinFeito[m] = (await getDoc(doc(db, colPonto(m), c.cpf))).exists(); } catch (e) { ckCheckinFeito[m] = false; } }
       if (ckPessoaAtual && ckPessoaAtual.cpf === cpf) renderChecklist();
     }
   };
@@ -7156,10 +7246,10 @@ function configurarGateConclusao(c){
         const clicavel = ckEditavel && !auto;
         h += `<${clicavel ? 'button' : 'div'} class="ck-item ${feito ? 'feito' : ''} ${clicavel ? '' : 'somente'}" ${clicavel ? `onclick="window.alternarItemChecklist('${it.id}')"` : ''}><span class="ck-box">${feito ? '✓' : ''}</span><span class="ck-txt"><b class="ck-tit">${it.t}</b>${it.d ? `<span class="ck-det">${it.d}</span>` : ''}</span>${meta}</${clicavel ? 'button' : 'div'}>`;
       });
-      if (b.id === 'd30' && (c.Local || 'Loja') === 'Loja') {
-        const d = r.dias;
-        h += `<div class="ck-item somente" style="flex-wrap:wrap;"><span class="ck-txt" style="flex:1;"><b class="ck-tit">Ponto de checagem: resumo da conversa de 30 dias</b><span class="ck-det">Aqui você registra o que foi conversado: farol de cada tema, se a pessoa tem potencial para seguir no Cabana e o resumo do feedback.</span></span>` +
-          (ckCheckinFeito ? `<span class="ck-auto">Registrado</span>` : (ckEditavel && d !== null && d >= 30 ? `<button class="btn-secondary" style="padding:7px 14px; font-size:12px;" onclick="window.fecharChecklist(); window.abrirCheckin30('${c.cpf}')">Preencher →</button>` : `<span class="ck-meta">disponível a partir do dia 30</span>`)) + `</div>`;
+      if (b.id === 'd30' || b.id === 'd45') {
+        const d = r.dias, m = b.id === 'd45' ? 45 : 15, feitoM = (ckCheckinFeito || {})[m];
+        h += `<div class="ck-item somente" style="flex-wrap:wrap;"><span class="ck-txt" style="flex:1;"><b class="ck-tit">Feedback: resumo da conversa de ${m} dias</b><span class="ck-det">Aqui você registra o que foi conversado: farol de cada tema, se a pessoa tem potencial para seguir no Cabana e o resumo do feedback.</span></span>` +
+          (feitoM ? `<span class="ck-auto">Registrado</span>` : (ckEditavel && d !== null && d >= m ? `<button class="btn-secondary" style="padding:7px 14px; font-size:12px;" onclick="window.fecharChecklist(); window.abrirCheckin30('${c.cpf}', ${m})">Preencher →</button>` : `<span class="ck-meta">disponível a partir do dia ${m}</span>`)) + `</div>`;
       }
       h += `</div>`;
     });
@@ -7244,7 +7334,7 @@ function configurarGateConclusao(c){
     return diasPrazo(c) > 7;
   }
   window.trilhaAtrasada = trilhaAtrasada;
-  // gerente de loja, coordenador e gerente de operações: o gestor deles só preenche o ponto de 30 dias (não há checklist de integração)
+  // gerente de loja, coordenador e gerente de operações: o gestor deles só preenche o feedback de 30 dias (não há checklist de integração)
   function ehLideranca(c){ const k = String((c && c.Cargo) || '').trim(); return /^COORDENADOR/i.test(k) || /^GERENTE\b/i.test(k); }
   window.ehLideranca = ehLideranca;
   function precisaAtencaoPessoa(c, l){
@@ -7253,24 +7343,40 @@ function configurarGateConclusao(c){
     return ckAtraso || trilhaAtrasada(c, l);
   }
 
-  // ponto de 30 dias de cada pessoa do time (só loja): 'antes' (dia < 30), 'pendente' (30 a 90 sem registro), 'feito', ou '' (não se aplica)
-  window.__checkin30Cache = window.__checkin30Cache || {};
+  // feedback de 30 dias de cada pessoa do time (só loja): 'antes' (dia < 30), 'pendente' (30 a 90 sem registro), 'feito', ou '' (não se aplica)
+  window.__checkin30Cache = window.__checkin30Cache || {};   // ponto do dia 15 (coleção checkins30)
+  window.__checkin45Cache = window.__checkin45Cache || {};   // ponto do dia 45 (coleção checkins45)
+  const MARCOS_PONTO = [15, 45], PRAZO_PONTO = 10;
+  const colPonto = m => m === 45 ? 'checkins45' : 'checkins30';
+  const cachePonto = m => m === 45 ? window.__checkin45Cache : window.__checkin30Cache;
+  window.MARCOS_PONTO = MARCOS_PONTO;
   async function carregarCheckin30Equipe(equipe){
-    const alvos = (equipe || []).filter(c => (c.Local || 'Loja') === 'Loja' && (() => { const d = diasDeCasa(c); return d !== null && d >= 30 && d <= 90 && diasAntesInicio(c) <= 30; })());
-    await Promise.all(alvos.map(async c => {
-      try { const s = await getDoc(doc(db, 'checkins30', c.cpf)); window.__checkin30Cache[c.cpf] = s.exists() ? (s.data() || {}) : null; }
-      catch (e) { window.__checkin30Cache[c.cpf] = window.__checkin30Cache[c.cpf] === undefined ? null : window.__checkin30Cache[c.cpf]; }
-    }));
+    const alvos = (equipe || []).filter(c => { const d = diasDeCasa(c); return d !== null && d >= 15 && d <= 90; });
+    await Promise.all(alvos.flatMap(c => MARCOS_PONTO.map(async m => {
+      const cache = cachePonto(m);
+      try { const s = await getDoc(doc(db, colPonto(m), c.cpf)); cache[c.cpf] = s.exists() ? (s.data() || {}) : null; }
+      catch (e) { cache[c.cpf] = cache[c.cpf] === undefined ? null : cache[c.cpf]; }
+    })));
   }
-  function statusPonto30(c){
-    if ((c.Local || 'Loja') !== 'Loja') return '';
+  // situação de um ponto: '' (não se aplica), 'antes', 'pendente' (liberado e sem registro) ou 'feito'
+  function statusPontoM(c, m){
     const d = diasDeCasa(c);
-    if (d === null || d < -15 || d > 90 || diasAntesInicio(c) > 30) return '';
-    if (d < 30) return 'antes';
-    const reg = window.__checkin30Cache[c.cpf];
+    if (d === null || d < -15 || d > 90 || diasAntesInicio(c) > m) return '';
+    if (d < m) return 'antes';
+    const reg = cachePonto(m)[c.cpf];
     if (reg) return 'feito';
-    if (d <= 90 && reg === null) return 'pendente';
+    if (reg === null) return 'pendente';
     return '';
+  }
+  function atrasoPonto(c, m){ const d = diasDeCasa(c); return d === null ? 0 : Math.max(0, d - (m + PRAZO_PONTO)); }
+  window.statusPontoM = statusPontoM; window.atrasoPonto = atrasoPonto;
+  // resumo dos dois pontos (para chips e contagens): pendente se algum estiver pendente
+  function statusPonto30(c){
+    const s = MARCOS_PONTO.map(m => statusPontoM(c, m)).filter(Boolean);
+    if (!s.length) return '';
+    if (s.includes('pendente')) return 'pendente';
+    if (s.includes('antes')) return 'antes';
+    return 'feito';
   }
   window.statusPonto30 = statusPonto30;
 
@@ -7287,7 +7393,7 @@ function configurarGateConclusao(c){
     if (r && r.atraso) chips.push('<span class="eq-tag alerta">Checklist atrasado</span>');
     if (x.trAt) chips.push(`<span class="eq-tag alerta">${pl(falta.length, 'trilha atrasada', 'trilhas atrasadas')}</span>`);
     else if (l.cursosPendentes.length && x.novo) chips.push(`<span class="eq-tag">${pl(l.cursosPendentes.length, 'trilha a fazer', 'trilhas a fazer')}</span>`);
-    if (x.p30 === 'pendente') chips.push('<span class="eq-tag alerta">Ponto de 30 dias pendente</span>');
+    if (x.p30 === 'pendente') chips.push(`<span class="eq-tag alerta">Feedback de ${MARCOS_PONTO.filter(m => statusPontoM(x.c, m) === 'pendente').join(' e ')} dias pendente</span>`);
     if (x.novo && !fase) chips.push('<span class="eq-tag">Ainda não acessou</span>');
     if (!x.atencao && !l.cursosPendentes.length) chips.push('<span class="eq-tag ok">Em dia</span>');
     const tagFase = x.novo && fase ? `<span class="eq-tag ${fase === 4 ? 'ok' : ''}">Fase ${fase} de 4 · ${nomeNivel(nomesFase[fase - 1])}</span>` : '';
@@ -7297,12 +7403,15 @@ function configurarGateConclusao(c){
     const lista = falta.length
       ? `<h5>Trilhas que faltam</h5><ul class="eq-falta">${falta.map(f => `<li><span>${nomeTrilhaCurto(f.n)}</span><span class="eq-tag ${f.k}">${f.t}</span></li>`).join('')}</ul>`
       : (l.total ? `<h5>Trilhas</h5><p class="jornada-vazio" style="text-align:left; padding:6px 0 0;">Todas concluídas.</p>` : '');
-    const reg30 = window.__checkin30Cache[l.cpf];
-    const contou = x.c && x.c.Checkin30ColabEm ? `<p class="eq-contou">${LL('Já contou como está sendo o 1º mês (as respostas ficam com o DHO).', 'Ya contó cómo va su 1er mes (las respuestas quedan con DHO).')}</p>` : '';
-    const ponto = !x.p30 ? '' : `<h5>Conversa de 30 dias</h5>${contou}<div class="eq-ponto30">${
-      x.p30 === 'pendente' ? `<span>Já pode fazer a conversa a sós e registrar o ponto de checagem.</span><button class="btn-primary" style="padding:8px 14px; font-size:12.5px;" onclick="window.abrirCheckin30('${l.cpf}')">Preencher ponto de 30 dias</button>`
-      : x.p30 === 'feito' ? `<span class="eq-tag ok">Registrado${reg30 && reg30.DataConversa ? ' · conversa em ' + String(reg30.DataConversa).split('-').reverse().slice(0, 2).join('/') : ''}</span>`
-      : `<span>Libera no dia 30 de casa${x.dias !== null && x.dias < 30 ? ' (faltam ' + (30 - Math.max(x.dias, 0)) + ' dias)' : ''}.</span>`}</div>`;
+    const contou = x.c && x.c.Checkin30ColabEm ? `<p class="eq-contou">${LL('Já contou como estão sendo os primeiros 15 dias (as respostas não aparecem para você).', 'Ya contó cómo van sus primeros 15 días (las respuestas quedan con DHO).')}</p>` : '';
+    const linhaPonto = m => {
+      const st = statusPontoM(x.c, m); if (!st) return '';
+      const reg = cachePonto(m)[l.cpf], at = atrasoPonto(x.c, m);
+      if (st === 'feito') return `<div class="eq-ponto30"><span>Feedback de ${m} dias</span><span class="eq-tag ok">Registrado${reg && reg.DataConversa ? ' · conversa em ' + String(reg.DataConversa).split('-').reverse().slice(0, 2).join('/') : ''}</span></div>`;
+      if (st === 'pendente') return `<div class="eq-ponto30"><span>Feedback de ${m} dias: ${at ? `<b style="color:var(--erro,#C2321A)">atrasado há ${at} ${at === 1 ? 'dia' : 'dias'}</b>` : 'já pode fazer a conversa e registrar'}.</span><button class="btn-primary" style="padding:8px 14px; font-size:12.5px;" onclick="window.abrirCheckin30('${l.cpf}', ${m})">Preencher feedback de ${m} dias</button></div>`;
+      const f = m - Math.max(x.dias || 0, 0); return `<div class="eq-ponto30"><span>Feedback de ${m} dias: libera em ${f} ${f === 1 ? 'dia' : 'dias'}.</span></div>`;
+    };
+    const ponto = !x.p30 ? '' : `<h5>Conversas de acompanhamento</h5>${contou}${MARCOS_PONTO.map(linhaPonto).join('')}`;
     return `<details class="eq-linha ${x.atencao ? 'aten' : ''}">
       <summary><div class="ck-avatar">${iniciaisDe(l.nome)}</div>
         <div class="nm"><b>${l.nome}</b><span>${[l.cargo, x.dias !== null ? textoDias(x.dias) : ''].filter(Boolean).join(' · ')}</span></div>
@@ -7334,7 +7443,7 @@ function configurarGateConclusao(c){
       <div class="eq-kpi"><b>${novos.length}</b><span>Em integração</span><small>chegaram há até 90 dias</small></div>
       <div class="eq-kpi ${ckAtr ? 'alerta' : ''}"><b>${ckAtr}</b><span>Checklist atrasado</span><small>passo fora do prazo</small></div>
       <div class="eq-kpi ${trAtr ? 'alerta' : ''}"><b>${trAtr}</b><span>Trilha atrasada</span><small>falta concluir</small></div>
-      <div class="eq-kpi ${p30Pend ? 'alerta' : ''}"><b>${p30Pend}</b><span>Ponto de 30 dias</span><small>conversa sem registro</small></div></div>`;
+      <div class="eq-kpi ${p30Pend ? 'alerta' : ''}"><b>${p30Pend}</b><span>Feedbacks</span><small>15 ou 45 dias sem registro</small></div></div>`;
     if (!itens.length) { corpo.innerHTML = `<p style="text-align:center; color:var(--ink-soft); padding:20px; font-size:13.5px;">${t('equipe_vazia')}</p>`; return; }
     const aten = itens.filter(x => x.atencao), ok = itens.filter(x => !x.atencao);
     corpo.innerHTML =
@@ -7432,11 +7541,17 @@ function configurarGateConclusao(c){
     openModal('modalCarta');
   };
 
-  // ---------- ponto de checagem de 30 dias (farol + texto livre) ----------
+  // ---------- feedback de 30 dias (farol + texto livre) ----------
 
   let checkin30ColaboradorAtual = null;
 
-  window.abrirCheckin30 = function(cpf){
+  let checkinMarcoAtual = 15;
+  window.abrirCheckin30 = function(cpf, marco){
+    checkinMarcoAtual = marco === 45 ? 45 : (marco === 15 ? 15 : (statusPontoM((window.MINHA_EQUIPE || []).find(x => x.cpf === cpf) || {}, 15) === 'pendente' ? 15 : (statusPontoM((window.MINHA_EQUIPE || []).find(x => x.cpf === cpf) || {}, 45) === 'pendente' ? 45 : 15)));
+    const mx = checkinMarcoAtual;
+    const tit = document.querySelector('#modalCheckin30 h3'); if (tit) tit.textContent = `Feedback · ${mx} dias`;
+    const p1 = document.querySelector('#modalCheckin30 .ck30-passo span'); if (p1) p1.innerHTML = `<strong>Conversa de ${mx} dias.</strong> Ao completar ${mx === 15 ? 'as duas primeiras semanas' : 'os 45 dias'}, você conversa a sós com a pessoa e dá um feedback: o que está indo bem, o que melhorar e como ela se sente.`;
+    document.querySelectorAll('#modalCheckin30 label').forEach(lb => { lb.innerHTML = lb.innerHTML.replace(/conversa de (15|30|45) dias/g, `conversa de ${mx} dias`); });
     const c = (window.MINHA_EQUIPE || []).find(x => x.cpf === cpf);
     if (!c) return;
     checkin30ColaboradorAtual = c;
@@ -7495,20 +7610,21 @@ function configurarGateConclusao(c){
     const erro = document.getElementById('checkin30Erro');
     const nomes = { integracao: 'Integração à loja e equipe', treinamento: 'Aprendizado inicial', comportamento: 'Comportamento e postura' };
     let msg = '';
-    if (!dataConv) msg = 'Informe a data em que a conversa de 30 dias aconteceu.';
+    if (!dataConv) msg = `Informe a data em que a conversa de ${checkinMarcoAtual} dias aconteceu.`;
     else if (!valores.integracao || !valores.treinamento || !valores.comportamento) msg = 'Marque o farol dos três temas.';
     else {
       const faltando = Object.keys(nomes).find(k => valores[k] !== 'verde' && !obs[k]);
       if (faltando) msg = 'Em "' + nomes[faltando] + '" você marcou ' + (valores[faltando] === 'amarelo' ? 'Atenção' : 'Preocupante') + '. Conte o que observou.';
       else if (!potencial) msg = 'Responda se a pessoa tem potencial para continuar no Cabana.';
       else if ((potencial === 'duvida' || potencial === 'nao') && !obs.pot) msg = 'Explique por que você tem dúvidas sobre a continuidade da pessoa.';
-      else if (!resumo) msg = 'Escreva o resumo do feedback dado na conversa de 30 dias.';
+      else if (!resumo) msg = `Escreva o resumo do feedback dado na conversa de ${checkinMarcoAtual} dias.`;
     }
     if (msg) { erro.textContent = msg; erro.style.display = 'block'; erro.scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
     erro.style.display = 'none';
     try {
       const admD = c.Admissao && c.Admissao.toDate ? c.Admissao.toDate() : null;
-      await setDoc(doc(db, 'checkins30', c.cpf), {
+      await setDoc(doc(db, colPonto(checkinMarcoAtual), c.cpf), {
+        Marco: checkinMarcoAtual,                  // 15 ou 45 (dia do feedback)
         Cpf: c.cpf,
         Nome: c.Nome || '',
         Cargo: c.Cargo || '',
@@ -7533,13 +7649,13 @@ function configurarGateConclusao(c){
         RegistradoEm: serverTimestamp()
       });
     } catch (err) {
-      console.error('Erro ao salvar ponto de checagem:', err);
+      console.error('Erro ao salvar feedback:', err);
       erro.textContent = 'Não deu pra salvar agora. Tenta de novo em instantes.';
       erro.style.display = 'block';
       return;
     }
     closeModal('modalCheckin30');
-    window.__checkin30Cache[c.cpf] = { DataConversa: dataConv };
+    cachePonto(checkinMarcoAtual)[c.cpf] = { DataConversa: dataConv };
     checkin30ColaboradorAtual = null;
     await atualizarPainelPendenciasGestor();
     const meq = document.getElementById('modalEquipe');
@@ -7553,12 +7669,97 @@ function configurarGateConclusao(c){
     const ehGO = cargoColaboradorAtual === 'GERENTE DE OPERAÇÕES';
     document.getElementById('jornadaRegionalTitulo').textContent = ehGO ? '🗺️ Minhas regionais' : '🗺️ Minha regional';
     document.getElementById('jornadaRegionalIntro').textContent = ehGO
-      ? 'Como está a integração de quem chegou nas lojas, regional por regional. Toque numa regional para ver as trilhas do coordenador, registrar o ponto de 30 dias dele e ver as lojas. O detalhe das pessoas fica com o gerente da loja.'
-      : 'Como está a integração do time de cada gerente da sua regional. Toque num gerente para ver as trilhas dele e registrar o ponto de 30 dias, quando for a hora. O detalhe das pessoas do time fica com ele.';
+      ? 'Como está a integração de quem chegou nas lojas, regional por regional. Toque numa regional para ver as trilhas do coordenador, registrar os feedbacks dele e ver as lojas. O detalhe das pessoas fica com o gerente da loja.'
+      : 'Como está a integração do time de cada gerente da sua regional. Toque num gerente para ver as trilhas dele e registrar os feedbacks, quando for a hora. O detalhe das pessoas do time fica com ele.';
     document.getElementById('jornadaResumoRegional').innerHTML = '';
     document.getElementById('jornadaListaRegional').innerHTML = '<p class="jornada-vazio">Carregando…</p>';
     openModal('modalJornadaRegional');
     carregarJornadaRegional();
+  };
+
+  // ===== feedbacks (15 e 45), versão do colaborador e pareceres, para coordenador e gerente de operações =====
+  const FR_FAROL = { verde: ['Indo bem', '#17762A'], amarelo: ['Atenção', '#D89840'], vermelho: ['Preocupante', '#C2321A'] };
+  const FR_COLAB = { verde: ['Indo bem', '#17762A'], amarelo: ['Mais ou menos', '#D89840'], vermelho: ['Difícil', '#C2321A'] };
+  const FR_POT = { sim: 'Sim, com certeza', sim_desenvolver: 'Sim, com pontos a desenvolver', duvida: 'Tenho dúvidas', nao: 'Hoje não vejo' };
+  const FR_FUT = { sim: 'Sim', talvez: 'Talvez', nao: 'Não' };
+  let frDados = null;
+  const frEsc = v => String(v == null ? '' : v).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+  function frMontarModal(){
+    if (document.getElementById('modalFeedbacksRegional')) return;
+    const m = document.createElement('div'); m.id = 'modalFeedbacksRegional';
+    m.style.cssText = 'display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:95; align-items:center; justify-content:center; padding:16px;';
+    m.innerHTML = `<div class="fr-caixa"><div class="fr-topo"><h3>Feedbacks e pareceres</h3><button type="button" aria-label="Fechar" onclick="closeModal('modalFeedbacksRegional')">✕</button></div>
+      <div class="fr-filtros"><div class="fr-abas" role="tablist"><button type="button" class="on" data-aba="fb" onclick="window.frAba('fb')">Feedbacks</button><button type="button" data-aba="par" onclick="window.frAba('par')">Pareceres de desligamento</button></div>
+        <select id="frRegional" onchange="window.frDesenhar()"></select><select id="frLoja" onchange="window.frDesenhar()"></select><input type="search" id="frBusca" placeholder="Buscar nome…" oninput="window.frDesenhar()"></div>
+      <div class="fr-corpo" id="frCorpo"><p class="jornada-vazio">Carregando…</p></div></div>`;
+    document.body.appendChild(m);
+  }
+  let frAbaAtual = 'fb';
+  window.frAba = function(a){ frAbaAtual = a; document.querySelectorAll('#modalFeedbacksRegional .fr-abas button').forEach(b => b.classList.toggle('on', b.dataset.aba === a)); window.frDesenhar(); };
+  window.abrirFeedbacksRegional = async function(){
+    frMontarModal(); openModal('modalFeedbacksRegional');
+    document.getElementById('frCorpo').innerHTML = '<p class="jornada-vazio">Carregando…</p>';
+    try {
+      const ehGO = cargoColaboradorAtual === 'GERENTE DE OPERAÇÕES';
+      const regs = ehGO ? [...new Set((window.MINHA_EQUIPE || []).map(c => c.Regional).filter(Boolean))] : [regionalColaboradorAtual].filter(Boolean);
+      let pessoas = [];
+      for (let i = 0; i < regs.length; i += 30) {
+        const snap = await getDocs(query(collection(db, 'colaboradores'), where('Regional', 'in', regs.slice(i, i + 30))));
+        snap.forEach(d => pessoas.push({ cpf: d.id, ...d.data() }));
+      }
+      const porCpf = {}; pessoas.forEach(c => { porCpf[c.cpf] = c; });
+      const cpfs = pessoas.map(c => c.cpf);
+      const ler = async col => { const out = {}; for (let i = 0; i < cpfs.length; i += 30) { try { const sn = await getDocs(query(collection(db, col), where('Cpf', 'in', cpfs.slice(i, i + 30)))); sn.forEach(d => { out[d.id] = d.data(); }); } catch (e) { console.error('Feedbacks: ' + col, e); } } return out; };
+      const [f15, f45, col15, desl] = await Promise.all([ler('checkins30'), ler('checkins45'), ler('checkins30Colab'), ler('desligamentos')]);
+      frDados = { pessoas, porCpf, f15, f45, col15, desl };
+      const sel = (id, vals, todos) => { const el = document.getElementById(id); el.innerHTML = `<option value="">${todos}</option>` + vals.map(v => `<option>${frEsc(v)}</option>`).join(''); };
+      sel('frRegional', [...new Set(pessoas.map(c => c.Regional).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt-BR')), 'Todas as regionais');
+      document.getElementById('frRegional').style.display = ehGO ? '' : 'none';
+      sel('frLoja', [...new Set(pessoas.map(c => c.Loja).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt-BR')), 'Todas as lojas');
+      window.frDesenhar();
+    } catch (e) { console.error(e); document.getElementById('frCorpo').innerHTML = '<p class="jornada-vazio">Não consegui carregar agora. Tente de novo em instantes.</p>'; }
+  };
+  const frFarol = (v, mapa) => { const f = mapa[v]; return f ? `<span class="fr-farol"><i style="background:${f[1]}"></i>${f[0]}</span>` : '<span class="fr-farol">—</span>'; };
+  const frData = v => { const d = v && v.toDate ? v.toDate() : (v ? new Date(String(v).length === 10 ? v + 'T12:00:00' : v) : null); return d && !isNaN(d) ? d.toLocaleDateString('pt-BR') : ''; };
+  function frBlocoGestor(t, f){
+    if (!f) return '';
+    return `<div class="fr-bloco"><h5>${t} <small>${f.DataConversa ? 'conversa em ' + frData(f.DataConversa) : ''}${f.RegistradoPorNome ? ' · por ' + frEsc(f.RegistradoPorNome) : ''}</small></h5>
+      <div class="fr-grade"><div><span>Integração</span>${frFarol(f.Integracao, FR_FAROL)}${f.ComentarioIntegracao ? `<p>${frEsc(f.ComentarioIntegracao)}</p>` : ''}</div>
+      <div><span>Aprendizado</span>${frFarol(f.Treinamento, FR_FAROL)}${f.ComentarioAprendizado ? `<p>${frEsc(f.ComentarioAprendizado)}</p>` : ''}</div>
+      <div><span>Comportamento</span>${frFarol(f.Comportamento, FR_FAROL)}${f.ComentarioComportamento ? `<p>${frEsc(f.ComentarioComportamento)}</p>` : ''}</div>
+      <div><span>Potencial</span><b>${FR_POT[f.Potencial] || '—'}</b>${f.PotencialJustificativa ? `<p>${frEsc(f.PotencialJustificativa)}</p>` : ''}</div></div>
+      ${f.ResumoFeedback ? `<p class="fr-resumo"><b>Resumo:</b> ${frEsc(f.ResumoFeedback)}</p>` : ''}${f.ProximosPassos ? `<p class="fr-resumo"><b>Combinados:</b> ${frEsc(f.ProximosPassos)}</p>` : ''}</div>`;
+  }
+  function frBlocoColab(r){
+    if (!r) return '';
+    return `<div class="fr-bloco colab"><h5>Primeiros 15 dias, pelo colaborador <small>${frData(r.RespondidoEm)}</small></h5>
+      <div class="fr-grade"><div><span>Chegada no time</span>${frFarol(r.Chegada, FR_COLAB)}</div><div><span>Segurança no trabalho</span>${frFarol(r.Seguranca, FR_COLAB)}</div>
+      <div><span>Como é tratado(a)</span>${frFarol(r.Tratamento, FR_COLAB)}</div><div><span>Se vê no Cabana</span><b>${FR_FUT[r.Futuro] || '—'}</b></div></div>
+      ${r.Comentario ? `<p class="fr-resumo">“${frEsc(r.Comentario)}”</p>` : ''}</div>`;
+  }
+  window.frDesenhar = function(){
+    if (!frDados) return;
+    const fR = document.getElementById('frRegional').value, fL = document.getElementById('frLoja').value, q = (document.getElementById('frBusca').value || '').trim().toLowerCase();
+    const ok = c => (!fR || c.Regional === fR) && (!fL || c.Loja === fL) && (!q || String(c.Nome || '').toLowerCase().includes(q));
+    const nomeC = n => String(n || '').toLowerCase().replace(/(^|\s)\S/g, x => x.toUpperCase());
+    const corpo = document.getElementById('frCorpo');
+    if (frAbaAtual === 'fb') {
+      const lista = frDados.pessoas.filter(c => ok(c) && (frDados.f15[c.cpf] || frDados.f45[c.cpf] || frDados.col15[c.cpf]))
+        .sort((a, b) => String(a.Nome || '').localeCompare(String(b.Nome || ''), 'pt-BR'));
+      corpo.innerHTML = lista.length ? lista.map(c => `<details class="fr-pessoa"><summary><b>${frEsc(nomeC(c.Nome))}</b><span>${frEsc([c.Cargo, c.Loja].filter(Boolean).join(' · '))}</span>
+          <span class="fr-tags">${frDados.f15[c.cpf] ? '<em>15 dias</em>' : ''}${frDados.col15[c.cpf] ? '<em>colaborador</em>' : ''}${frDados.f45[c.cpf] ? '<em>45 dias</em>' : ''}</span></summary>
+          ${frBlocoGestor('Feedback de 15 dias, pelo gestor', frDados.f15[c.cpf])}${frBlocoColab(frDados.col15[c.cpf])}${frBlocoGestor('Feedback de 45 dias, pelo gestor', frDados.f45[c.cpf])}</details>`).join('')
+        : '<p class="jornada-vazio">Nenhum feedback registrado com esses filtros.</p>';
+    } else {
+      const lista = frDados.pessoas.filter(c => ok(c) && frDados.desl[c.cpf] && !frDados.desl[c.cpf].Descartado)
+        .sort((a, b) => (frDados.desl[b.cpf].RegistradoEm && frDados.desl[b.cpf].RegistradoEm.toMillis ? frDados.desl[b.cpf].RegistradoEm.toMillis() : 0) - (frDados.desl[a.cpf].RegistradoEm && frDados.desl[a.cpf].RegistradoEm.toMillis ? frDados.desl[a.cpf].RegistradoEm.toMillis() : 0));
+      const INI = { colaborador: 'Colaborador', empresa: 'Empresa', fim_contrato: 'Fim de contrato', outro: 'Outro' };
+      corpo.innerHTML = lista.length ? lista.map(c => { const p = frDados.desl[c.cpf]; return `<div class="fr-pessoa fr-par"><div class="fr-par-cab"><b>${frEsc(nomeC(c.Nome))}</b><span>${frEsc([c.Cargo, c.Loja].filter(Boolean).join(' · '))}</span></div>
+          <div class="fr-grade"><div><span>Motivo</span><b>${frEsc(p.Motivo || '—')}</b></div><div><span>Quem decidiu</span><b>${INI[p.Iniciativa] || '—'}</b></div>
+          <div><span>Tempo de casa</span><b>${p.TempoDeCasaDias != null ? p.TempoDeCasaDias + ' dias' : '—'}</b></div><div><span>Registrado</span><b>${frData(p.RegistradoEm)}${p.RegistradoPorNome ? ' · ' + frEsc(p.RegistradoPorNome) : ''}</b></div></div>
+          ${p.Detalhamento ? `<p class="fr-resumo"><b>Detalhamento:</b> ${frEsc(p.Detalhamento)}</p>` : ''}</div>`; }).join('')
+        : '<p class="jornada-vazio">Nenhum parecer de desligamento com esses filtros.</p>';
+    }
   };
 
   async function escopoRegionalJornada(){
@@ -7581,21 +7782,24 @@ function configurarGateConclusao(c){
     const linhas = await calcularPendenciaCursosParaLista(colabs);
     const porCpf = {}; linhas.forEach(l => { porCpf[l.cpf] = l; });
     await carregarChecklists(colabs.filter(c => emIntegracao(c) && !ehLideranca(c)).map(c => c.cpf));
-    // ponto de 30 dias: só quem é de Loja (inclusive o gerente de loja, que o coordenador acompanha)
-    const cand = colabs.filter(c => { const d = diasDeCasa(c); return (c.Local || 'Loja') === 'Loja' && d !== null && d >= 30 && d <= 90 && diasAntesInicio(c) <= 30; });
-    const feitos = new Set();
-    for (let i = 0; i < cand.length; i += 30) {
-      const snap = await getDocs(query(collection(db, 'checkins30'), where('Cpf', 'in', cand.slice(i, i + 30).map(c => c.cpf))));
-      snap.forEach(d => feitos.add(d.id));
+    // feedbacks dos dias 15 e 45 (todos os locais, até o dia 90)
+    const cand = colabs.filter(c => { const d = diasDeCasa(c); return d !== null && d >= 15 && d <= 90; });
+    const feitosM = { 15: new Set(), 45: new Set() };
+    for (const m of MARCOS_PONTO) for (let i = 0; i < cand.length; i += 30) {
+      try { const snap = await getDocs(query(collection(db, colPonto(m)), where('Cpf', 'in', cand.slice(i, i + 30).map(c => c.cpf))));
+        snap.forEach(d => { feitosM[m].add(d.id); cachePonto(m)[d.id] = d.data(); }); } catch (e) {}
     }
-    const candSet = new Set(cand.map(c => c.cpf));
+    cand.forEach(c => MARCOS_PONTO.forEach(m => { if (!feitosM[m].has(c.cpf) && cachePonto(m)[c.cpf] === undefined) cachePonto(m)[c.cpf] = null; }));
+    const pendM = c => MARCOS_PONTO.filter(m => statusPontoM(c, m) === 'pendente');
+    const feitos = new Set(cand.filter(c => MARCOS_PONTO.every(m => { const st = statusPontoM(c, m); return st === 'feito' || st === ''; }) && MARCOS_PONTO.some(m => statusPontoM(c, m) === 'feito')).map(c => c.cpf));
+    const candSet = new Set(cand.filter(c => pendM(c).length).map(c => c.cpf));
     return colabs.map(c => {
       const l = porCpf[c.cpf] || null;
       const novo = emIntegracao(c);
       const r = (novo && !ehLideranca(c)) ? resumoChecklist(c, l) : null;
       const trAt = trilhaAtrasada(c, l);
-      const pendCheckin = candSet.has(c.cpf) && !feitos.has(c.cpf);
-      return { c, l, novo, r, trAt, pendCheckin, checkinFeito: feitos.has(c.cpf), pontoAplica: (c.Local || 'Loja') === 'Loja', atencao: !!((r && r.atraso) || trAt || pendCheckin) };
+      const pendCheckin = candSet.has(c.cpf);
+      return { c, l, novo, r, trAt, pendCheckin, pendMarcos: pendM(c), checkinFeito: feitos.has(c.cpf), pontoAplica: true, atencao: !!((r && r.atraso) || trAt || pendCheckin) };
     });
   }
 
@@ -7617,7 +7821,7 @@ function configurarGateConclusao(c){
       <div class="eq-kpi"><b>${a.novos}</b><span>Em integração</span><small>chegaram há até 90 dias</small></div>
       <div class="eq-kpi ${a.atrasados ? 'alerta' : ''}"><b>${a.atrasados}</b><span>Checklist atrasado</span><small>passo fora do prazo</small></div>
       <div class="eq-kpi ${a.trilhas ? 'alerta' : ''}"><b>${a.trilhas}</b><span>Trilha atrasada</span><small>falta concluir</small></div>
-      <div class="eq-kpi ${a.checkin ? 'alerta' : ''}"><b>${a.checkin}</b><span>Ponto de 30 dias</span><small>conversa sem registro</small></div></div>`;
+      <div class="eq-kpi ${a.checkin ? 'alerta' : ''}"><b>${a.checkin}</b><span>Feedbacks</span><small>15 ou 45 dias sem registro</small></div></div>`;
   }
 
   // um selo só (Em dia / N com pendência) + o detalhe em texto simples embaixo do nome — sem poluir a linha
@@ -7628,7 +7832,7 @@ function configurarGateConclusao(c){
     const d = [];
     if (a.atrasados) d.push(pl(a.atrasados, 'checklist atrasado', 'checklists atrasados'));
     if (a.trilhas) d.push(pl(a.trilhas, 'trilha atrasada', 'trilhas atrasadas'));
-    if (a.checkin) d.push(pl(a.checkin, 'ponto de 30 dias pendente', 'pontos de 30 dias pendentes'));
+    if (a.checkin) d.push(pl(a.checkin, 'feedback pendente', 'feedbacks pendentes'));
     return d.length ? `<span class="pend">${d.join(' · ')}</span>` : '';
   }
 
@@ -7646,10 +7850,10 @@ function configurarGateConclusao(c){
     return `<div class="eq-linha folha ${g.a.atencao ? 'aten' : ''}"><div class="nm"><b>${loja}</b><span>${info}</span>${detalheJornada(g.a)}</div><div class="eq-chips">${chipsJornada(g.a)}</div></div>`;
   }
 
-  // acompanhamento de quem responde diretamente: as trilhas da própria pessoa e o ponto de 30 dias (que o gestor dela registra)
+  // acompanhamento de quem responde diretamente: as trilhas da própria pessoa e o feedback de 30 dias (que o gestor dela registra)
   function euTexto(p, rotulo){
     if (!p) return '';
-    const x = []; if (p.trAt) x.push('trilha atrasada'); if (p.pendCheckin) x.push('ponto de 30 dias pendente');
+    const x = []; if (p.trAt) x.push('trilha atrasada'); if (p.pendCheckin) x.push('feedback de ' + (p.pendMarcos || []).join(' e ') + ' dias pendente');
     return x.length ? `<span class="pend">${rotulo}: ${x.join(' · ')}</span>` : '';
   }
   function blocoProprioHtml(p, rotulo){
@@ -7662,13 +7866,13 @@ function configurarGateConclusao(c){
     const barra = l && l.total ? `<div class="eq-bar" style="margin-top:8px;"><label>Trilhas <b>${l.concluidos} de ${l.total} concluídas</b></label><div class="ck-prog"><i style="width:${l.pct}%"></i></div></div>` : `<p class="jornada-vazio" style="text-align:left; padding:6px 0 0;">Nenhuma trilha obrigatória para este cargo.</p>`;
     const lista = falta.length ? `<ul class="eq-falta">${falta.map(f => `<li><span>${nomeTrilhaCurto(f.n)}</span><span class="eq-tag ${f.k}">${f.t}</span></li>`).join('')}</ul>` : '';
     let ponto;
-    if (p.checkinFeito) ponto = `<span class="eq-tag ok">Ponto de 30 dias registrado</span>`;
-    else if (p.pendCheckin) ponto = `<span class="eq-tag alerta">Conversa de 30 dias sem registro</span><span class="espaco"></span><button class="btn-secondary" style="padding:8px 14px; font-size:12.5px;" onclick="window.registrarCheckinDireto('${c.cpf}')">Registrar ponto de 30 dias →</button>`;
-    else if (p.pontoAplica && dias !== null && dias < 30) ponto = `<span class="eq-tag">A conversa de 30 dias libera em ${30 - dias} dia${30 - dias === 1 ? '' : 's'}</span>`;
+    if (p.pendCheckin) ponto = `<span class="eq-tag alerta">Feedback de ${(p.pendMarcos || []).join(' e ')} dias sem registro</span><span class="espaco"></span><button class="btn-secondary" style="padding:8px 14px; font-size:12.5px;" onclick="window.registrarCheckinDireto('${c.cpf}')">Registrar feedback de 30 dias →</button>`;
+    else if (p.checkinFeito) ponto = `<span class="eq-tag ok">Feedbacks registrados</span>`;
+    else if (dias !== null && dias < 15) ponto = `<span class="eq-tag">O feedback de 15 dias libera em ${15 - dias} dia${15 - dias === 1 ? '' : 's'}</span>`;
     else ponto = '';
     return `<h5>${rotulo} · ${nomeCurto(c.Nome)}${dias !== null ? ' · ' + textoDias(dias) : ''}</h5>${barra}${lista}${ponto ? `<div class="eq-acoes">${ponto}</div>` : ''}`;
   }
-  // o botão fecha a tela da regional, abre o ponto de 30 dias e volta para ela ao salvar ou cancelar
+  // o botão fecha a tela da regional, abre o feedback de 30 dias e volta para ela ao salvar ou cancelar
   window.registrarCheckinDireto = function(cpf){ window.__voltarRegional = true; closeModal('modalJornadaRegional'); window.abrirCheckin30(cpf); };
 
   // linha de um gerente (coordenador): nome da pessoa que responde a ele, a loja e o que está pendente no time dela

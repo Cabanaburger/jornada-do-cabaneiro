@@ -762,8 +762,8 @@ window.MARCA_ATIVA = 'jornada';
           <div class="ptab" data-sub="organizacional" onclick="mudarSubRelatorio('organizacional', this)">Organizacional</div>
           <div class="ptab" data-sub="acompanhamento" onclick="mudarSubRelatorio('acompanhamento', this)">Acompanhamento</div>
           <div class="ptab" data-sub="desligamentos" onclick="mudarSubRelatorio('desligamentos', this)">Pareceres de desligamento</div>
-          <div class="ptab" data-sub="checkin30" onclick="mudarSubRelatorio('checkin30', this)">Ponto de 30 dias</div>
-          <div class="ptab" data-sub="primeiroMes" onclick="mudarSubRelatorio('primeiroMes', this)">1º mês · colaborador</div>
+          <div class="ptab" data-sub="checkin30" onclick="mudarSubRelatorio('checkin30', this)">Feedbacks</div>
+          <div class="ptab" data-sub="primeiroMes" onclick="mudarSubRelatorio('primeiroMes', this)">15 dias · colaborador</div>
         </div>
       </div>
 
@@ -927,7 +927,7 @@ window.MARCA_ATIVA = 'jornada';
         <div class="panel-card">
           <div id="desTabelaTitulo" style="padding:14px 18px 0; font-size:12.5px; color:var(--ink-soft);"></div>
           <table class="tb-base">
-            <thead><tr><th>Colaborador</th><th>Loja · Regional</th><th>Motivo</th><th>Tempo de casa</th><th>Ponto de 30 dias</th><th>Registrado em</th></tr></thead>
+            <thead><tr><th>Colaborador</th><th>Loja · Regional</th><th>Motivo</th><th>Tempo de casa</th><th>Feedback de 15 dias</th><th>Registrado em</th></tr></thead>
             <tbody id="relDesligBody"></tbody>
           </table>
         </div>
@@ -977,7 +977,7 @@ window.MARCA_ATIVA = 'jornada';
           <div class="rep-card"><h4>🚩 Pessoas com sinal de alerta</h4><div id="chkAlertas"></div></div>
         </div>
         <details class="rep-card" style="margin-bottom:22px;">
-          <summary style="cursor:pointer; font-family:var(--display); font-size:15.5px;">🕓 Aguardando o ponto de 30 dias <span class="cnt-pill" id="chkPendCnt">0</span></summary>
+          <summary style="cursor:pointer; font-family:var(--display); font-size:15.5px;">🕓 Aguardando feedback <span class="cnt-pill" id="chkPendCnt">0</span></summary>
           <div id="relCheckin30Pendentes" style="margin-top:12px;"></div>
         </details>
         <div class="panel-card">
@@ -991,7 +991,7 @@ window.MARCA_ATIVA = 'jornada';
 
       <!-- ===== 1º MÊS NA VISÃO DO COLABORADOR (só o DHO vê) ===== -->
       <div id="relSub-primeiroMes" class="rel-subview" style="display:none;">
-        <p class="muted" style="margin:0 0 14px; font-size:13px; color:var(--ink-soft);">O que a própria pessoa respondeu por volta do dia 30, ao lado do ponto de 30 dias do gerente. Só o DHO vê estas respostas: o gerente sabe apenas que a pessoa respondeu.</p>
+        <p class="muted" style="margin:0 0 14px; font-size:13px; color:var(--ink-soft);">O que a própria pessoa respondeu nos primeiros 15 dias, ao lado do feedback de 15 dias do gerente. O DHO, o coordenador da regional e o gerente de operações veem estas respostas; o gerente da loja sabe apenas que a pessoa respondeu.</p>
         <div class="kpi-row" id="pmKpis" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin-bottom:18px;"></div>
         <div class="filtros-linha" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px;">
           <select id="pmFLocal" onchange="renderPrimeiroMes()"><option value="">Local: todos</option><option>Loja</option><option>Casa Cabana</option><option>Cozinha Central</option></select>
@@ -1006,7 +1006,7 @@ window.MARCA_ATIVA = 'jornada';
         </details>
         <div class="panel-card" style="overflow-x:auto;">
           <table class="tb-base">
-            <thead><tr><th>Colaborador</th><th>Loja · local</th><th>Respondeu em</th><th>Chegada no time</th><th>Segurança no trabalho</th><th>Como é tratado(a)</th><th>Se vê no Cabana</th><th>Gerente (ponto de 30 dias)</th></tr></thead>
+            <thead><tr><th>Colaborador</th><th>Loja · local</th><th>Respondeu em</th><th>Chegada no time</th><th>Segurança no trabalho</th><th>Como é tratado(a)</th><th>Se vê no Cabana</th><th>Gerente (feedback de 15 dias)</th></tr></thead>
             <tbody id="pmBody"></tbody>
           </table>
         </div>
@@ -1084,7 +1084,7 @@ window.MARCA_ATIVA = 'jornada';
 
       <div class="panel-card" style="padding:22px; margin-bottom:20px;">
         <h4 style="font-family:var(--display); font-weight:400; font-size:16px; margin:0 0 8px;">Início da Jornada nas lojas</h4>
-        <p style="font-size:13px; color:var(--ink-soft); margin:0 0 12px;">Para quem foi admitido antes desta data, os prazos do checklist, das trilhas e do ponto de 30 dias contam a partir dela. Assim ninguém é cobrado por prazo que venceu antes de a Jornada existir.</p>
+        <p style="font-size:13px; color:var(--ink-soft); margin:0 0 12px;">Para quem foi admitido antes desta data, os prazos do checklist, das trilhas e dos feedbacks contam a partir dela. Assim ninguém é cobrado por prazo que venceu antes de a Jornada existir.</p>
         <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:22px;">
           <input type="date" id="inicioJornadaInput" value="2026-11-11" style="max-width:200px;">
           <button class="new-btn" onclick="salvarInicioJornada()">Salvar data</button>
@@ -5546,7 +5546,8 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
      Ver contrato do projeto pra contexto completo. Motivo/Detalhamento do desligamento só aparece
      aqui (Nivel Admin) — nunca nas visões de Coordenador/Gerente de Operações na Home. */
   let desligamentosCache = [];
-  let checkins30Cache = [];
+  let checkins30Cache = [];   // feedback do dia 15 (coleção checkins30, nome mantido)
+  let checkins45Cache = [];   // feedback do dia 45 (coleção checkins45)
 
   function iniciarDesligamentos(){
     onSnapshot(collection(db, 'desligamentos'), (snapshot) => {
@@ -5561,7 +5562,12 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
       renderCheckin30Relatorio();
       if (window.renderPrimeiroMes) window.renderPrimeiroMes();
       renderDesligamentos();
-    }, (err) => console.error('Erro ao carregar check-ins de 30 dias:', err));
+    }, (err) => console.error('Erro ao carregar pontos de 15 dias:', err));
+    onSnapshot(collection(db, 'checkins45'), (snapshot) => {
+      checkins45Cache = snapshot.docs.map(d => ({ cpf: d.id, ...d.data() }));
+      renderCheckin30Relatorio();
+      if (window.renderIndicadoresSeAberto) window.renderIndicadoresSeAberto();
+    }, (err) => console.error('Erro ao carregar pontos de 45 dias:', err));
   }
 
   function formatarDataHora(ts){
@@ -5725,7 +5731,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
       <tr id="${id}" class="det" style="display:none;"><td colspan="6"><div class="det-grid">
         <div><h5>Detalhamento do gestor</h5><p>${aEsc(d.Detalhamento || '—').replace(/\n/g, '<br>')}</p></div>
         <div><h5>Contexto</h5><p>Quem decidiu: <b>${A_INI_ROT[d._ini]}</b><br>Cargo: ${aEsc(d.Cargo || '—')}<br>Registrado por: ${aEsc(d.RegistradoPorNome || d.RegistradoPor || '—')}</p></div>
-        <div><h5>Ponto de 30 dias</h5>${c30 ? `<p>${aFarolDots(c30)} &nbsp;${aChipPot(c30.Potencial)}</p>${c30.PotencialJustificativa ? `<p class="muted">${aEsc(c30.PotencialJustificativa)}</p>` : ''}<p>${aEsc(c30.ResumoFeedback || '')}</p>` : '<p class="muted">A pessoa saiu sem ponto de 30 dias registrado.</p>'}</div>
+        <div><h5>Feedback de 15 dias</h5>${c30 ? `<p>${aFarolDots(c30)} &nbsp;${aChipPot(c30.Potencial)}</p>${c30.PotencialJustificativa ? `<p class="muted">${aEsc(c30.PotencialJustificativa)}</p>` : ''}<p>${aEsc(c30.ResumoFeedback || '')}</p>` : '<p class="muted">A pessoa saiu sem feedback de 30 dias registrado.</p>'}</div>
       </div></td></tr>`;
     }).join('') : `<tr><td colspan="6" style="text-align:center; color:var(--ink-soft); padding:28px;">${todos.length ? 'Nenhum parecer com esses filtros.' : 'Nenhum parecer de desligamento registrado ainda.'}</td></tr>`;
 
@@ -5735,7 +5741,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
 
   window.exportarDesligamentosCSV = function(){
     if (!ultimoDesligamentosCache) { alert('Ainda não há dados pra exportar.'); return; }
-    const reg = [['Colaborador', 'CPF', 'Cargo', 'Loja', 'Regional', 'Motivo', 'Quem decidiu', 'Tempo de casa (dias)', 'Detalhamento', 'Ponto de 30 dias: potencial', 'Farol integração', 'Farol aprendizado', 'Farol comportamento', 'Registrado por', 'Registrado em']];
+    const reg = [['Colaborador', 'CPF', 'Cargo', 'Loja', 'Regional', 'Motivo', 'Quem decidiu', 'Tempo de casa (dias)', 'Detalhamento', 'Feedback de 15 dias: potencial', 'Farol integração', 'Farol aprendizado', 'Farol comportamento', 'Registrado por', 'Registrado em']];
     ultimoDesligamentosCache.registrados.forEach(d => {
       const c = d._chk || {};
       reg.push([d.Nome || d.cpf, d.cpf, d.Cargo || '', d.Loja || '', d.Regional || '', d.Motivo || '', A_INI_ROT[d._ini] || '', d._tempo === null ? '' : d._tempo, d.Detalhamento || '',
@@ -5751,13 +5757,14 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
   /* ================== INDICADORES DA JORNADA (só Admin) ==================
      Três páginas no formato de painel: visão geral, integração, desligamentos e tendência.
      Tudo calculado no navegador a partir do que o painel já carrega (cadastro, trilhas, checklist,
-     ponto de 30 dias, "Seu 1º mês" e pareceres). Nenhum dado é gravado. */
+     feedback de 30 dias, "Seu 1º mês" e pareceres). Nenhum dado é gravado. */
   const IJ_DIA = 86400000;
   const IJ_BLOCOS = [
     { id: 'antes', prazo: 1, itens: ['a1', 'a2', 'a3', 'a4', 'a5', 'a6'] },
     { id: 'dia1', prazo: 3, itens: ['b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7'], auto: { b3: 'trilhas' } },
     { id: 'semana', prazo: 8, itens: ['c1', 'c2'] },
-    { id: 'd30', prazo: 35, itens: ['d1'] }   // o item "respondeu o Seu 1º mês" não deixa o checklist atrasado
+    { id: 'd30', prazo: 25, itens: ['d1'] },   // conversa de 15 dias (o item automático do colaborador não deixa atrasado)
+    { id: 'd45', prazo: 55, itens: ['e1'] }    // conversa de 45 dias
   ];
   const IJ_COR = { ink: '#121A14', mut: '#575F56', sub: '#6B7269', bd: '#E9E6DF', br: '#00630F', brs: '#E8F2E5', ac: '#FF5D31', aci: '#C23A12', pos: '#17762A', neg: '#C2321A', amb: '#D89840', s3: '#3F73B5', prev: '#A3A8A0', trk: '#EFEDE7' };
   const IJ_MOTIVOS_INICIATIVA = { colaborador: 'Colaborador', empresa: 'Empresa', fim_contrato: 'Fim de contrato', outro: 'Outro' };
@@ -5798,7 +5805,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
 
   function iniciarIndicadores(){
     if (ijIniciado) return; ijIniciado = true;
-    onSnapshot(doc(db, 'configuracoes', 'jornada'), snap => { if (snap.exists() && snap.data().Inicio) ijInicio = snap.data().Inicio; const inp = document.getElementById('inicioJornadaInput'); if (inp && document.activeElement !== inp) inp.value = ijInicio; renderIndicadores(); }, () => {});
+    onSnapshot(doc(db, 'configuracoes', 'jornada'), snap => { if (snap.exists() && snap.data().Inicio) ijInicio = snap.data().Inicio; const inp = document.getElementById('inicioJornadaInput'); if (inp && document.activeElement !== inp) inp.value = ijInicio; renderIndicadores(); if (window.renderCheckin30Relatorio) window.renderCheckin30Relatorio(); }, () => {});
     onSnapshot(collection(db, 'checklistIntegracao'), snap => {
       ijChecklist = {}; snap.docs.forEach(d => { const x = d.data(); ijChecklist[x.Cpf || d.id] = x.Itens || {}; });
       renderIndicadores();
@@ -5806,6 +5813,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     ['ijFPeriodo', 'ijFRegional', 'ijFLocal', 'ijFLoja'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', renderIndicadores); });
     setInterval(() => { if (document.getElementById('tab-indicadores').classList.contains('on')) renderIndicadores(); }, 60000);
   }
+  window.renderIndicadoresSeAberto = function(){ try { renderIndicadores(); } catch (e) {} };
   window.abrirIndicadores = function(el){ goTab('indicadores', el); iniciarIndicadores(); renderIndicadores(); };
   window.ijIrPagina = function(i){ ijPagina = i; document.querySelectorAll('#tab-indicadores .ij-tab').forEach((t, k) => t.classList.toggle('on', k === i)); document.querySelectorAll('#tab-indicadores .ij-pg').forEach((p, k) => p.style.display = k === i ? 'grid' : 'none'); };
   window.ijFiltrarLoja = function(loja){ const s = document.getElementById('ijFLoja'); if (s) { s.value = (ijChave(s.value) === ijChave(loja) ? '' : ijNomeLoja(loja)); renderIndicadores(); } };
@@ -5826,7 +5834,8 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     const LJ = c => ijNomeLoja(c.Loja);   // nome de loja padronizado para agrupar e mostrar
     const obrig = cursosCache.filter(cu => cu.Obrigatorio === true && (cu.Status || 'publicado') === 'publicado');
     const prog = {}; progressoCache.forEach(p => { if (p && p.Cpf && p.CursoId) (prog[p.Cpf] = prog[p.Cpf] || {})[p.CursoId] = p; });
-    const c30 = {}; checkins30Cache.forEach(x => { c30[x.cpf] = x; });
+    const c30 = {}; checkins30Cache.forEach(x => { c30[x.cpf] = x; });   // feedback de 15 dias
+    const c45 = {}; (typeof checkins45Cache !== 'undefined' ? checkins45Cache : []).forEach(x => { c45[x.cpf] = x; });   // feedback de 45 dias
     const desl = {}; desligamentosCache.forEach(x => { desl[x.cpf] = x; });
     const pm = {}; primeiroMesCache.forEach(x => { pm[x.cpf] = x; });
     const porCpf = {}; colaboradoresCache.forEach(c => { porCpf[c.cpf] = c; });
@@ -5868,11 +5877,14 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     const linhas = integ.map(c => {
       const d = ijDias(c), dp = ijDiasPrazo(c), tr = trilhas(c), ck = ijLider(c) ? null : checklist(c, tr);
       const reg = c30[c.cpf] || null;
-      const p30 = ijLoja(c) && d > 35 && ijAntesInicio(c) <= 30 && Date.now() > (new Date(ijInicio + 'T00:00:00').getTime() || 0) ? (reg ? 'feito' : 'pendente') : null;
+      // feedbacks dos dias 15 e 45 (todos os locais): só entram depois do prazo (dia + 10) e se a pessoa não tinha passado do dia no início da Jornada
+      const iniOk = Date.now() > (new Date(ijInicio + 'T00:00:00').getTime() || 0);
+      const pts = [15, 45].map(m => (iniOk && d > m + 10 && ijAntesInicio(c) <= m) ? { m, feito: !!(m === 45 ? c45 : c30)[c.cpf], atraso: d - (m + 10) } : null).filter(Boolean);
+      const p30 = pts.length ? (pts.some(x => !x.feito) ? 'pendente' : 'feito') : null;
       const temTrilha = obrig.some(cu => ijPodeVer(cu, c));
       const trSt = !temTrilha ? null : tr.ok ? (tr.ate7 ? 'ok_prazo' : 'ok_fora') : (dp !== null && dp > 7 ? 'atrasada' : 'andamento');
       const ckSt = !ck ? null : ijAntesInicio(c) > 30 ? 'na' : ck.emAtraso ? 'atrasado' : ck.devido ? 'em_dia' : 'andamento';
-      return { c, d, dp, tr, ck, p30, trSt, ckSt, p30Atraso: p30 === 'pendente' ? d - 35 : 0 };
+      return { c, d, dp, tr, ck, p30, pts, trSt, ckSt, p30Atraso: Math.max(0, ...pts.filter(x => !x.feito).map(x => x.atraso)), p30Marcos: pts.filter(x => !x.feito).map(x => x.m) };
     });
     // admitidos no período (para trilhas até o 7º dia, funil, desligamentos)
     const admPeriodo = base.filter(c => { const a = ijData(c.Admissao); return a && a.getTime() >= inicio && a.getTime() <= agora; });
@@ -5887,8 +5899,8 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     // indicadores gerais
     const ckBase = linhas.filter(l => l.ck && l.ck.devido);   // só quem já tem etapa com prazo vencido
     const ckNoPrazo = ckBase.filter(l => !l.ck.emAtraso).length;
-    const p30Base = linhas.filter(l => l.p30);
-    const p30Feitos = p30Base.filter(l => l.p30 === 'feito').length;
+    const p30Base = linhas.flatMap(l => l.pts);   // cada ponto vencido conta uma vez
+    const p30Feitos = p30Base.filter(x => x.feito).length;
     const t7Base = admPeriodo.filter(c => c.Status !== 'inativo' && ijDiasPrazo(c) > 7);
     // trilhas concluídas, sem olhar prazo, de quem está em integração
     const comTrilha = linhas.filter(l => obrig.some(cu => ijPodeVer(cu, l.c)));
@@ -5900,7 +5912,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     const pegaLoja = n => { const k = ijChave(n); return (lojas[k] = lojas[k] || { loja: ijNomeLoja(n), regional: '', ck: [0, 0], t7: [0, 0], p30: [0, 0], par: [0, 0] }); };
     linhas.forEach(l => { if (!ijLoja(l.c) || !l.c.Loja) return; const L = pegaLoja(l.c.Loja); L.regional = ijNomeLoja(l.c.Regional) || L.regional;
       if (l.ck && l.ck.devido) { L.ck[1]++; if (!l.ck.emAtraso) L.ck[0]++; }
-      if (l.p30) { L.p30[1]++; if (l.p30 === 'feito') L.p30[0]++; } });
+      l.pts.forEach(x => { L.p30[1]++; if (x.feito) L.p30[0]++; }); });
     t7Base.forEach(c => { if (!ijLoja(c) || !c.Loja) return; const L = pegaLoja(c.Loja); L.t7[1]++; if (trilhas(c).ate7) L.t7[0]++; });
     comTrilha.forEach(l => { if (!ijLoja(l.c) || !l.c.Loja) return; const L = pegaLoja(l.c.Loja); L.cc = L.cc || [0, 0]; L.cc[1]++; if (l.tr.ok) L.cc[0]++; });
     desligParecer.forEach(c => { if (!c.Loja) return; const L = pegaLoja(c.Loja); L.par[1]++; if (desl[c.cpf]) L.par[0]++; });
@@ -5914,7 +5926,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
       .sort((a, b) => b.pct - a.pct || b.n - a.n);
     const det = {};
     linhas.forEach(l => { const nm = ijNomeLoja(l.c.Loja) || l.c.Local || 'Sem loja', k = ijChave(nm); const D = det[k] = det[k] || { loja: nm, regional: ijNomeLoja(l.c.Regional), pessoas: [], tr: { ok_prazo: 0, ok_fora: 0, andamento: 0, atrasada: 0 }, ck: { em_dia: 0, atrasado: 0 }, p30: { feito: 0, pendente: 0 }, par: 0 };
-      D.pessoas.push(l); if (l.trSt) D.tr[l.trSt]++; if (l.ckSt === 'em_dia' || l.ckSt === 'atrasado') D.ck[l.ckSt]++; if (l.p30) D.p30[l.p30]++; });
+      D.pessoas.push(l); if (l.trSt) D.tr[l.trSt]++; if (l.ckSt === 'em_dia' || l.ckSt === 'atrasado') D.ck[l.ckSt]++; l.pts.forEach(x => D.p30[x.feito ? 'feito' : 'pendente']++); });
     parecerPend.forEach(c => { const nm = ijNomeLoja(c.Loja) || 'Sem loja', k = ijChave(nm); const D = det[k] = det[k] || { loja: nm, regional: ijNomeLoja(c.Regional), pessoas: [], tr: { ok_prazo: 0, ok_fora: 0, andamento: 0, atrasada: 0 }, ck: { em_dia: 0, atrasado: 0 }, p30: { feito: 0, pendente: 0 }, par: 0 }; D.par++; });
     const detalheLojas = Object.values(det).map(D => {
       const atrasos = D.tr.atrasada + D.ck.atrasado + D.p30.pendente + D.par;
@@ -5923,7 +5935,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
       const temVencido = D.pessoas.some(l => (l.ck && l.ck.devido) || l.p30 || (l.dp !== null && l.dp > 7)) || D.par > 0;
       return { ...D, atrasos, indice: Lr ? Lr.indice : null, status: atrasos ? 'fora' : temVencido ? 'em_dia' : 'aguardando' };
     }).sort((a, b) => b.atrasos - a.atrasos || a.loja.localeCompare(b.loja, 'pt-BR'));
-    const itensMedia = [['checklist no prazo', ijPct(ckNoPrazo, ckBase.length)], ['trilhas até o 7º dia', ijPct(t7Ok, t7Base.length)], ['ponto de 30 dias', ijPct(p30Feitos, p30Base.length)],
+    const itensMedia = [['checklist no prazo', ijPct(ckNoPrazo, ckBase.length)], ['trilhas até o 7º dia', ijPct(t7Ok, t7Base.length)], ['feedbacks', ijPct(p30Feitos, p30Base.length)],
       ['parecer em dia', ijPct(desligParecer.filter(c => desl[c.cpf]).length, desligParecer.length)]].filter(x => x[1] !== null).sort((a, b) => a[1] - b[1]);
 
     // pendências por gestor
@@ -5931,7 +5943,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     const pegaGes = c => { const k = c.CpfGestor || 'sem'; const g = porCpf[c.CpfGestor];
       return (ges[k] = ges[k] || { cpf: k, nome: g ? g.Nome : (c.Gestor || 'Sem gestor no cadastro'), loja: ijNomeLoja(g ? g.Loja : c.Loja), ck: [0, 0], p30: [0, 0], par: [0, 0], pessoas: [] }); };
     linhas.forEach(l => { if (l.ck && l.ck.emAtraso) { const g = pegaGes(l.c); g.ck[0]++; g.ck[1] = Math.max(g.ck[1], l.ck.atraso); g.pessoas.push([l.c, 'Checklist atrasado há ' + l.ck.atraso + ' dias']); }
-      if (l.p30 === 'pendente') { const g = pegaGes(l.c); g.p30[0]++; g.p30[1] = Math.max(g.p30[1], l.p30Atraso); g.pessoas.push([l.c, 'Ponto de 30 dias atrasado há ' + l.p30Atraso + ' dias']); } });
+      if (l.p30 === 'pendente') { const g = pegaGes(l.c); g.p30[0]++; g.p30[1] = Math.max(g.p30[1], l.p30Atraso); g.pessoas.push([l.c, 'Feedback de ' + l.p30Marcos.join(' e ') + ' dias atrasado há ' + l.p30Atraso + ' dias']); } });
     parecerPend.forEach(c => { const g = pegaGes(c); const d = Math.floor((agora - ijData(c.InativadoEm)) / IJ_DIA); g.par[0]++; g.par[1] = Math.max(g.par[1], d); g.pessoas.push([c, 'Parecer de desligamento esperando há ' + d + ' dias']); });
     const listaGes = Object.values(ges).map(g => ({ ...g, max: Math.max(g.ck[1], g.p30[1], g.par[1]) })).sort((a, b) => b.max - a.max);
 
@@ -5967,7 +5979,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     deslig90.forEach(c => { const p = desl[c.cpf]; const i = p && p.Iniciativa ? (IJ_MOTIVOS_INICIATIVA[p.Iniciativa] || 'Outro') : 'Sem parecer'; inic[i] = (inic[i] || 0) + 1;
       const m = p && p.Motivo ? p.Motivo : 'Sem parecer'; mot[m] = (mot[m] || 0) + 1;
       const d = (ijData(c.InativadoEm) - ijData(c.Admissao)) / IJ_DIA; tempo[d <= 30 ? 0 : d <= 60 ? 1 : 2]++; });
-    // alertas do ponto de 30 dias x desligamento até o 90º dia (todos que tiveram o ponto registrado, dentro dos filtros)
+    // alertas do feedback de 30 dias x desligamento até o 90º dia (todos que tiveram o ponto registrado, dentro dos filtros)
     const comPonto = base.filter(c => c30[c.cpf]);
     const saiu90 = c => { if (c.Status !== 'inativo') return false; const a = ijData(c.Admissao), t = ijData(c.InativadoEm); return a && t && (t - a) / IJ_DIA <= 90; };
     const grpA = comPonto.filter(c => alertaGestor(c30[c.cpf])), grpS = comPonto.filter(c => !alertaGestor(c30[c.cpf]));
@@ -6011,7 +6023,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
         ${ijKpi('Lojas em conformidade', R.listaLojas.length ? ijFmtPct(ijPct(R.lojasConf, R.listaLojas.length)) : '—', R.listaLojas.length ? `${R.lojasConf} de ${R.listaLojas.length} lojas com índice de 80% ou mais` : 'nenhum prazo venceu ainda')}
         ${ijKpi('Trilhas concluídas', ijFmtPct(ijPct(R.concl, R.comTrilha.length)), `${R.concl} de ${R.comTrilha.length} em integração · ${R.linhas.filter(l => l.trSt === 'ok_prazo').length} no prazo`)}
         ${ijKpi('Checklists no prazo', ijFmtPct(ijPct(R.ckNoPrazo, R.ckBase.length)), R.ckBase.length ? `${R.ckNoPrazo} de ${R.ckBase.length} pessoas com etapa vencida` : 'nenhuma etapa venceu ainda')}
-        ${ijKpi('Pontos de 30 dias registrados', ijFmtPct(ijPct(R.p30Feitos, R.p30Base.length)), R.p30Base.length ? `${R.p30Feitos} de ${R.p30Base.length} conversas com prazo vencido` : 'nenhuma conversa venceu ainda')}
+        ${ijKpi('Feedbacks registrados', ijFmtPct(ijPct(R.p30Feitos, R.p30Base.length)), R.p30Base.length ? `${R.p30Feitos} de ${R.p30Base.length} feedbacks de 15 e 45 dias com prazo vencido` : 'nenhum feedback venceu ainda')}
         ${ijKpi('Pareceres pendentes', R.parecerPend.length, R.parecerPend.length ? 'selecione para ver a lista' : 'nenhum desligamento sem parecer', R.parecerPend.length ? C.aci : '', R.parecerPend.length ? "ijLista('pareceres')" : '')}
       </div>
       <div class="ij-g3">
@@ -6023,13 +6035,13 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
             : (R.conclLojas.length ? `<div class="ij-vs" style="margin:0 0 6px;">Nenhum prazo venceu ainda. Enquanto isso: lojas com menos trilhas concluídas</div>` + R.conclLojas.slice().reverse().map((L, i) => ijBarra(L.loja, L.pct, i === 0 ? C.ac : C.prev, `${L.n}/${L.t}`, `ijFiltrarLoja('${ijEsc(L.loja).replace(/'/g, "\\'")}')`)).join('') : ijVazio('Ainda não há lojas com dados no período.'))}</div>
           ${pior ? `<div class="ij-ins">O item com menor resultado é <b>${pior[0]} (${ijFmtPct(pior[1])})</b>.</div>` : ''}</div>
         <div class="ij-v"><div class="ij-vt">Pendências por gestor</div><div class="ij-vs">Itens em atraso, ordenados pelo atraso mais antigo · selecione para ver as pessoas</div>
-          <div class="ij-rol">${R.listaGes.length ? `<table class="ij-tb"><tr><th>Gestor · loja</th><th>Checklist</th><th>Ponto 30 dias</th><th>Parecer</th><th class="num">Mais antigo</th></tr>
+          <div class="ij-rol">${R.listaGes.length ? `<table class="ij-tb"><tr><th>Gestor · loja</th><th>Checklist</th><th>Feedbacks</th><th>Parecer</th><th class="num">Mais antigo</th></tr>
             ${R.listaGes.map((g, i) => `<tr role="button" tabindex="0" onclick="ijLista('gestor',${i})" style="cursor:pointer"><td><b>${ijEsc(ijNomeCurto(g.nome))}</b> <span class="ij-mut">· ${ijEsc(g.loja)}</span></td><td>${ijTag(g.ck[0], g.ck[1])}</td><td>${ijTag(g.p30[0], g.p30[1])}</td><td>${ijTag(g.par[0], g.par[1])}</td><td class="num"><b>${g.max} dias</b></td></tr>`).join('')}</table>`
             : ijVazio('Nenhuma pendência em atraso.')}</div></div>
       </div>`;
     // ===== página 2 =====
     const f0 = R.fases[0] || 0;
-    const nomesF = ['Fase 1 · Gente Boa chegou', 'Fase 2 · Gente Boa na rotina', 'Fase 3 · Já faz parte', 'Fase 4 · Virou Cabana'];
+    const nomesF = ['Fase 1 · Gente Boa chegou', 'Fase 2 · Gente Boa na rotina', 'Fase 3 · Já faz parte', 'Fase 4 · Virou Cabaneiro'];
     const perda = [0, 1, 2].map(i => [i, (R.fases[i] || 0) - (R.fases[i + 1] || 0)]).sort((a, b) => b[1] - a[1])[0];
     const divs = R.percep.filter(x => x.div);
     document.getElementById('ijP2').innerHTML = `
@@ -6041,13 +6053,13 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
           ${ijKpi('Sem avanço na fase 1 há +14 dias', R.semAvanco.length, R.semAvanco.length ? 'selecione para ver a lista' : 'ninguém parado', R.semAvanco.length ? C.aci : '', R.semAvanco.length ? "ijLista('semavanco')" : '')}
         </div>
         ${f0 && perda && perda[1] > 0 ? `<div class="ij-ins">A maior redução ocorre <b>entre as fases ${perda[0] + 1} e ${perda[0] + 2}</b> (${perda[1]} pessoas).</div>` : ''}</div>
-      <div class="ij-v"><div class="ij-vt">Percepção do gestor e do colaborador</div><div class="ij-vs">Casos com divergência entre o ponto de 30 dias e o "Seu 1º mês"</div>
+      <div class="ij-v"><div class="ij-vt">Percepção do gestor e do colaborador</div><div class="ij-vs">Casos com divergência entre o feedback de 15 dias e "Seus primeiros 15 dias"</div>
         <div class="ij-rol">${divs.length ? `<table class="ij-tb"><tr><th>Colaborador · loja</th><th>Gestor</th><th>Colaborador</th><th>Permanência</th></tr>${divs.map(x => `<tr><td><b>${ijEsc(ijNomeCurto(x.c.Nome))}</b> <span class="ij-mut">· ${ijEsc(ijNomeLoja(x.c.Loja) || x.c.Local || '')}</span></td>
           <td>${ijDot(x.g && x.g.Integracao)}${ijDot(x.g && x.g.Treinamento)}${ijDot(x.g && x.g.Comportamento)}</td><td>${ijDot(x.r.Chegada)}${ijDot(x.r.Seguranca)}${ijDot(x.r.Tratamento)}</td>
           <td><span class="ij-tag ${x.r.Futuro === 'nao' ? 'neg' : x.r.Futuro === 'talvez' ? 'amb' : 'ok'}">${{ sim: 'Sim', talvez: 'Talvez', nao: 'Não' }[x.r.Futuro] || '—'}</span></td></tr>`).join('')}</table>
           <div class="ij-leg">Gestor: integração, aprendizado, comportamento · Colaborador: chegada, segurança, tratamento</div>` : ijVazio('Nenhuma divergência entre gestor e colaborador no período.')}</div></div>
       <div class="ij-k4">
-        ${ijKpi('Respostas ao "Seu 1º mês"', R.respPm.length, `de ${R.elegPm.length} elegíveis (${ijFmtPct(ijPct(R.respPm.length, R.elegPm.length))})`)}
+        ${ijKpi('Respostas de "Seus primeiros 15 dias"', R.respPm.length, `de ${R.elegPm.length} elegíveis (${ijFmtPct(ijPct(R.respPm.length, R.elegPm.length))})`)}
         ${ijKpi('Casos com divergência', divs.length, 'requerem análise do DHO', divs.length ? C.aci : '')}
         ${ijKpi('Colaboradores com alerta', R.comAlerta.length, 'farol vermelho, dúvida sobre o potencial ou intenção "não"', R.comAlerta.length ? C.aci : '', R.comAlerta.length ? "ijLista('alerta')" : '')}
         ${ijKpi('Pesquisa de 45 dias confirmada', ijFmtPct(ijPct(R.eleg45.filter(c => c.Pesquisa45Respondida).length, R.eleg45.length)), `${R.eleg45.filter(c => c.Pesquisa45Respondida).length} de ${R.eleg45.length} elegíveis`)}
@@ -6068,10 +6080,10 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
         <div class="ij-rol">${motivos.length ? motivos.map(([m, n], i) => ijBarra(m, n / motivos[0][1] * 100, i === 0 ? C.br : C.prev, n)).join('') : ijVazio('Sem desligamentos no período.')}</div></div>
       <div class="ij-v"><div class="ij-vt">Tempo de casa no desligamento</div><div class="ij-vs">Até o 90º dia</div>
         ${tot90 ? ['Até 30 dias', '31 a 60 dias', '61 a 90 dias'].map((t, i) => ijBarra(t, R.tempo[i] / tot90 * 100, i === 0 ? C.br : C.prev, R.tempo[i])).join('') + `<div class="ij-ins">${Math.round(R.tempo[0] / tot90 * 100)}% dos desligamentos ocorrem nos primeiros 30 dias.</div>` : ijVazio('Sem desligamentos no período.')}</div>
-      <div class="ij-v"><div class="ij-vt">Alertas do 30º dia e desligamentos</div><div class="ij-vs">Taxa de desligamento até o 90º dia</div>
+      <div class="ij-v"><div class="ij-vt">Alertas do 15º dia e desligamentos</div><div class="ij-vs">Taxa de desligamento até o 90º dia</div>
         <div class="ij-cmp"><div><div class="ij-kl">Com alerta</div><div class="ij-big" style="color:${C.aci}">${ijFmtPct(tA)}</div><div class="ij-kc">${R.grpA.filter(R.saiu90).length} de ${R.grpA.length}</div></div>
         <div><div class="ij-kl">Sem alerta</div><div class="ij-big">${ijFmtPct(tS)}</div><div class="ij-kc">${R.grpS.filter(R.saiu90).length} de ${R.grpS.length}</div></div></div>
-        <div class="ij-ins">${poucos ? 'Ainda há poucos pontos de 30 dias registrados para uma comparação confiável. O número fica mais firme com o tempo.' : (tA === null || tS === null ? 'Comparação disponível quando os dois grupos tiverem casos.' : (tS > 0 && tA >= tS * 1.2) ? `Taxa <b>${(tA / tS).toFixed(1).replace('.', ',')} vezes maior</b> com alerta. Recomenda-se contato do DHO após o registro.` : (tS === 0 && tA > 0) ? 'Só houve desligamentos entre quem teve alerta. Recomenda-se contato do DHO após o registro.' : 'Sem diferença relevante entre os dois grupos no período.')}</div></div>
+        <div class="ij-ins">${poucos ? 'Ainda há poucos feedbacks de 15 dias registrados para uma comparação confiável. O número fica mais firme com o tempo.' : (tA === null || tS === null ? 'Comparação disponível quando os dois grupos tiverem casos.' : (tS > 0 && tA >= tS * 1.2) ? `Taxa <b>${(tA / tS).toFixed(1).replace('.', ',')} vezes maior</b> com alerta. Recomenda-se contato do DHO após o registro.` : (tS === 0 && tA > 0) ? 'Só houve desligamentos entre quem teve alerta. Recomenda-se contato do DHO após o registro.' : 'Sem diferença relevante entre os dois grupos no período.')}</div></div>
       <div class="ij-v" style="grid-column:1 / 4"><div class="ij-vt">Evolução mensal</div><div class="ij-vs">Admitidos em cada mês: checklists concluídos no prazo e trilhas concluídas até o 7º dia</div>
         <svg viewBox="0 0 980 220" width="100%" height="210" role="img" aria-label="Evolução mensal">
           ${[0, 25, 50, 75, 100].map(v => `<line x1="60" x2="820" y1="${190 - v * 1.6}" y2="${190 - v * 1.6}" stroke="${C.bd}"/><text x="52" y="${194 - v * 1.6}" text-anchor="end" class="ij-ax">${v}%</text>`).join('')}
@@ -6093,12 +6105,12 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     document.getElementById('ijP4').innerHTML = `
       <div class="ij-k3" style="margin:0;">
         ${ijKpi('Lojas em dia', emDia, `com prazo vencido e tudo feito · ${R.detalheLojas.filter(D => D.status === 'aguardando').length} ainda dentro do prazo`)}
-        ${ijKpi('Lojas com algo fora do prazo', R.detalheLojas.filter(D => D.status === 'fora').length, 'trilha, checklist, ponto de 30 dias ou parecer atrasado', R.detalheLojas.some(D => D.status === 'fora') ? C.aci : '')}
+        ${ijKpi('Lojas com algo fora do prazo', R.detalheLojas.filter(D => D.status === 'fora').length, 'trilha, checklist, feedback ou parecer atrasado', R.detalheLojas.some(D => D.status === 'fora') ? C.aci : '')}
         ${ijKpi('Trilhas concluídas no prazo', R.linhas.filter(l => l.trSt === 'ok_prazo').length, `${R.linhas.filter(l => l.trSt === 'ok_fora').length} concluídas fora do prazo · ${R.linhas.filter(l => l.trSt === 'atrasada').length} atrasadas`)}
       </div>
       <div class="ij-v"><div class="ij-vt">Detalhe por loja</div><div class="ij-vs">Lojas com algo fora do prazo primeiro · selecione a loja para ver cada pessoa</div>
         <div class="ij-leg" style="margin:0 0 10px;">${Object.keys(TR_COR).map(k => `<span><i style="background:${TR_COR[k]}"></i>Trilhas ${TR_ROT[k]}</span>`).join('')}</div>
-        <div class="ij-rol" style="max-height:none;">${R.detalheLojas.length ? `<table class="ij-tb"><tr><th>Loja</th><th>Situação</th><th class="num">Em integração</th><th>Trilhas</th><th>Checklist</th><th>Ponto de 30 dias</th><th class="num">Pareceres pendentes</th><th class="num">Índice</th></tr>
+        <div class="ij-rol" style="max-height:none;">${R.detalheLojas.length ? `<table class="ij-tb"><tr><th>Loja</th><th>Situação</th><th class="num">Em integração</th><th>Trilhas</th><th>Checklist</th><th>Feedbacks</th><th class="num">Pareceres pendentes</th><th class="num">Índice</th></tr>
           ${R.detalheLojas.map((D, i) => `<tr role="button" tabindex="0" onclick="ijLista('loja',${i})" style="cursor:pointer">
             <td><b>${ijEsc(D.loja)}</b><br><span class="ij-mut">${ijEsc(D.regional)}</span></td>
             <td><span class="ij-tag ${D.status === 'fora' ? 'neg' : D.status === 'em_dia' ? 'ok' : 'cinza'}">${D.status === 'fora' ? 'Fora do prazo' : D.status === 'em_dia' ? 'Em dia' : 'Dentro do prazo'}</span></td>
@@ -6122,9 +6134,9 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
       const TRT = { ok_prazo: 'Concluídas no prazo', ok_fora: 'Concluídas fora do prazo', andamento: 'No prazo, a fazer', atrasada: 'Atrasadas' };
       const CKT = { em_dia: 'Em dia', atrasado: 'Atrasado', andamento: 'Começando', na: 'Não se aplica' };
       titulo = D.loja;
-      const cab = ['Nome', 'Cargo', 'Dias de casa', 'Trilhas', 'Checklist', 'Ponto de 30 dias'];
+      const cab = ['Nome', 'Cargo', 'Dias de casa', 'Trilhas', 'Checklist', 'Feedbacks'];
       linhas = D.pessoas.sort((a, b) => (b.trSt === 'atrasada') - (a.trSt === 'atrasada') || b.d - a.d)
-        .map(l => [ijNomeCurto(l.c.Nome), l.c.Cargo || '', String(l.d), TRT[l.trSt] || '—', CKT[l.ckSt] || '—', l.p30 === 'feito' ? 'Registrado' : l.p30 === 'pendente' ? 'Atrasado há ' + l.p30Atraso + ' dias' : '—']);
+        .map(l => [ijNomeCurto(l.c.Nome), l.c.Cargo || '', String(l.d), TRT[l.trSt] || '—', CKT[l.ckSt] || '—', l.p30 === 'feito' ? 'Registrados' : l.p30 === 'pendente' ? 'Feedback de ' + l.p30Marcos.join(' e ') + ' dias atrasado há ' + l.p30Atraso + ' dias' : '—']);
       const m = document.getElementById('ijModal');
       document.getElementById('ijModalTitulo').textContent = titulo;
       document.getElementById('ijModalCorpo').innerHTML = linhas.length ? `<table class="ij-tb"><tr>${cab.map(h => `<th>${h}</th>`).join('')}</tr>${linhas.map(l => `<tr>${l.map((x, k) => `<td${/Atrasad/.test(x) ? ` style="color:${IJ_COR.aci};font-weight:600"` : ''}>${ijEsc(x)}</td>`).join('')}</tr>`).join('')}</table>` : ijVazio('Ninguém em integração nesta loja.');
@@ -6150,13 +6162,13 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
   window.ijExportar = function(){
     const R = ijUltimo; if (!R) return;
     baixarXLSXMultiAba([
-      { nome: 'Lojas', linhas: [['Loja', 'Regional', 'Índice de conformidade', 'Trilhas concluídas', 'Checklist no prazo', 'Trilhas até o 7º dia', 'Ponto de 30 dias', 'Parecer em dia'], ...R.listaLojas.map(L => [L.loja, L.regional, L.indice + '%', ...['cc', 'ck', 't7', 'p30', 'par'].map(k => L.det[k] === null || L.det[k] === undefined ? '' : L.det[k] + '%')])] },
-      { nome: 'Detalhe por loja', linhas: [['Loja', 'Regional', 'Situação', 'Em integração', 'Trilhas concluídas no prazo', 'Trilhas concluídas fora do prazo', 'Trilhas a fazer no prazo', 'Trilhas atrasadas', 'Checklists em dia', 'Checklists atrasados', 'Pontos de 30 dias registrados', 'Pontos de 30 dias atrasados', 'Pareceres pendentes', 'Índice'],
+      { nome: 'Lojas', linhas: [['Loja', 'Regional', 'Índice de conformidade', 'Trilhas concluídas', 'Checklist no prazo', 'Trilhas até o 7º dia', 'Feedbacks', 'Parecer em dia'], ...R.listaLojas.map(L => [L.loja, L.regional, L.indice + '%', ...['cc', 'ck', 't7', 'p30', 'par'].map(k => L.det[k] === null || L.det[k] === undefined ? '' : L.det[k] + '%')])] },
+      { nome: 'Detalhe por loja', linhas: [['Loja', 'Regional', 'Situação', 'Em integração', 'Trilhas concluídas no prazo', 'Trilhas concluídas fora do prazo', 'Trilhas a fazer no prazo', 'Trilhas atrasadas', 'Checklists em dia', 'Checklists atrasados', 'Pontos de 30 dias registrados', 'Feedbacks atrasados', 'Pareceres pendentes', 'Índice'],
         ...R.detalheLojas.map(D => [D.loja, D.regional, D.status === 'fora' ? 'Fora do prazo' : D.status === 'em_dia' ? 'Em dia' : 'Dentro do prazo', D.pessoas.length, D.tr.ok_prazo, D.tr.ok_fora, D.tr.andamento, D.tr.atrasada, D.ck.em_dia, D.ck.atrasado, D.p30.feito, D.p30.pendente, D.par, D.indice === null ? '' : D.indice + '%'])] },
-      { nome: 'Pessoas', linhas: [['Nome', 'Loja', 'Cargo', 'Dias de casa', 'Trilhas', 'Checklist', 'Ponto de 30 dias'], ...R.linhas.map(l => [ijNomeCurto(l.c.Nome), l.c.Loja || l.c.Local || '', l.c.Cargo || '', l.d,
+      { nome: 'Pessoas', linhas: [['Nome', 'Loja', 'Cargo', 'Dias de casa', 'Trilhas', 'Checklist', 'Feedbacks'], ...R.linhas.map(l => [ijNomeCurto(l.c.Nome), l.c.Loja || l.c.Local || '', l.c.Cargo || '', l.d,
         { ok_prazo: 'Concluídas no prazo', ok_fora: 'Concluídas fora do prazo', andamento: 'No prazo, a fazer', atrasada: 'Atrasadas' }[l.trSt] || '', { em_dia: 'Em dia', atrasado: 'Atrasado', andamento: 'Começando', na: 'Não se aplica' }[l.ckSt] || '', l.p30 === 'feito' ? 'Registrado' : l.p30 === 'pendente' ? 'Atrasado' : ''])] },
-      { nome: 'Pendências por gestor', linhas: [['Gestor', 'Loja', 'Checklists atrasados', 'Atraso (dias)', 'Pontos de 30 dias atrasados', 'Atraso (dias)', 'Pareceres pendentes', 'Atraso (dias)'], ...R.listaGes.map(g => [ijNomeCurto(g.nome), g.loja, g.ck[0], g.ck[1], g.p30[0], g.p30[1], g.par[0], g.par[1]])] },
-      { nome: 'Fases', linhas: [['Fase', 'Pessoas'], ['Gente Boa chegou', R.fases[0]], ['Gente Boa na rotina', R.fases[1]], ['Já faz parte', R.fases[2]], ['Virou Cabana', R.fases[3]]] },
+      { nome: 'Pendências por gestor', linhas: [['Gestor', 'Loja', 'Checklists atrasados', 'Atraso (dias)', 'Feedbacks atrasados', 'Atraso (dias)', 'Pareceres pendentes', 'Atraso (dias)'], ...R.listaGes.map(g => [ijNomeCurto(g.nome), g.loja, g.ck[0], g.ck[1], g.p30[0], g.p30[1], g.par[0], g.par[1]])] },
+      { nome: 'Fases', linhas: [['Fase', 'Pessoas'], ['Gente Boa chegou', R.fases[0]], ['Gente Boa na rotina', R.fases[1]], ['Já faz parte', R.fases[2]], ['Virou Cabaneiro', R.fases[3]]] },
       { nome: 'Desligamentos até 90 dias', linhas: [['Motivo', 'Quantidade'], ...Object.entries(R.mot)] },
       { nome: 'Evolução mensal', linhas: [['Mês', 'Admissões', 'Desligamentos até 90 dias', 'Checklists no prazo', 'Trilhas até o 7º dia'], ...R.evol.map(e => [e.rot, e.adm, e.desl, e.ck === null ? '' : e.ck + '%', e.t7 === null ? '' : e.t7 + '%'])] }
     ], `indicadores-jornada-${new Date().toISOString().slice(0, 10)}.xlsx`);
@@ -6206,14 +6218,14 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     const pendentes = colaboradoresCache.filter(c => {
       if (c.Status === 'inativo' || !c.Admissao || !c.Admissao.toDate || c.Nivel === 'Admin') return false;
       const d = Math.floor((agora - c.Admissao.toDate()) / 86400000);
-      return d >= 28 && d <= 75 && !feitos.has(c.cpf);
+      return d >= 15 && d <= 44 && !feitos.has(c.cpf);
     });
     document.getElementById('pmPendentes').innerHTML = renderListaCard(pendentes.map(c => linhaSimples(c.Nome || c.cpf, [c.Loja, c.Local || 'Loja'].filter(Boolean).join(' · '))), 'Ninguém aguardando agora.', 12);
     document.getElementById('pmPendCnt').textContent = pendentes.length;
     const comAl = lista.filter(r => r._alertas.length).length, comDiv = lista.filter(r => r._div).length;
     document.getElementById('pmKpis').innerHTML =
       aKpi('Respostas', lista.length, lista.length !== todos.length ? `de ${todos.length} no total` : 'pessoas que responderam') +
-      aKpi('Aguardando', pendentes.length, 'entre 28 e 75 dias de casa', pendentes.length ? '#D89840' : '') +
+      aKpi('Aguardando', pendentes.length, 'entre 15 e 44 dias de casa', pendentes.length ? '#D89840' : '') +
       aKpi('Com sinal de alerta', comAl, '"difícil" ou dúvida sobre continuar', comAl ? '#B4462B' : '') +
       aKpi('Gerente e pessoa discordam', comDiv, 'olhar com atenção', comDiv ? '#B4462B' : '');
     const cel = v => `<span class="farol-cel"><i class="fdot" style="background:${A_COR[v] || '#CFC8B8'}"></i>${PM_ROT[v] || '—'}</span>`;
@@ -6233,12 +6245,12 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     ultimoPrimeiroMes.lista.forEach(r => linhas.push([r.Nome, r.cpf, r.Loja, r.Local, r._em ? r._em.toLocaleDateString('pt-BR') : '', PM_ROT[r.Chegada] || '', PM_ROT[r.Seguranca] || '', PM_ROT[r.Tratamento] || '', PM_FUT[r.Futuro] || '', r.Comentario || '',
       r._g ? (A_FAROL_ROT[r._g.Integracao] || '') : '', r._g ? (A_FAROL_ROT[r._g.Treinamento] || '') : '', r._g ? (A_FAROL_ROT[r._g.Comportamento] || '') : '', r._g ? (A_POT_ROT[r._g.Potencial] || '') : '', r._div ? 'Sim' : 'Não']));
     const pend = [['Colaborador', 'Loja', 'Local'], ...ultimoPrimeiroMes.pendentes.map(c => [c.Nome || c.cpf, c.Loja || '', c.Local || 'Loja'])];
-    baixarXLSXMultiAba([{ nome: '1º mês', linhas }, { nome: 'Aguardando', linhas: pend }], `primeiro-mes-colaborador-${new Date().toISOString().slice(0, 10)}.xlsx`);
+    baixarXLSXMultiAba([{ nome: 'Primeiros 15 dias', linhas }, { nome: 'Aguardando', linhas: pend }], `primeiro-mes-colaborador-${new Date().toISOString().slice(0, 10)}.xlsx`);
   };
 
   /* ================== PONTO DE CHECAGEM · 30 DIAS ================== */
   function aChkEnriquecidos(){
-    return checkins30Cache.map(c => {
+    return [...checkins30Cache.map(c => ({ ...c, _marco: 15 })), ...checkins45Cache.map(c => ({ ...c, _marco: 45 }))].map(c => {
       const col = colaboradoresCache.find(x => x.cpf === c.cpf);
       const reg = aTs(c.RegistradoEm);
       const conv = c.DataConversa ? new Date(c.DataConversa + 'T12:00:00') : reg;
@@ -6275,22 +6287,25 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     ).sort((a, b) => (b._reg || b._conv || 0) - (a._reg || a._conv || 0));
     const filtrado = lista.length !== todos.length;
 
-    // pendentes: só Loja, entre 30 e 90 dias de casa, sem ponto registrado
+    // pendentes: todos os locais, ponto de 15 (a partir do dia 15) e de 45 (a partir do dia 45), até o dia 90; prazo de 10 dias cada
     const agora = new Date();
-    const feitos = new Set(checkins30Cache.map(c => c.cpf));
-    const pendentes = colaboradoresCache.filter(c => {
-      if (c.Status === 'inativo' || (c.Local || 'Loja') !== 'Loja' || !c.Admissao || !c.Admissao.toDate) return false;
-      const dias = Math.floor((agora - c.Admissao.toDate()) / 86400000);
-      return dias >= 30 && dias <= 90 && !feitos.has(c.cpf);
-    }).map(c => ({ ...c, diasAtraso: Math.floor((agora - c.Admissao.toDate()) / 86400000) - 30 })).sort((a, b) => b.diasAtraso - a.diasAtraso);
+    const feitosM = { 15: new Set(checkins30Cache.map(c => c.cpf)), 45: new Set(checkins45Cache.map(c => c.cpf)) };
+    const iniJ = new Date((typeof ijInicio !== 'undefined' ? ijInicio : '2026-11-11') + 'T00:00:00');
+    const pendentes = [];
+    colaboradoresCache.forEach(c => {
+      if (c.Status === 'inativo' || c.Nivel === 'Admin' || !c.Admissao || !c.Admissao.toDate) return;
+      const adm = c.Admissao.toDate(), dias = Math.floor((agora - adm) / 86400000), antes = Math.max(0, Math.floor((iniJ - adm) / 86400000));
+      [15, 45].forEach(m => { if (dias >= m && dias <= 90 && antes <= m && !feitosM[m].has(c.cpf)) pendentes.push({ ...c, _marco: m, diasAtraso: dias - (m + 10) }); });
+    });
+    pendentes.sort((a, b) => b.diasAtraso - a.diasAtraso);
     document.getElementById('relCheckin30Pendentes').innerHTML = renderListaCard(
-      pendentes.map(c => linhaSimples(c.Nome || c.cpf, `${[c.Loja, c.Regional].filter(Boolean).join(' · ')} · ${c.diasAtraso > 0 ? c.diasAtraso + ' dia(s) de atraso' : 'no prazo'}`)),
-      'Nenhum ponto de 30 dias aguardando agora.', 12);
+      pendentes.map(c => linhaSimples(c.Nome || c.cpf, `${[c.Loja || c.Local, c.Regional].filter(Boolean).join(' · ')} · feedback de ${c._marco} dias · ${c.diasAtraso > 0 ? c.diasAtraso + ' dia(s) de atraso' : 'no prazo'}`)),
+      'Nenhum feedback aguardando agora.', 12);
     document.getElementById('chkPendCnt').textContent = pendentes.length;
 
     const visto = aVisto('chk');
     const novos = todos.filter(c => c._reg && c._reg.getTime() > visto);
-    aBannerNovos(document.getElementById('chkNovosBanner'), 'chk', novos, 'ponto de 30 dias novo', 'pontos de 30 dias novos', c => c.Nome || c.cpf);
+    aBannerNovos(document.getElementById('chkNovosBanner'), 'chk', novos, 'feedback novo', 'feedbacks novos', c => c.Nome || c.cpf);
     aBadgeAba('checkin30', novos.length);
 
     // KPIs
@@ -6298,8 +6313,8 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     const pos = comPot.filter(c => c.Potencial === 'sim' || c.Potencial === 'sim_desenvolver').length;
     const comAlerta = lista.filter(c => c._alertas.length).length;
     document.getElementById('chkKpis').innerHTML =
-      aKpi('Pontos registrados' + (filtrado ? ' (filtrados)' : ''), lista.length, filtrado ? `de ${todos.length} no total` : 'conversas de 30 dias') +
-      aKpi('Aguardando', pendentes.length, 'entre 30 e 90 dias de casa', pendentes.length ? '#D89840' : '') +
+      aKpi('Feedbacks registrados' + (filtrado ? ' (filtrados)' : ''), lista.length, filtrado ? `de ${todos.length} no total` : 'conversas de 15 e 45 dias') +
+      aKpi('Aguardando', pendentes.length, 'feedbacks de 15 ou 45 dias sem registro', pendentes.length ? '#D89840' : '') +
       aKpi('Potencial positivo', comPot.length ? Math.round((pos / comPot.length) * 100) + '%' : '—', comPot.length ? `${pos} de ${comPot.length} respostas` : 'sem respostas ainda', '#4F9C40') +
       aKpi('Com sinal de alerta', comAlerta, 'preocupante ou dúvida sobre continuar', comAlerta ? '#B4462B' : '');
 
@@ -6314,7 +6329,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
       <td>${aEmpilhada(['sim', 'sim_desenvolver', 'duvida', 'nao'].map(v => ({ n: arr.filter(c => c.Potencial === v).length, cor: A_POT_COR[v], rot: A_POT_ROT[v] })), tot => Math.round((arr.filter(c => c.Potencial === 'sim' || c.Potencial === 'sim_desenvolver').length / tot) * 100) + '% positivo')}</td></tr>`).join('');
     document.getElementById('chkComparativo').innerHTML = linhasG.length
       ? `<table class="tb-base tb-comp"><thead><tr><th>${campo}</th><th>Pontos</th><th>Integração</th><th>Aprendizado</th><th>Comportamento</th><th>Potencial de continuar</th></tr></thead><tbody>${grupoRows}</tbody></table>`
-      : `<small class="hint" style="color:var(--ink-soft); font-size:12.5px;">Sem pontos de 30 dias com os filtros atuais.</small>`;
+      : `<small class="hint" style="color:var(--ink-soft); font-size:12.5px;">Sem feedbacks com os filtros atuais.</small>`;
 
     // potencial + alertas
     document.getElementById('chkPotencial').innerHTML = aBarras(['sim', 'sim_desenvolver', 'duvida', 'nao'].map(v => [A_POT_ROT[v], lista.filter(c => c.Potencial === v).length]).filter(p => p[1] > 0), comPot.length, rot => A_POT_COR[Object.keys(A_POT_ROT).find(k => A_POT_ROT[k] === rot)])
@@ -6329,10 +6344,10 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     const campoFarol = (c, k, nomeCom) => `<span class="farol-cel"><i class="fdot" style="background:${A_COR[c[k]] || '#CFC8B8'}"></i>${A_FAROL_ROT[c[k]] || '—'}</span>`;
     corpo.innerHTML = lista.length ? lista.map(c => {
       const eNovo = c._reg && c._reg.getTime() > visto;
-      const id = 'detc_' + c.cpf;
+      const id = 'detc_' + c.cpf + '_' + c._marco;
       const cm = (k, rot, com) => `<div><h5>${rot} <span class="farol-cel"><i class="fdot" style="background:${A_COR[c[k]] || '#CFC8B8'}"></i>${A_FAROL_ROT[c[k]] || '—'}</span></h5><p class="${com ? '' : 'muted'}">${com ? aEsc(com) : 'Sem comentário.'}</p></div>`;
       return `<tr class="lin ${eNovo ? 'novo' : ''}" onclick="toggleDet('${id}')">
-        <td><b>${aEsc(c.Nome || c.cpf)}</b>${eNovo ? ' <span class="pill-novo">Novo</span>' : ''}<br><small class="muted">${aEsc(c.Cargo || '—')}${c.DiasDeCasa != null ? ' · ' + c.DiasDeCasa + ' dias de casa' : ''}</small></td>
+        <td><b>${aEsc(c.Nome || c.cpf)}</b> <span class="cnt-pill" title="Feedback">${c._marco} dias</span>${eNovo ? ' <span class="pill-novo">Novo</span>' : ''}<br><small class="muted">${aEsc(c.Cargo || '—')}${c.DiasDeCasa != null ? ' · ' + c.DiasDeCasa + ' dias de casa' : ''}</small></td>
         <td>${aEsc(c.Loja || '—')}<br><small class="muted">${aEsc(c.Regional || '—')}</small></td>
         <td>${aData(c._conv)}</td><td>${campoFarol(c, 'Integracao')}</td><td>${campoFarol(c, 'Treinamento')}</td><td>${campoFarol(c, 'Comportamento')}</td><td>${aChipPot(c.Potencial)}</td></tr>
       <tr id="${id}" class="det" style="display:none;"><td colspan="7"><div class="det-grid">
@@ -6340,9 +6355,9 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
         ${cm('Treinamento', 'Aprendizado inicial', c.ComentarioAprendizado)}
         ${cm('Comportamento', 'Comportamento e postura', c.ComentarioComportamento)}
         <div><h5>Potencial de continuar no Cabana</h5><p>${aChipPot(c.Potencial)}</p>${c.PotencialJustificativa ? `<p>${aEsc(c.PotencialJustificativa)}</p>` : ''}</div>
-        <div style="grid-column:span 2;"><h5>Resumo do feedback da conversa de 30 dias</h5><p>${aEsc(c.ResumoFeedback || '—').replace(/\n/g, '<br>')}</p>${c.ProximosPassos ? `<h5>Combinados</h5><p>${aEsc(c.ProximosPassos)}</p>` : ''}${c.OQueEstaAcontecendo ? `<h5>O que estava acontecendo (formulário anterior)</h5><p>${aEsc(c.OQueEstaAcontecendo)}</p>` : ''}<p class="muted">Registrado por ${aEsc(c.RegistradoPorNome || c.RegistradoPor || '—')} em ${aData(c._reg)}</p></div>
+        <div style="grid-column:span 2;"><h5>Resumo do feedback da conversa de ${c._marco} dias</h5><p>${aEsc(c.ResumoFeedback || '—').replace(/\n/g, '<br>')}</p>${c.ProximosPassos ? `<h5>Combinados</h5><p>${aEsc(c.ProximosPassos)}</p>` : ''}${c.OQueEstaAcontecendo ? `<h5>O que estava acontecendo (formulário anterior)</h5><p>${aEsc(c.OQueEstaAcontecendo)}</p>` : ''}<p class="muted">Registrado por ${aEsc(c.RegistradoPorNome || c.RegistradoPor || '—')} em ${aData(c._reg)}</p></div>
       </div></td></tr>`;
-    }).join('') : `<tr><td colspan="7" style="text-align:center; color:var(--ink-soft); padding:28px;">${todos.length ? 'Nenhum registro com esses filtros.' : 'Nenhum ponto de 30 dias registrado ainda.'}</td></tr>`;
+    }).join('') : `<tr><td colspan="7" style="text-align:center; color:var(--ink-soft); padding:28px;">${todos.length ? 'Nenhum registro com esses filtros.' : 'Nenhum feedback registrado ainda.'}</td></tr>`;
 
     ultimoCheckin30Cache = { pendentes, registrados: lista, linhasG, campo };
   }
@@ -6351,16 +6366,16 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
   window.exportarCheckin30CSV = function(){
     if (!ultimoCheckin30Cache) { alert('Ainda não há dados pra exportar.'); return; }
     const R = A_FAROL_ROT;
-    const reg = [['Colaborador', 'CPF', 'Cargo', 'Loja', 'Regional', 'Dias de casa', 'Data da conversa', 'Integração', 'Comentário integração', 'Aprendizado inicial', 'Comentário aprendizado', 'Comportamento', 'Comentário comportamento', 'Potencial de continuar', 'Justificativa do potencial', 'Resumo do feedback', 'Combinados', 'Registrado por', 'Registrado em']];
-    ultimoCheckin30Cache.registrados.forEach(c => reg.push([c.Nome || c.cpf, c.cpf, c.Cargo || '', c.Loja || '', c.Regional || '', c.DiasDeCasa == null ? '' : c.DiasDeCasa, aData(c._conv), R[c.Integracao] || '', c.ComentarioIntegracao || '', R[c.Treinamento] || '', c.ComentarioAprendizado || '', R[c.Comportamento] || '', c.ComentarioComportamento || '', A_POT_ROT[c.Potencial] || '', c.PotencialJustificativa || '', c.ResumoFeedback || '', c.ProximosPassos || '', c.RegistradoPorNome || c.RegistradoPor || '', aData(c._reg)]));
+    const reg = [['Colaborador', 'Feedback (dias)', 'CPF', 'Cargo', 'Loja', 'Regional', 'Dias de casa', 'Data da conversa', 'Integração', 'Comentário integração', 'Aprendizado inicial', 'Comentário aprendizado', 'Comportamento', 'Comentário comportamento', 'Potencial de continuar', 'Justificativa do potencial', 'Resumo do feedback', 'Combinados', 'Registrado por', 'Registrado em']];
+    ultimoCheckin30Cache.registrados.forEach(c => reg.push([c.Nome || c.cpf, c._marco, c.cpf, c.Cargo || '', c.Loja || '', c.Regional || '', c.DiasDeCasa == null ? '' : c.DiasDeCasa, aData(c._conv), R[c.Integracao] || '', c.ComentarioIntegracao || '', R[c.Treinamento] || '', c.ComentarioAprendizado || '', R[c.Comportamento] || '', c.ComentarioComportamento || '', A_POT_ROT[c.Potencial] || '', c.PotencialJustificativa || '', c.ResumoFeedback || '', c.ProximosPassos || '', c.RegistradoPorNome || c.RegistradoPor || '', aData(c._reg)]));
     if (reg.length === 1) reg.push(['Nenhum registro com esses filtros.']);
     const cmp = [[ultimoCheckin30Cache.campo, 'Pontos', 'Integração: indo bem', 'Integração: atenção', 'Integração: preocupante', 'Aprendizado: indo bem', 'Aprendizado: atenção', 'Aprendizado: preocupante', 'Comportamento: indo bem', 'Comportamento: atenção', 'Comportamento: preocupante', 'Potencial: sim', 'Potencial: sim, com pontos a desenvolver', 'Potencial: dúvidas', 'Potencial: hoje não vejo']];
     ultimoCheckin30Cache.linhasG.forEach(([nome, arr]) => {
       const n = (k, v) => arr.filter(c => c[k] === v).length;
       cmp.push([nome, arr.length, n('Integracao', 'verde'), n('Integracao', 'amarelo'), n('Integracao', 'vermelho'), n('Treinamento', 'verde'), n('Treinamento', 'amarelo'), n('Treinamento', 'vermelho'), n('Comportamento', 'verde'), n('Comportamento', 'amarelo'), n('Comportamento', 'vermelho'), n('Potencial', 'sim'), n('Potencial', 'sim_desenvolver'), n('Potencial', 'duvida'), n('Potencial', 'nao')]);
     });
-    const pend = [['Colaborador', 'Loja', 'Regional', 'Dias de atraso'], ...(ultimoCheckin30Cache.pendentes.length ? ultimoCheckin30Cache.pendentes.map(c => [c.Nome || c.cpf, c.Loja || '', c.Regional || '', Math.max(0, c.diasAtraso)]) : [['Nenhum aguardando agora.', '', '', '']])];
-    baixarXLSXMultiAba([{ nome: 'Pontos de 30 dias', linhas: reg }, { nome: 'Comparativo', linhas: cmp }, { nome: 'Aguardando', linhas: pend }], `ponto-de-checagem-30-dias-${new Date().toISOString().slice(0, 10)}.xlsx`);
+    const pend = [['Colaborador', 'Loja', 'Regional', 'Dias de atraso'], ...(ultimoCheckin30Cache.pendentes.length ? ultimoCheckin30Cache.pendentes.map(c => [(c.Nome || c.cpf) + ' (ponto de ' + c._marco + ' dias)', c.Loja || '', c.Regional || '', Math.max(0, c.diasAtraso)]) : [['Nenhum aguardando agora.', '', '', '']])];
+    baixarXLSXMultiAba([{ nome: 'Feedbacks', linhas: reg }, { nome: 'Comparativo', linhas: cmp }, { nome: 'Aguardando', linhas: pend }], `pontos-de-checagem-${new Date().toISOString().slice(0, 10)}.xlsx`);
   };
 
   function renderBarras(grupos){
