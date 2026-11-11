@@ -7526,6 +7526,15 @@ function configurarGateConclusao(c){
         window.__cartaDados = dados;
         const b = document.getElementById('cartaBloco'); if (b) b.style.display = '';
         const tx = document.querySelector('#cartaBloco .carta-txt span'); if (tx) tx.textContent = 'Uma mensagem para você, com o seu time e os seus primeiros passos.';
+        // abre sozinha uma vez por pessoa (marca no cadastro e no navegador), se não houver outro aviso na tela
+        let vista = !!dados.CartaVistaEm; try { vista = vista || !!localStorage.getItem('jornada-carta-' + currentCpf); } catch (e) {}
+        if (!vista || window.__cartaSempre) setTimeout(async () => {
+          const ocupado = [...document.querySelectorAll('[id^="modal"]')].some(m => m.style.display === 'flex');
+          if (ocupado) return;
+          window.abrirCarta();
+          try { localStorage.setItem('jornada-carta-' + currentCpf, '1'); } catch (e) {}
+          try { await setDoc(doc(db, 'colaboradores', currentCpf), { CartaVistaEm: serverTimestamp() }, { merge: true }); } catch (e) {}
+        }, 1200);
         return;
       }
       const im = new Image();
