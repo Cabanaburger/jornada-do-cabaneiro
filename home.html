@@ -3445,29 +3445,40 @@ window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && S
   .pm2-rodape .btn-primary, .pm2-rodape .btn-secondary{ min-height:46px; padding:0 22px; border-radius:999px; }
   .pm2-rodape .btn-primary[disabled]{ opacity:.45; cursor:default; }
 
-  /* feedbacks e pareceres (coordenador e gerente de operações) */
-  .fr-caixa{ background:#fff; border-radius:22px; width:min(900px,96vw); max-height:90vh; display:flex; flex-direction:column; overflow:hidden; font-family:var(--font-sans, system-ui); }
-  .fr-topo{ display:flex; justify-content:space-between; align-items:center; padding:18px 22px; border-bottom:1px solid #E5E5EA; }
-  .fr-topo h3{ margin:0; font-size:20px; font-weight:700; } .fr-topo button{ border:0; background:#F2F2F7; width:34px; height:34px; border-radius:50%; cursor:pointer; }
-  .fr-filtros{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; padding:12px 22px; border-bottom:1px solid #E5E5EA; }
-  .fr-filtros select, .fr-filtros input{ border:1px solid #E5E5EA; border-radius:10px; padding:8px 10px; font:inherit; font-size:14px; }
+  /* tela de feedbacks: gestor x colaborador lado a lado */
+  .fr-abrir{ background:#00630F !important; color:#fff !important; border-radius:999px !important; padding:10px 18px !important; font-weight:700 !important; font-size:14px !important; border:0 !important; cursor:pointer; }
+  .fr-abrir:hover{ background:#004F0C !important; }
+  .fr-caixa{ background:#fff; border-radius:22px; width:min(1280px,96vw); max-height:92vh; display:flex; flex-direction:column; overflow:hidden; font-family:var(--font-sans, system-ui); }
+  .fr-topo{ display:flex; justify-content:space-between; align-items:center; padding:18px 24px; background:#00630F; color:#FAF4E9; }
+  .fr-topo h3{ margin:0; font-size:20px; font-weight:700; color:#FAF4E9 !important; font-family:var(--font-sans, system-ui) !important; } .fr-topo button{ border:0; background:rgba(255,255,255,.18); color:#fff; width:34px; height:34px; border-radius:50%; cursor:pointer; }
+  .fr-filtros{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; padding:12px 24px; border-bottom:1px solid #E5E5EA; background:#FAFAF7; }
+  .fr-filtros select, .fr-filtros input{ border:1px solid #D9D9DE; border-radius:10px; padding:8px 10px; font:inherit; font-size:14px; background:#fff; }
   .fr-filtros input{ flex:1; min-width:160px; }
-  .fr-abas{ display:flex; gap:4px; background:#F2F2F7; border-radius:999px; padding:3px; }
-  .fr-abas button{ border:0; background:none; border-radius:999px; padding:7px 14px; font:inherit; font-size:13.5px; font-weight:600; color:#3A3A3C; cursor:pointer; }
-  .fr-abas button.on{ background:#fff; color:#00630F; box-shadow:0 1px 3px rgba(0,0,0,.12); }
-  .fr-corpo{ overflow-y:auto; padding:14px 22px 22px; display:flex; flex-direction:column; gap:10px; }
-  .fr-pessoa{ border:1px solid #E5E5EA; border-radius:14px; padding:12px 14px; }
-  .fr-pessoa summary{ cursor:pointer; display:flex; gap:10px; align-items:baseline; flex-wrap:wrap; list-style:none; }
+  .fr-abas{ display:flex; gap:4px; background:#E8F2E5; border-radius:999px; padding:3px; }
+  .fr-abas button{ border:0; background:none; border-radius:999px; padding:8px 16px; font:inherit; font-size:13.5px; font-weight:700; color:#00630F; cursor:pointer; }
+  .fr-abas button.on{ background:#00630F; color:#fff; }
+  .fr-legenda{ display:flex; gap:16px; padding:10px 24px 0; font-size:12.5px; color:#3A3A3C; }
+  .fr-legenda i{ display:inline-block; width:12px; height:12px; border-radius:3px; margin-right:6px; vertical-align:-1px; } .fr-legenda i.g{ background:#E8F2E5; border:1px solid #9FCB93; } .fr-legenda i.c{ background:#FFF0E9; border:1px solid #FFB79E; }
+  .fr-corpo{ overflow-y:auto; padding:12px 24px 24px; display:flex; flex-direction:column; gap:10px; }
+  .fr-pessoa{ border:1px solid #E5E5EA; border-radius:16px; padding:12px 16px; background:#fff; }
+  .fr-pessoa summary{ cursor:pointer; display:flex; gap:10px; align-items:center; flex-wrap:wrap; list-style:none; font-size:15px; }
   .fr-pessoa summary span{ color:#6E6E73; font-size:13.5px; }
-  .fr-tags{ margin-left:auto; display:flex; gap:6px; } .fr-tags em{ font-style:normal; font-size:12px; font-weight:600; background:#EEF5EA; color:#00630F; border-radius:999px; padding:3px 9px; }
-  .fr-bloco{ margin-top:12px; padding-top:12px; border-top:1px solid #F2F2F7; } .fr-bloco.colab{ background:#FAF4E9; border-radius:12px; padding:12px; border-top:0; }
-  .fr-bloco h5{ margin:0 0 8px; font-size:14.5px; } .fr-bloco h5 small{ font-weight:400; color:#6E6E73; }
-  .fr-grade{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; font-size:13.5px; }
-  .fr-grade span{ display:block; color:#6E6E73; font-size:12px; } .fr-grade p{ margin:4px 0 0; color:#3A3A3C; font-size:12.5px; }
-  .fr-farol{ display:inline-flex !important; align-items:center; gap:6px; color:#1D1D1F !important; font-weight:600; font-size:13.5px !important; } .fr-farol i{ width:10px; height:10px; border-radius:50%; }
+  .fr-tags{ margin-left:auto; display:flex; gap:6px; } .fr-tags em{ font-style:normal; font-size:12px; font-weight:700; background:#00630F; color:#fff; border-radius:999px; padding:4px 10px; }
+  .fr-tags em.al{ background:#FF5D31; color:#fff; }
+  .fr-marco{ margin-top:14px; } .fr-marco h5{ margin:0 0 8px; font-size:15px; color:#00630F; display:flex; gap:10px; align-items:center; }
+  .fr-div{ font-size:12px; font-weight:700; color:#fff; background:#C2321A; border-radius:999px; padding:3px 10px; }
+  .fr-lado{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .fr-col{ border-radius:14px; padding:14px; } .fr-col.g{ background:#E8F2E5; } .fr-col.c{ background:#FFF0E9; }
+  .fr-col.vazio p{ margin:4px 0 0; color:#6E6E73; font-size:13.5px; }
+  .fr-col h6{ margin:0 0 10px; font-size:13.5px; font-weight:700; color:#1D1D1F; } .fr-col h6 small{ font-weight:400; color:#6E6E73; margin-left:4px; }
+  .fr-col dl, .fr-dl4{ display:grid; grid-template-columns:1fr 1fr; gap:10px 14px; margin:0; } .fr-dl4{ grid-template-columns:repeat(4,1fr); }
+  .fr-col dt, .fr-dl4 dt{ font-size:12px; color:#6E6E73; } .fr-col dd, .fr-dl4 dd{ margin:2px 0 0; font-size:13.5px; } .fr-col dd p{ margin:4px 0 0; font-size:12.5px; color:#3A3A3C; }
+  .fr-farol{ display:inline-flex; align-items:center; gap:6px; font-weight:700; color:var(--t, #1D1D1F); } .fr-farol i{ width:10px; height:10px; border-radius:50%; background:var(--c, #CFC8B8); }
   .fr-resumo{ margin:10px 0 0; font-size:13.5px; color:#3A3A3C; }
   .fr-par-cab{ display:flex; gap:10px; align-items:baseline; flex-wrap:wrap; margin-bottom:10px; } .fr-par-cab span{ color:#6E6E73; font-size:13.5px; }
-  @media (max-width:640px){ .fr-grade{ grid-template-columns:1fr 1fr; } }
+  @media (max-width:760px){ .fr-lado{ grid-template-columns:1fr; } .fr-dl4{ grid-template-columns:1fr 1fr; } }
+
+  #modalEquipe .fr-abrir{ margin-left:auto; }
 </style>
 </head>
 <body>
@@ -3885,9 +3896,10 @@ window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && S
 </div>
 
 <div id="modalEquipe" style="display:none; position:fixed; inset:0; background:rgba(30,26,20,0.6); backdrop-filter:blur(3px); align-items:center; justify-content:center; z-index:92;">
-  <div style="background:var(--paper); border-radius:22px; box-shadow:var(--shadow); width:min(720px,94vw); max-height:82vh; display:flex; flex-direction:column; overflow:hidden;">
-    <div style="padding:20px 24px; border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between;">
+  <div style="background:var(--paper); border-radius:22px; box-shadow:var(--shadow); width:min(1100px,96vw); max-height:88vh; display:flex; flex-direction:column; overflow:hidden;">
+    <div style="padding:20px 24px; border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; gap:12px;">
       <h3 style="margin:0; font-family:var(--display); font-weight:400;" data-i18n="minha_equipe_titulo">👥 Minha equipe</h3>
+      <button type="button" class="btn-primary fr-abrir" onclick="window.abrirFeedbacksEquipe()">Ver feedbacks</button>
       <button onclick="closeModal('modalEquipe')" style="background:none; border:none; font-size:18px; cursor:pointer; color:var(--ink-soft);">✕</button>
     </div>
     <div style="padding:16px 24px; overflow:auto;">
@@ -4112,14 +4124,14 @@ window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && S
 </div>
 
 <div id="modalJornadaRegional" style="display:none; position:fixed; inset:0; background:rgba(30,26,20,0.6); backdrop-filter:blur(3px); align-items:center; justify-content:center; z-index:92;">
-  <div style="background:var(--paper); border-radius:22px; box-shadow:var(--shadow); width:min(880px,94vw); max-height:88vh; display:flex; flex-direction:column; overflow:hidden;">
+  <div style="background:var(--paper); border-radius:22px; box-shadow:var(--shadow); width:min(1200px,96vw); max-height:88vh; display:flex; flex-direction:column; overflow:hidden;">
     <div style="padding:20px 24px; border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between;">
       <h3 id="jornadaRegionalTitulo" style="margin:0; font-family:var(--display); font-weight:400;"></h3>
       <button onclick="closeModal('modalJornadaRegional')" style="background:none; border:none; font-size:18px; cursor:pointer; color:var(--ink-soft);">✕</button>
     </div>
     <div style="padding:20px 24px; overflow-y:auto;">
       <p class="eq-intro" id="jornadaRegionalIntro"></p>
-      <div style="margin:-4px 0 14px;"><button type="button" class="btn-secondary" style="padding:9px 16px; font-size:13px;" onclick="window.abrirFeedbacksRegional()">Ver feedbacks e pareceres</button></div>
+      <div style="margin:-4px 0 14px;"><button type="button" class="btn-primary fr-abrir" onclick="window.abrirFeedbacksRegional()">Ver feedbacks e pareceres</button></div>
       <div id="jornadaResumoRegional"></div>
       <div id="jornadaListaRegional"><p class="jornada-vazio">Carregando…</p></div>
     </div>
@@ -4944,8 +4956,18 @@ function renderFasesOnboarding(){
         let subPm, acPm = '';
         if (pmOk) subPm = L('Respondido. Obrigado!', 'Respondido. ¡Gracias!');
         else if (!libPm) subPm = L('Libera em ' + dp(15 - dias), 'Se libera en ' + dp(15 - dias));
-        else { subPm = L('4 perguntas rápidas · seu gerente não vê', '4 preguntas rápidas · tu gerente no lo ve'); acPm = '<button class="fp-btn" onclick="window.abrirPrimeiroMes()">' + L('Responder', 'Responder') + '</button>'; }
+        else { subPm = L('4 perguntas rápidas', '4 preguntas rápidas'); acPm = '<button class="fp-btn" onclick="window.abrirPrimeiroMes(15)">' + L('Responder', 'Responder') + '</button>'; }
         h += '<div class="fp-linha ' + (pmOk ? 'ok' : '') + '">' + ico(pmOk, '2') + '<div class="fp-txt">' + L('Seus primeiros 15 dias', 'Tus primeros 15 días') + '<small>' + subPm + '</small></div><div class="fp-acoes">' + acPm + '</div></div>';
+      }
+      const r45c = !!(window.__pmResp && window.__pmResp[45]);
+      if (dias !== null && (dias <= 74 || r45c)) {
+        numPesq += 1;
+        const lib = dias >= 45;
+        let sub, ac = '';
+        if (r45c) sub = L('Respondido. Obrigado!', 'Respondido. ¡Gracias!');
+        else if (!lib) sub = L('Libera em ' + dp(45 - dias), 'Se libera en ' + dp(45 - dias));
+        else { sub = L('4 perguntas rápidas', '4 preguntas rápidas'); ac = '<button class="fp-btn" onclick="window.abrirPrimeiroMes(45)">' + L('Responder', 'Responder') + '</button>'; }
+        h += '<div class="fp-linha ' + (r45c ? 'ok' : '') + '">' + ico(r45c, String(numPesq - 1)) + '<div class="fp-txt">' + L('Seus 45 dias', 'Tus 45 días') + '<small>' + sub + '</small></div><div class="fp-acoes">' + ac + '</div></div>';
       }
       window.__numPesq = numPesq;
       h += linhaPesq(r45, lib45, 45, E.link45, dias === null ? 0 : 45 - dias);
@@ -5727,7 +5749,7 @@ function configurarGateConclusao(c){
     m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true'); m.setAttribute('aria-labelledby', 'pm2Titulo');
     m.style.cssText = 'display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:1000; align-items:center; justify-content:center; padding:16px;';
     m.innerHTML = `<div class="pm2">
-      <div class="pm2-topo"><span class="pm2-rot">${LL('Seus primeiros 15 dias', 'Tus primeros 15 días')}</span>
+      <div class="pm2-topo"><span class="pm2-rot">${pmMarco === 45 ? LL('Seus 45 dias', 'Tus 45 días') : LL('Seus primeiros 15 dias', 'Tus primeros 15 días')}</span>
         <button type="button" class="pm2-x" aria-label="${LL('Fechar', 'Cerrar')}" onclick="closeModal('modalPrimeiroMes')">✕</button>
         <div class="pm2-barra" aria-hidden="true"><i id="pm2Barra"></i></div></div>
       <div class="pm2-corpo" id="pm2Corpo" aria-live="polite"></div>
@@ -5741,8 +5763,8 @@ function configurarGateConclusao(c){
     barra.style.width = Math.round(Math.min(pmEtapa, 5) / 5 * 100) + '%';
     if (pmEtapa === 0) {
       corpo.innerHTML = `${M.esquilo ? `<img class="pm2-esq" src="${M.esquilo}" alt="">` : ''}
-        <h3 id="pm2Titulo">${LL('Como estão sendo seus primeiros dias', 'Cómo van tus primeros días')}${nome ? ', <span class="pm2-nome">' + nome + '</span>' : ''}?</h3>
-        <p>${LL('São 4 perguntas rápidas, uma de cada vez. Responda com sinceridade: o seu gerente não vê as respostas. Elas ficam com o DHO e com a liderança da sua regional.', 'Son 4 preguntas rápidas, una a la vez. Responde con sinceridad: tu gerente no ve las respuestas. Quedan con DHO y con el liderazgo de tu regional.')}</p>`;
+        <h3 id="pm2Titulo">${pmMarco === 45 ? LL('Como estão sendo seus 45 dias', 'Cómo van tus 45 días') : LL('Como estão sendo seus primeiros dias', 'Cómo van tus primeros días')}${nome ? ', <span class="pm2-nome">' + nome + '</span>' : ''}?</h3>
+        <p>${LL('São 4 perguntas rápidas, uma de cada vez. Responda com sinceridade: as respostas são lidas pelo seu gestor, pela liderança da regional e pelo DHO, para acompanhar a sua chegada e te apoiar.', 'Son 4 preguntas rápidas, una a la vez. Responde con sinceridad: las respuestas las leen tu gestor, el liderazgo de la regional y DHO, para acompañar tu llegada y apoyarte.')}</p>`;
       rod.innerHTML = `<button type="button" class="btn-secondary" onclick="closeModal('modalPrimeiroMes')">${LL('Agora não', 'Ahora no')}</button><button type="button" class="btn-primary" onclick="window.pmIr(1)">${LL('Começar', 'Empezar')}</button>`;
     } else if (pmEtapa <= 4) {
       const p = PM_PASSOS[pmEtapa - 1];
@@ -5773,28 +5795,39 @@ function configurarGateConclusao(c){
       <button type="button" class="btn-primary" onclick="window.abrirPrimeiroMes()">${LL('Responder', 'Responder')}</button>`;
     if (lc) alvo.insertBefore(c, lc); else alvo.appendChild(c);   // antes do cartão "Sua chegada": aparece logo no começo, também no celular
   }
+  // feedback do colaborador: dia 15 (do 15 ao 44) e dia 45 (do 45 ao 74)
+  let pmMarco = 15;
+  const PM_JANELA = { 15: [15, 44], 45: [45, 74] };
+  const colPm = m => m === 45 ? 'checkins45Colab' : 'checkins30Colab';
+  const campoPm = m => m === 45 ? 'Checkin45ColabEm' : 'Checkin30ColabEm';
   async function verificarPrimeiroMes(cpf, dados){
     try {
-      window.__pmRespondido = !!(dados && dados.Checkin30ColabEm);
+      window.__pmResp = { 15: !!(dados && dados.Checkin30ColabEm), 45: !!(dados && dados.Checkin45ColabEm) };
+      window.__pmRespondido = window.__pmResp[15];
       window.__pmAdm = dados && dados.Admissao && dados.Admissao.toDate ? dados.Admissao.toDate() : null;
-      if (!dados || dados.Status === 'inativo' || dados.Checkin30ColabEm || !dados.Admissao || !dados.Admissao.toDate) return;
+      if (!dados || dados.Status === 'inativo' || !dados.Admissao || !dados.Admissao.toDate) return;
       const d = Math.floor((Date.now() - dados.Admissao.toDate().getTime()) / 86400000);
-      if (d < 15 || d > 44) return;   // primeiros 15 dias: do dia 15 ao 44 (no 45 fica só a pesquisa de 45)
+      const m = [15, 45].find(x => d >= PM_JANELA[x][0] && d <= PM_JANELA[x][1] && !window.__pmResp[x]);
       pmDados = dados; pmCpf = cpf;
-      window.__pmJanela = true;
       if (window.renderFasesOnboarding) try { window.renderFasesOnboarding(); } catch (e) {}
-      // abre sozinho uma vez por dia, se não houver outro aviso na tela (o cartão continua lá para responder depois)
-      const hoje = new Date().toISOString().slice(0, 10), chave = 'jornada-1mes-' + cpf;
+      if (!m) return;
+      pmMarco = m;
+      // abre sozinho uma vez por dia, se não houver outro aviso na tela (o passo no cartão "Sua chegada" continua lá)
+      const hoje = new Date().toISOString().slice(0, 10), chave = 'jornada-1mes-' + cpf + '-' + m;
       let ultimo = ''; try { ultimo = localStorage.getItem(chave) || ''; } catch (e) {}
       if (ultimo !== hoje) setTimeout(() => {
-        const ocupado = [...document.querySelectorAll('[id^="modal"]')].some(m => m.style.display === 'flex');
-        if (ocupado || window.__pmRespondido) return;
+        const ocupado = [...document.querySelectorAll('[id^="modal"]')].some(x => x.style.display === 'flex');
+        if (ocupado || window.__pmResp[m]) return;
         try { localStorage.setItem(chave, hoje); } catch (e) {}
-        window.abrirPrimeiroMes();
+        window.abrirPrimeiroMes(m);
       }, 1800);
-    } catch (e) { console.error('1º mês:', e); }
+    } catch (e) { console.error('Feedback do colaborador:', e); }
   }
-  window.abrirPrimeiroMes = function(){ montarModalPrimeiroMes(); if (pmEtapa >= 6) pmEtapa = 0; pmDesenhar(); openModal('modalPrimeiroMes'); };
+  window.abrirPrimeiroMes = function(m){
+    if (m === 15 || m === 45) { if (m !== pmMarco) { pmRespostas = {}; pmEtapa = 0; } pmMarco = m; }
+    const ant = document.getElementById('modalPrimeiroMes'); if (ant) ant.remove();
+    montarModalPrimeiroMes(); if (pmEtapa >= 6) { pmEtapa = 0; pmRespostas = {}; } pmDesenhar(); openModal('modalPrimeiroMes');
+  };
   window.enviarPrimeiroMes = async function(){
     const erro = document.getElementById('pmErro');
     const r = {}; ['Chegada', 'Seguranca', 'Tratamento', 'Futuro'].forEach(k => { r[k] = pmRespostas[k] || ''; });
@@ -5803,14 +5836,15 @@ function configurarGateConclusao(c){
     const btn = document.getElementById('pmEnviar'); btn.disabled = true;
     try {
       const dd = pmDados || {}, adm = dd.Admissao && dd.Admissao.toDate ? dd.Admissao.toDate() : null;
-      await setDoc(doc(db, 'checkins30Colab', pmCpf), { Cpf: pmCpf, Nome: dd.Nome || '', Loja: dd.Loja || '', Regional: dd.Regional || '', Local: dd.Local || 'Loja', Cargo: dd.Cargo || '',
+      await setDoc(doc(db, colPm(pmMarco), pmCpf), { Cpf: pmCpf, Marco: pmMarco, Nome: dd.Nome || '', Loja: dd.Loja || '', Regional: dd.Regional || '', Local: dd.Local || 'Loja', Cargo: dd.Cargo || '',
         CpfGestor: dd.CpfGestor || '', DiasDeCasa: adm ? Math.floor((Date.now() - adm.getTime()) / 86400000) : null, ...r,
         Comentario: (document.getElementById('pmComentario').value || '').trim(), RespondidoEm: serverTimestamp(), Versao: 1 });
-      await setDoc(doc(db, 'colaboradores', pmCpf), { Checkin30ColabEm: serverTimestamp() }, { merge: true });
-      window.__pmRespondido = true; pmEtapa = 6; pmDesenhar();
+      await setDoc(doc(db, 'colaboradores', pmCpf), { [campoPm(pmMarco)]: serverTimestamp() }, { merge: true });
+      window.__pmResp = window.__pmResp || {}; window.__pmResp[pmMarco] = true; window.__pmRespondido = window.__pmResp[15];
+      pmEtapa = 6; pmDesenhar();
       if (window.renderFasesOnboarding) try { window.renderFasesOnboarding(); } catch (e) {}
     } catch (e) {
-      console.error('1º mês: erro ao salvar', e);
+      console.error('Feedback do colaborador: erro ao salvar', e);
       erro.textContent = LL('Não conseguimos enviar agora. Tente de novo em instantes.', 'No pudimos enviar ahora. Intenta de nuevo en un momento.'); erro.style.display = 'block';
     } finally { btn.disabled = false; }
   };
@@ -7133,9 +7167,10 @@ function configurarGateConclusao(c){
       { id: 'c2', t: 'Conversa de fechamento da semana', d: 'No fim da primeira semana, converse a sós com a pessoa: como ela se sentiu, o que está difícil e onde precisa de apoio.' } ] },
     { id: 'd30', titulo: '15 dias', sub: 'Primeira conversa de acompanhamento', prazo: 25, itens: [
       { id: 'd1', t: 'Conversa de 15 dias realizada', d: 'Conversa a sós com a pessoa para dar feedback sobre as duas primeiras semanas: o que está indo bem, o que melhorar e como ela se sente. O resumo é registrado no feedback, logo abaixo.' },
-      { id: 'd2', auto: 'primeiroMes', t: 'Colaborador respondeu "Seus primeiros 15 dias" na Jornada', d: 'Entre o dia 15 e o 44 de casa, a Jornada pede para a pessoa contar como estão sendo os primeiros dias. As respostas não aparecem para você: aqui você vê apenas se ela já respondeu. Se ainda não respondeu, lembre a pessoa.' } ] },
+      { id: 'd2', auto: 'primeiroMes', t: 'Colaborador respondeu "Seus primeiros 15 dias" na Jornada', d: 'Entre o dia 15 e o 44 de casa, a Jornada pede para a pessoa contar como estão sendo os primeiros dias. Você vê as respostas em Minha equipe, no botão Ver feedbacks, para comparar com o seu feedback. Se ainda não respondeu, lembre a pessoa.' } ] },
     { id: 'd45', titulo: '45 dias', sub: 'Segunda conversa de acompanhamento', prazo: 55, itens: [
-      { id: 'e1', t: 'Conversa de 45 dias realizada', d: 'Nova conversa a sós, com as mesmas perguntas da de 15 dias, para ver como a pessoa evoluiu. O resumo é registrado no feedback, logo abaixo.' } ] }
+      { id: 'e1', t: 'Conversa de 45 dias realizada', d: 'Nova conversa a sós, com as mesmas perguntas da de 15 dias, para ver como a pessoa evoluiu. O resumo é registrado no feedback, logo abaixo.' },
+      { id: 'e2', auto: 'colab45', t: 'Colaborador respondeu "Seus 45 dias" na Jornada', d: 'Entre o dia 45 e o 74 de casa, a Jornada pede para a pessoa contar como estão sendo os 45 dias, com as mesmas perguntas do dia 15. Você vê as respostas em Minha equipe, no botão Ver feedbacks.' } ] }
   ];
   window.CHECKLIST_BLOCOS = CHECKLIST_BLOCOS;
   window.__checklistCache = window.__checklistCache || {};
@@ -7186,9 +7221,9 @@ function configurarGateConclusao(c){
       let f = 0;
       let fObrig = 0, tObrig = 0;
       b.itens.forEach(it => {
-        const ok = (itens[it.id] && itens[it.id].feito) || (it.auto === 'trilhas' && trilhasOk) || (it.auto === 'primeiroMes' && !!c.Checkin30ColabEm);
+        const ok = (itens[it.id] && itens[it.id].feito) || (it.auto === 'trilhas' && trilhasOk) || (it.auto === 'primeiroMes' && !!c.Checkin30ColabEm) || (it.auto === 'colab45' && !!c.Checkin45ColabEm);
         if (ok) f++;
-        if (it.auto !== 'primeiroMes') { tObrig++; if (ok) fObrig++; }
+        if (it.auto !== 'primeiroMes' && it.auto !== 'colab45') { tObrig++; if (ok) fObrig++; }
       });
       const conta = diasAntesInicio(c) <= Math.min(b.prazo, 30);   // etapa vencida antes da Jornada, ou pessoa que já tinha mais de 30 dias, não é cobrada
       blocos[b.id] = { feitos: f, total: b.itens.length, atrasa: conta && fObrig < tObrig };
@@ -7240,9 +7275,9 @@ function configurarGateConclusao(c){
       h += `<div class="ck-bloco"><div class="ck-bloco-h"><div><b>${b.titulo}</b><small>${b.sub}</small></div><span class="ck-cont ${bl.feitos === bl.total ? 'ok' : atrasado ? 'atraso' : ''}">${bl.feitos === bl.total ? '✓ ' : ''}${bl.feitos}/${bl.total}${atrasado ? ' · atrasado' : ''}</span></div>`;
       b.itens.forEach(it => {
         const x = itens[it.id];
-        const auto = (it.auto === 'trilhas' && r.trilhasOk) || (it.auto === 'primeiroMes' && !!c.Checkin30ColabEm);
+        const auto = (it.auto === 'trilhas' && r.trilhasOk) || (it.auto === 'primeiroMes' && !!c.Checkin30ColabEm) || (it.auto === 'colab45' && !!c.Checkin45ColabEm);
         const feito = !!(x && x.feito) || auto;
-        const meta = auto ? '<span class="ck-auto">Automático</span>' : (feito && x && x.em ? `<span class="ck-meta">${dataCurta(x.em)}${x.por ? '<br>' + String(x.por).split(' ')[0] : ''}</span>` : (it.auto === 'trilhas' ? '<span class="ck-meta">marca sozinho quando<br>concluir na Jornada</span>' : it.auto === 'primeiroMes' ? '<span class="ck-meta">marca sozinho quando<br>a pessoa responder</span>' : ''));
+        const meta = auto ? '<span class="ck-auto">Automático</span>' : (feito && x && x.em ? `<span class="ck-meta">${dataCurta(x.em)}${x.por ? '<br>' + String(x.por).split(' ')[0] : ''}</span>` : (it.auto === 'trilhas' ? '<span class="ck-meta">marca sozinho quando<br>concluir na Jornada</span>' : (it.auto === 'primeiroMes' || it.auto === 'colab45') ? '<span class="ck-meta">marca sozinho quando<br>a pessoa responder</span>' : ''));
         const clicavel = ckEditavel && !auto;
         h += `<${clicavel ? 'button' : 'div'} class="ck-item ${feito ? 'feito' : ''} ${clicavel ? '' : 'somente'}" ${clicavel ? `onclick="window.alternarItemChecklist('${it.id}')"` : ''}><span class="ck-box">${feito ? '✓' : ''}</span><span class="ck-txt"><b class="ck-tit">${it.t}</b>${it.d ? `<span class="ck-det">${it.d}</span>` : ''}</span>${meta}</${clicavel ? 'button' : 'div'}>`;
       });
@@ -7403,7 +7438,7 @@ function configurarGateConclusao(c){
     const lista = falta.length
       ? `<h5>Trilhas que faltam</h5><ul class="eq-falta">${falta.map(f => `<li><span>${nomeTrilhaCurto(f.n)}</span><span class="eq-tag ${f.k}">${f.t}</span></li>`).join('')}</ul>`
       : (l.total ? `<h5>Trilhas</h5><p class="jornada-vazio" style="text-align:left; padding:6px 0 0;">Todas concluídas.</p>` : '');
-    const contou = x.c && x.c.Checkin30ColabEm ? `<p class="eq-contou">${LL('Já contou como estão sendo os primeiros 15 dias (as respostas não aparecem para você).', 'Ya contó cómo van sus primeros 15 días (las respuestas quedan con DHO).')}</p>` : '';
+    const contou = x.c && x.c.Checkin30ColabEm ? `<p class="eq-contou">${LL('Já contou como está sendo a chegada. Veja em Ver feedbacks.', 'Ya contó cómo van sus primeros 15 días (las respuestas quedan con DHO).')}</p>` : '';
     const linhaPonto = m => {
       const st = statusPontoM(x.c, m); if (!st) return '';
       const reg = cachePonto(m)[l.cpf], at = atrasoPonto(x.c, m);
@@ -7686,86 +7721,119 @@ function configurarGateConclusao(c){
     carregarJornadaRegional();
   };
 
-  // ===== feedbacks (15 e 45), versão do colaborador e pareceres, para coordenador e gerente de operações =====
+  // ===== tela de feedbacks: gestor x colaborador nos dias 15 e 45 (+ pareceres para coordenador e gerente de operações) =====
   const FR_FAROL = { verde: ['Indo bem', '#17762A'], amarelo: ['Atenção', '#D89840'], vermelho: ['Preocupante', '#C2321A'] };
   const FR_COLAB = { verde: ['Indo bem', '#17762A'], amarelo: ['Mais ou menos', '#D89840'], vermelho: ['Difícil', '#C2321A'] };
   const FR_POT = { sim: 'Sim, com certeza', sim_desenvolver: 'Sim, com pontos a desenvolver', duvida: 'Tenho dúvidas', nao: 'Hoje não vejo' };
-  const FR_FUT = { sim: 'Sim', talvez: 'Talvez', nao: 'Não' };
-  let frDados = null;
+  const FR_FUT = { sim: ['Sim', '#17762A'], talvez: ['Talvez', '#D89840'], nao: ['Não', '#C2321A'] };
+  let frDados = null, frModo = 'regional', frAbaAtual = 'fb';
   const frEsc = v => String(v == null ? '' : v).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
   function frMontarModal(){
-    if (document.getElementById('modalFeedbacksRegional')) return;
+    const ant = document.getElementById('modalFeedbacksRegional'); if (ant) ant.remove();
     const m = document.createElement('div'); m.id = 'modalFeedbacksRegional';
-    m.style.cssText = 'display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:95; align-items:center; justify-content:center; padding:16px;';
-    m.innerHTML = `<div class="fr-caixa"><div class="fr-topo"><h3>Feedbacks e pareceres</h3><button type="button" aria-label="Fechar" onclick="closeModal('modalFeedbacksRegional')">✕</button></div>
-      <div class="fr-filtros"><div class="fr-abas" role="tablist"><button type="button" class="on" data-aba="fb" onclick="window.frAba('fb')">Feedbacks</button><button type="button" data-aba="par" onclick="window.frAba('par')">Pareceres de desligamento</button></div>
-        <select id="frRegional" onchange="window.frDesenhar()"></select><select id="frLoja" onchange="window.frDesenhar()"></select><input type="search" id="frBusca" placeholder="Buscar nome…" oninput="window.frDesenhar()"></div>
+    m.style.cssText = 'display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:96; align-items:center; justify-content:center; padding:16px;';
+    m.innerHTML = `<div class="fr-caixa"><div class="fr-topo"><h3>${frModo === 'equipe' ? 'Feedbacks do meu time' : 'Feedbacks e pareceres'}</h3><button type="button" aria-label="Fechar" onclick="closeModal('modalFeedbacksRegional')">✕</button></div>
+      <div class="fr-filtros">${frModo === 'equipe' ? '' : `<div class="fr-abas" role="tablist"><button type="button" class="on" data-aba="fb" onclick="window.frAba('fb')">Feedbacks</button><button type="button" data-aba="par" onclick="window.frAba('par')">Pareceres de desligamento</button></div>`}
+        <select id="frRegional" onchange="window.frDesenhar()"></select><select id="frLoja" onchange="window.frDesenhar()"></select>
+        <select id="frSit" onchange="window.frDesenhar()"><option value="">Todos</option><option value="div">Gestor e colaborador discordam</option><option value="alerta">Com alerta</option></select>
+        <input type="search" id="frBusca" placeholder="Buscar nome…" oninput="window.frDesenhar()"></div>
+      <div class="fr-legenda"><span><i class="g"></i>Visão do gestor</span><span><i class="c"></i>Visão do colaborador</span></div>
       <div class="fr-corpo" id="frCorpo"><p class="jornada-vazio">Carregando…</p></div></div>`;
     document.body.appendChild(m);
   }
-  let frAbaAtual = 'fb';
   window.frAba = function(a){ frAbaAtual = a; document.querySelectorAll('#modalFeedbacksRegional .fr-abas button').forEach(b => b.classList.toggle('on', b.dataset.aba === a)); window.frDesenhar(); };
+  async function frCarregar(pessoas, porLista){
+    const cpfs = pessoas.map(c => c.cpf);
+    const ler = async col => {
+      const out = {};
+      if (porLista) { for (let i = 0; i < cpfs.length; i += 30) { try { const sn = await getDocs(query(collection(db, col), where('Cpf', 'in', cpfs.slice(i, i + 30)))); sn.forEach(d => { out[d.id] = d.data(); }); } catch (e) { console.error('Feedbacks: ' + col, e); } } }
+      else await Promise.all(cpfs.map(async cpf => { try { const d = await getDoc(doc(db, col, cpf)); if (d.exists()) out[cpf] = d.data(); } catch (e) {} }));
+      return out;
+    };
+    const cols = ['checkins30', 'checkins45', 'checkins30Colab', 'checkins45Colab'].concat(frModo === 'equipe' ? [] : ['desligamentos']);
+    const res = await Promise.all(cols.map(ler));
+    return { pessoas, f15: res[0], f45: res[1], c15: res[2], c45: res[3], desl: res[4] || {} };
+  }
+  function frPreparar(){
+    const sel = (id, vals, todos) => { const el = document.getElementById(id); el.innerHTML = `<option value="">${todos}</option>` + vals.map(v => `<option>${frEsc(v)}</option>`).join(''); };
+    const ps = frDados.pessoas;
+    sel('frRegional', [...new Set(ps.map(c => c.Regional).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt-BR')), 'Todas as regionais');
+    document.getElementById('frRegional').style.display = (frModo === 'regional' && cargoColaboradorAtual === 'GERENTE DE OPERAÇÕES') ? '' : 'none';
+    sel('frLoja', [...new Set(ps.map(c => c.Loja).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt-BR')), 'Todas as lojas');
+    document.getElementById('frLoja').style.display = frModo === 'equipe' ? 'none' : '';
+    window.frDesenhar();
+  }
+  window.abrirFeedbacksEquipe = async function(){
+    frModo = 'equipe'; frAbaAtual = 'fb'; frMontarModal(); openModal('modalFeedbacksRegional');
+    try { frDados = await frCarregar((window.MINHA_EQUIPE || []).filter(c => { const d = diasDeCasa(c); return d !== null && d >= 15; }), false); frPreparar(); }
+    catch (e) { console.error(e); document.getElementById('frCorpo').innerHTML = '<p class="jornada-vazio">Não consegui carregar agora. Tente de novo em instantes.</p>'; }
+  };
   window.abrirFeedbacksRegional = async function(){
-    frMontarModal(); openModal('modalFeedbacksRegional');
-    document.getElementById('frCorpo').innerHTML = '<p class="jornada-vazio">Carregando…</p>';
+    frModo = 'regional'; frAbaAtual = 'fb'; frMontarModal(); openModal('modalFeedbacksRegional');
     try {
       const ehGO = cargoColaboradorAtual === 'GERENTE DE OPERAÇÕES';
       const regs = ehGO ? [...new Set((window.MINHA_EQUIPE || []).map(c => c.Regional).filter(Boolean))] : [regionalColaboradorAtual].filter(Boolean);
-      let pessoas = [];
-      for (let i = 0; i < regs.length; i += 30) {
-        const snap = await getDocs(query(collection(db, 'colaboradores'), where('Regional', 'in', regs.slice(i, i + 30))));
-        snap.forEach(d => pessoas.push({ cpf: d.id, ...d.data() }));
-      }
-      const porCpf = {}; pessoas.forEach(c => { porCpf[c.cpf] = c; });
-      const cpfs = pessoas.map(c => c.cpf);
-      const ler = async col => { const out = {}; for (let i = 0; i < cpfs.length; i += 30) { try { const sn = await getDocs(query(collection(db, col), where('Cpf', 'in', cpfs.slice(i, i + 30)))); sn.forEach(d => { out[d.id] = d.data(); }); } catch (e) { console.error('Feedbacks: ' + col, e); } } return out; };
-      const [f15, f45, col15, desl] = await Promise.all([ler('checkins30'), ler('checkins45'), ler('checkins30Colab'), ler('desligamentos')]);
-      frDados = { pessoas, porCpf, f15, f45, col15, desl };
-      const sel = (id, vals, todos) => { const el = document.getElementById(id); el.innerHTML = `<option value="">${todos}</option>` + vals.map(v => `<option>${frEsc(v)}</option>`).join(''); };
-      sel('frRegional', [...new Set(pessoas.map(c => c.Regional).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt-BR')), 'Todas as regionais');
-      document.getElementById('frRegional').style.display = ehGO ? '' : 'none';
-      sel('frLoja', [...new Set(pessoas.map(c => c.Loja).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt-BR')), 'Todas as lojas');
-      window.frDesenhar();
+      const pessoas = [];
+      for (let i = 0; i < regs.length; i += 30) { const snap = await getDocs(query(collection(db, 'colaboradores'), where('Regional', 'in', regs.slice(i, i + 30)))); snap.forEach(d => pessoas.push({ cpf: d.id, ...d.data() })); }
+      frDados = await frCarregar(pessoas, true); frPreparar();
     } catch (e) { console.error(e); document.getElementById('frCorpo').innerHTML = '<p class="jornada-vazio">Não consegui carregar agora. Tente de novo em instantes.</p>'; }
   };
-  const frFarol = (v, mapa) => { const f = mapa[v]; return f ? `<span class="fr-farol"><i style="background:${f[1]}"></i>${f[0]}</span>` : '<span class="fr-farol">—</span>'; };
+  const frFarol = (v, mapa) => { const f = mapa[v]; return f ? `<span class="fr-farol" style="--c:${f[1]};--t:${f[1] === '#D89840' ? '#8F5A00' : f[1]}"><i></i>${f[0]}</span>` : '<span class="fr-farol vazio">—</span>'; };
   const frData = v => { const d = v && v.toDate ? v.toDate() : (v ? new Date(String(v).length === 10 ? v + 'T12:00:00' : v) : null); return d && !isNaN(d) ? d.toLocaleDateString('pt-BR') : ''; };
-  function frBlocoGestor(t, f){
-    if (!f) return '';
-    return `<div class="fr-bloco"><h5>${t} <small>${f.DataConversa ? 'conversa em ' + frData(f.DataConversa) : ''}${f.RegistradoPorNome ? ' · por ' + frEsc(f.RegistradoPorNome) : ''}</small></h5>
-      <div class="fr-grade"><div><span>Integração</span>${frFarol(f.Integracao, FR_FAROL)}${f.ComentarioIntegracao ? `<p>${frEsc(f.ComentarioIntegracao)}</p>` : ''}</div>
-      <div><span>Aprendizado</span>${frFarol(f.Treinamento, FR_FAROL)}${f.ComentarioAprendizado ? `<p>${frEsc(f.ComentarioAprendizado)}</p>` : ''}</div>
-      <div><span>Comportamento</span>${frFarol(f.Comportamento, FR_FAROL)}${f.ComentarioComportamento ? `<p>${frEsc(f.ComentarioComportamento)}</p>` : ''}</div>
-      <div><span>Potencial</span><b>${FR_POT[f.Potencial] || '—'}</b>${f.PotencialJustificativa ? `<p>${frEsc(f.PotencialJustificativa)}</p>` : ''}</div></div>
+  const frNota = { verde: 2, amarelo: 1, vermelho: 0 };
+  function frDiscorda(g, c){
+    if (!g || !c) return false;
+    const mg = ['Integracao', 'Treinamento', 'Comportamento'].map(k => frNota[g[k]]).filter(v => v !== undefined), mc = ['Chegada', 'Seguranca', 'Tratamento'].map(k => frNota[c[k]]).filter(v => v !== undefined);
+    if (mg.length && mc.length && Math.abs(mg.reduce((a, b) => a + b, 0) / mg.length - mc.reduce((a, b) => a + b, 0) / mc.length) >= 1) return true;
+    return (c.Futuro === 'nao' || c.Futuro === 'talvez') && (g.Potencial === 'sim' || g.Potencial === 'sim_desenvolver');
+  }
+  const frAlerta = (g, c) => (g && (['Integracao', 'Treinamento', 'Comportamento'].some(k => g[k] === 'vermelho') || g.Potencial === 'duvida' || g.Potencial === 'nao')) || (c && (['Chegada', 'Seguranca', 'Tratamento'].some(k => c[k] === 'vermelho') || c.Futuro === 'nao'));
+  function frGestor(f){
+    if (!f) return `<div class="fr-col g vazio"><h6>Gestor</h6><p>Ainda sem registro.</p></div>`;
+    return `<div class="fr-col g"><h6>Gestor <small>${f.DataConversa ? 'conversa em ' + frData(f.DataConversa) : ''}${f.RegistradoPorNome ? ' · ' + frEsc(String(f.RegistradoPorNome).split(' ')[0]) : ''}</small></h6>
+      <dl><div><dt>Integração</dt><dd>${frFarol(f.Integracao, FR_FAROL)}${f.ComentarioIntegracao ? `<p>${frEsc(f.ComentarioIntegracao)}</p>` : ''}</dd></div>
+      <div><dt>Aprendizado</dt><dd>${frFarol(f.Treinamento, FR_FAROL)}${f.ComentarioAprendizado ? `<p>${frEsc(f.ComentarioAprendizado)}</p>` : ''}</dd></div>
+      <div><dt>Comportamento</dt><dd>${frFarol(f.Comportamento, FR_FAROL)}${f.ComentarioComportamento ? `<p>${frEsc(f.ComentarioComportamento)}</p>` : ''}</dd></div>
+      <div><dt>Potencial</dt><dd><b>${FR_POT[f.Potencial] || '—'}</b>${f.PotencialJustificativa ? `<p>${frEsc(f.PotencialJustificativa)}</p>` : ''}</dd></div></dl>
       ${f.ResumoFeedback ? `<p class="fr-resumo"><b>Resumo:</b> ${frEsc(f.ResumoFeedback)}</p>` : ''}${f.ProximosPassos ? `<p class="fr-resumo"><b>Combinados:</b> ${frEsc(f.ProximosPassos)}</p>` : ''}</div>`;
   }
-  function frBlocoColab(r){
-    if (!r) return '';
-    return `<div class="fr-bloco colab"><h5>Primeiros 15 dias, pelo colaborador <small>${frData(r.RespondidoEm)}</small></h5>
-      <div class="fr-grade"><div><span>Chegada no time</span>${frFarol(r.Chegada, FR_COLAB)}</div><div><span>Segurança no trabalho</span>${frFarol(r.Seguranca, FR_COLAB)}</div>
-      <div><span>Como é tratado(a)</span>${frFarol(r.Tratamento, FR_COLAB)}</div><div><span>Se vê no Cabana</span><b>${FR_FUT[r.Futuro] || '—'}</b></div></div>
+  function frColab(r){
+    if (!r) return `<div class="fr-col c vazio"><h6>Colaborador</h6><p>Ainda não respondeu.</p></div>`;
+    return `<div class="fr-col c"><h6>Colaborador <small>${frData(r.RespondidoEm)}</small></h6>
+      <dl><div><dt>Chegada no time</dt><dd>${frFarol(r.Chegada, FR_COLAB)}</dd></div><div><dt>Segurança no trabalho</dt><dd>${frFarol(r.Seguranca, FR_COLAB)}</dd></div>
+      <div><dt>Como é tratado(a)</dt><dd>${frFarol(r.Tratamento, FR_COLAB)}</dd></div><div><dt>Se vê no Cabana</dt><dd>${frFarol(r.Futuro, FR_FUT)}</dd></div></dl>
       ${r.Comentario ? `<p class="fr-resumo">“${frEsc(r.Comentario)}”</p>` : ''}</div>`;
   }
   window.frDesenhar = function(){
     if (!frDados) return;
-    const fR = document.getElementById('frRegional').value, fL = document.getElementById('frLoja').value, q = (document.getElementById('frBusca').value || '').trim().toLowerCase();
+    const g = id => (document.getElementById(id) || {}).value || '';
+    const fR = g('frRegional'), fL = g('frLoja'), fS = g('frSit'), q = g('frBusca').trim().toLowerCase();
     const ok = c => (!fR || c.Regional === fR) && (!fL || c.Loja === fL) && (!q || String(c.Nome || '').toLowerCase().includes(q));
     const nomeC = n => String(n || '').toLowerCase().replace(/(^|\s)\S/g, x => x.toUpperCase());
     const corpo = document.getElementById('frCorpo');
+    document.querySelector('#modalFeedbacksRegional .fr-legenda').style.display = frAbaAtual === 'fb' ? '' : 'none';
+    document.getElementById('frSit').style.display = frAbaAtual === 'fb' ? '' : 'none';
     if (frAbaAtual === 'fb') {
-      const lista = frDados.pessoas.filter(c => ok(c) && (frDados.f15[c.cpf] || frDados.f45[c.cpf] || frDados.col15[c.cpf]))
+      const D = frDados;
+      const lista = D.pessoas.filter(c => ok(c) && (D.f15[c.cpf] || D.f45[c.cpf] || D.c15[c.cpf] || D.c45[c.cpf]))
+        .filter(c => !fS || (fS === 'div' ? (frDiscorda(D.f15[c.cpf], D.c15[c.cpf]) || frDiscorda(D.f45[c.cpf], D.c45[c.cpf])) : (frAlerta(D.f15[c.cpf], D.c15[c.cpf]) || frAlerta(D.f45[c.cpf], D.c45[c.cpf]))))
         .sort((a, b) => String(a.Nome || '').localeCompare(String(b.Nome || ''), 'pt-BR'));
-      corpo.innerHTML = lista.length ? lista.map(c => `<details class="fr-pessoa"><summary><b>${frEsc(nomeC(c.Nome))}</b><span>${frEsc([c.Cargo, c.Loja].filter(Boolean).join(' · '))}</span>
-          <span class="fr-tags">${frDados.f15[c.cpf] ? '<em>15 dias</em>' : ''}${frDados.col15[c.cpf] ? '<em>colaborador</em>' : ''}${frDados.f45[c.cpf] ? '<em>45 dias</em>' : ''}</span></summary>
-          ${frBlocoGestor('Feedback de 15 dias, pelo gestor', frDados.f15[c.cpf])}${frBlocoColab(frDados.col15[c.cpf])}${frBlocoGestor('Feedback de 45 dias, pelo gestor', frDados.f45[c.cpf])}</details>`).join('')
+      corpo.innerHTML = lista.length ? lista.map((c, i) => {
+        const marco = m => { const fg = m === 45 ? D.f45[c.cpf] : D.f15[c.cpf], fc = m === 45 ? D.c45[c.cpf] : D.c15[c.cpf]; if (!fg && !fc) return '';
+          return `<section class="fr-marco"><h5>${m} dias ${frDiscorda(fg, fc) ? '<span class="fr-div">gestor e colaborador discordam</span>' : ''}</h5><div class="fr-lado">${frGestor(fg)}${frColab(fc)}</div></section>`; };
+        const tem = [D.f15[c.cpf] || D.c15[c.cpf] ? '15 dias' : '', D.f45[c.cpf] || D.c45[c.cpf] ? '45 dias' : ''].filter(Boolean);
+        const alerta = frAlerta(D.f15[c.cpf], D.c15[c.cpf]) || frAlerta(D.f45[c.cpf], D.c45[c.cpf]);
+        return `<details class="fr-pessoa"${i === 0 ? ' open' : ''}><summary><b>${frEsc(nomeC(c.Nome))}</b><span>${frEsc([c.Cargo, c.Loja].filter(Boolean).join(' · '))}</span>
+          <span class="fr-tags">${alerta ? '<em class="al">com alerta</em>' : ''}${tem.map(t => `<em>${t}</em>`).join('')}</span></summary>${marco(15)}${marco(45)}</details>`; }).join('')
         : '<p class="jornada-vazio">Nenhum feedback registrado com esses filtros.</p>';
     } else {
-      const lista = frDados.pessoas.filter(c => ok(c) && frDados.desl[c.cpf] && !frDados.desl[c.cpf].Descartado)
-        .sort((a, b) => (frDados.desl[b.cpf].RegistradoEm && frDados.desl[b.cpf].RegistradoEm.toMillis ? frDados.desl[b.cpf].RegistradoEm.toMillis() : 0) - (frDados.desl[a.cpf].RegistradoEm && frDados.desl[a.cpf].RegistradoEm.toMillis ? frDados.desl[a.cpf].RegistradoEm.toMillis() : 0));
+      const D = frDados;
+      const lista = D.pessoas.filter(c => ok(c) && D.desl[c.cpf] && !D.desl[c.cpf].Descartado)
+        .sort((a, b) => ((D.desl[b.cpf].RegistradoEm || {}).toMillis ? D.desl[b.cpf].RegistradoEm.toMillis() : 0) - ((D.desl[a.cpf].RegistradoEm || {}).toMillis ? D.desl[a.cpf].RegistradoEm.toMillis() : 0));
       const INI = { colaborador: 'Colaborador', empresa: 'Empresa', fim_contrato: 'Fim de contrato', outro: 'Outro' };
-      corpo.innerHTML = lista.length ? lista.map(c => { const p = frDados.desl[c.cpf]; return `<div class="fr-pessoa fr-par"><div class="fr-par-cab"><b>${frEsc(nomeC(c.Nome))}</b><span>${frEsc([c.Cargo, c.Loja].filter(Boolean).join(' · '))}</span></div>
-          <div class="fr-grade"><div><span>Motivo</span><b>${frEsc(p.Motivo || '—')}</b></div><div><span>Quem decidiu</span><b>${INI[p.Iniciativa] || '—'}</b></div>
-          <div><span>Tempo de casa</span><b>${p.TempoDeCasaDias != null ? p.TempoDeCasaDias + ' dias' : '—'}</b></div><div><span>Registrado</span><b>${frData(p.RegistradoEm)}${p.RegistradoPorNome ? ' · ' + frEsc(p.RegistradoPorNome) : ''}</b></div></div>
+      corpo.innerHTML = lista.length ? lista.map(c => { const p = D.desl[c.cpf]; return `<div class="fr-pessoa fr-par"><div class="fr-par-cab"><b>${frEsc(nomeC(c.Nome))}</b><span>${frEsc([c.Cargo, c.Loja].filter(Boolean).join(' · '))}</span></div>
+          <dl class="fr-dl4"><div><dt>Motivo</dt><dd><b>${frEsc(p.Motivo || '—')}</b></dd></div><div><dt>Quem decidiu</dt><dd><b>${INI[p.Iniciativa] || '—'}</b></dd></div>
+          <div><dt>Tempo de casa</dt><dd><b>${p.TempoDeCasaDias != null ? p.TempoDeCasaDias + ' dias' : '—'}</b></dd></div><div><dt>Registrado</dt><dd><b>${frData(p.RegistradoEm)}${p.RegistradoPorNome ? ' · ' + frEsc(p.RegistradoPorNome) : ''}</b></dd></div></dl>
           ${p.Detalhamento ? `<p class="fr-resumo"><b>Detalhamento:</b> ${frEsc(p.Detalhamento)}</p>` : ''}</div>`; }).join('')
         : '<p class="jornada-vazio">Nenhum parecer de desligamento com esses filtros.</p>';
     }
@@ -7875,14 +7943,14 @@ function configurarGateConclusao(c){
     const barra = l && l.total ? `<div class="eq-bar" style="margin-top:8px;"><label>Trilhas <b>${l.concluidos} de ${l.total} concluídas</b></label><div class="ck-prog"><i style="width:${l.pct}%"></i></div></div>` : `<p class="jornada-vazio" style="text-align:left; padding:6px 0 0;">Nenhuma trilha obrigatória para este cargo.</p>`;
     const lista = falta.length ? `<ul class="eq-falta">${falta.map(f => `<li><span>${nomeTrilhaCurto(f.n)}</span><span class="eq-tag ${f.k}">${f.t}</span></li>`).join('')}</ul>` : '';
     let ponto;
-    if (p.pendCheckin) ponto = `<span class="eq-tag alerta">Feedback de ${(p.pendMarcos || []).join(' e ')} dias sem registro</span><span class="espaco"></span><button class="btn-secondary" style="padding:8px 14px; font-size:12.5px;" onclick="window.registrarCheckinDireto('${c.cpf}')">Registrar feedback de 30 dias →</button>`;
+    if (p.pendCheckin) ponto = `<span class="eq-tag alerta">Feedback de ${(p.pendMarcos || []).join(' e ')} dias sem registro</span><span class="espaco"></span><button class="btn-secondary" style="padding:8px 14px; font-size:12.5px;" onclick="window.registrarCheckinDireto('${c.cpf}', ${(p.pendMarcos || [15])[0]})">Registrar feedback de ${(p.pendMarcos || [15])[0]} dias →</button>`;
     else if (p.checkinFeito) ponto = `<span class="eq-tag ok">Feedbacks registrados</span>`;
     else if (dias !== null && dias < 15) ponto = `<span class="eq-tag">O feedback de 15 dias libera em ${15 - dias} dia${15 - dias === 1 ? '' : 's'}</span>`;
     else ponto = '';
     return `<h5>${rotulo} · ${nomeCurto(c.Nome)}${dias !== null ? ' · ' + textoDias(dias) : ''}</h5>${barra}${lista}${ponto ? `<div class="eq-acoes">${ponto}</div>` : ''}`;
   }
   // o botão fecha a tela da regional, abre o feedback de 30 dias e volta para ela ao salvar ou cancelar
-  window.registrarCheckinDireto = function(cpf){ window.__voltarRegional = true; closeModal('modalJornadaRegional'); window.abrirCheckin30(cpf); };
+  window.registrarCheckinDireto = function(cpf, m){ window.__voltarRegional = true; closeModal('modalJornadaRegional'); window.abrirCheckin30(cpf, m); };
 
   // linha de um gerente (coordenador): nome da pessoa que responde a ele, a loja e o que está pendente no time dela
   function linhaGerenteHtml(g){

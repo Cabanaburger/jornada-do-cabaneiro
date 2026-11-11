@@ -763,7 +763,7 @@ window.MARCA_ATIVA = 'jornada';
           <div class="ptab" data-sub="acompanhamento" onclick="mudarSubRelatorio('acompanhamento', this)">Acompanhamento</div>
           <div class="ptab" data-sub="desligamentos" onclick="mudarSubRelatorio('desligamentos', this)">Pareceres de desligamento</div>
           <div class="ptab" data-sub="checkin30" onclick="mudarSubRelatorio('checkin30', this)">Feedbacks</div>
-          <div class="ptab" data-sub="primeiroMes" onclick="mudarSubRelatorio('primeiroMes', this)">15 dias · colaborador</div>
+          <div class="ptab" data-sub="primeiroMes" onclick="mudarSubRelatorio('primeiroMes', this)">Visão do colaborador</div>
         </div>
       </div>
 
@@ -991,7 +991,7 @@ window.MARCA_ATIVA = 'jornada';
 
       <!-- ===== 1º MÊS NA VISÃO DO COLABORADOR (só o DHO vê) ===== -->
       <div id="relSub-primeiroMes" class="rel-subview" style="display:none;">
-        <p class="muted" style="margin:0 0 14px; font-size:13px; color:var(--ink-soft);">O que a própria pessoa respondeu nos primeiros 15 dias, ao lado do feedback de 15 dias do gerente. O DHO, o coordenador da regional e o gerente de operações veem estas respostas; o gerente da loja sabe apenas que a pessoa respondeu.</p>
+        <p class="muted" style="margin:0 0 14px; font-size:13px; color:var(--ink-soft);">O que a própria pessoa respondeu nos dias 15 e 45, ao lado do feedback do gestor do mesmo dia. Veem estas respostas: o DHO, o gestor direto, o coordenador da regional e o gerente de operações.</p>
         <div class="kpi-row" id="pmKpis" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin-bottom:18px;"></div>
         <div class="filtros-linha" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px;">
           <select id="pmFLocal" onchange="renderPrimeiroMes()"><option value="">Local: todos</option><option>Loja</option><option>Casa Cabana</option><option>Cozinha Central</option></select>
@@ -1006,7 +1006,7 @@ window.MARCA_ATIVA = 'jornada';
         </details>
         <div class="panel-card" style="overflow-x:auto;">
           <table class="tb-base">
-            <thead><tr><th>Colaborador</th><th>Loja · local</th><th>Respondeu em</th><th>Chegada no time</th><th>Segurança no trabalho</th><th>Como é tratado(a)</th><th>Se vê no Cabana</th><th>Gerente (feedback de 15 dias)</th></tr></thead>
+            <thead><tr><th>Colaborador</th><th>Loja · local</th><th>Respondeu em</th><th>Chegada no time</th><th>Segurança no trabalho</th><th>Como é tratado(a)</th><th>Se vê no Cabana</th><th>Gestor (mesmo dia)</th></tr></thead>
             <tbody id="pmBody"></tbody>
           </table>
         </div>
@@ -6180,16 +6180,18 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
   const PM_FUT = { sim: 'Sim', talvez: 'Talvez', nao: 'Não' };
   const PM_FUT_COR = { sim: '#4F9C40', talvez: '#D89840', nao: '#B4462B' };
   function iniciarPrimeiroMes(){
-    onSnapshot(collection(db, 'checkins30Colab'), (snapshot) => {
-      primeiroMesCache = snapshot.docs.map(d => ({ cpf: d.id, ...d.data() }));
-      renderPrimeiroMes();
-    }, (err) => console.error('Erro ao carregar o 1º mês dos colaboradores:', err));
+    let c15 = [], c45 = [];
+    const juntar = () => { primeiroMesCache = [...c15, ...c45]; renderPrimeiroMes(); };
+    onSnapshot(collection(db, 'checkins30Colab'), (snapshot) => { c15 = snapshot.docs.map(d => ({ cpf: d.id, ...d.data(), _marco: 15 })); juntar(); },
+      (err) => console.error('Erro ao carregar a visão do colaborador (15 dias):', err));
+    onSnapshot(collection(db, 'checkins45Colab'), (snapshot) => { c45 = snapshot.docs.map(d => ({ cpf: d.id, ...d.data(), _marco: 45 })); juntar(); },
+      (err) => console.error('Erro ao carregar a visão do colaborador (45 dias):', err));
   }
   const pmNota = { verde: 2, amarelo: 1, vermelho: 0 };
   function pmEnriquecer(){
     return primeiroMesCache.map(r => {
       const col = colaboradoresCache.find(x => x.cpf === r.cpf) || {};
-      const g = checkins30Cache.find(x => x.cpf === r.cpf) || null;
+      const g = (r._marco === 45 ? checkins45Cache : checkins30Cache).find(x => x.cpf === r.cpf) || null;
       const alertas = [];
       [['Chegada', 'chegada'], ['Seguranca', 'segurança no trabalho'], ['Tratamento', 'como é tratado(a)']].forEach(([k, n]) => { if (r[k] === 'vermelho') alertas.push(n + ': difícil'); });
       if (r.Futuro === 'nao') alertas.push('não se vê no Cabana'); else if (r.Futuro === 'talvez') alertas.push('talvez continue');
@@ -6214,24 +6216,27 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
           fDiv = document.getElementById('pmFDiv').checked, fBusca = document.getElementById('pmFBusca').value.trim().toLowerCase();
     const lista = todos.filter(r => (!fLocal || r.Local === fLocal) && (!fAl || r._alertas.length) && (!fDiv || r._div) && (!fBusca || String(r.Nome).toLowerCase().includes(fBusca)))
       .sort((a, b) => (b._em || 0) - (a._em || 0));
-    const agora = new Date(), feitos = new Set(primeiroMesCache.map(r => r.cpf));
-    const pendentes = colaboradoresCache.filter(c => {
-      if (c.Status === 'inativo' || !c.Admissao || !c.Admissao.toDate || c.Nivel === 'Admin') return false;
+    const agora = new Date();
+    const feitosM = { 15: new Set(primeiroMesCache.filter(r => r._marco === 15).map(r => r.cpf)), 45: new Set(primeiroMesCache.filter(r => r._marco === 45).map(r => r.cpf)) };
+    const pendentes = [];
+    colaboradoresCache.forEach(c => {
+      if (c.Status === 'inativo' || !c.Admissao || !c.Admissao.toDate || c.Nivel === 'Admin') return;
       const d = Math.floor((agora - c.Admissao.toDate()) / 86400000);
-      return d >= 15 && d <= 44 && !feitos.has(c.cpf);
+      if (d >= 15 && d <= 44 && !feitosM[15].has(c.cpf)) pendentes.push({ ...c, Nome: (c.Nome || c.cpf) + ' (15 dias)' });
+      if (d >= 45 && d <= 74 && !feitosM[45].has(c.cpf)) pendentes.push({ ...c, Nome: (c.Nome || c.cpf) + ' (45 dias)' });
     });
     document.getElementById('pmPendentes').innerHTML = renderListaCard(pendentes.map(c => linhaSimples(c.Nome || c.cpf, [c.Loja, c.Local || 'Loja'].filter(Boolean).join(' · '))), 'Ninguém aguardando agora.', 12);
     document.getElementById('pmPendCnt').textContent = pendentes.length;
     const comAl = lista.filter(r => r._alertas.length).length, comDiv = lista.filter(r => r._div).length;
     document.getElementById('pmKpis').innerHTML =
       aKpi('Respostas', lista.length, lista.length !== todos.length ? `de ${todos.length} no total` : 'pessoas que responderam') +
-      aKpi('Aguardando', pendentes.length, 'entre 15 e 44 dias de casa', pendentes.length ? '#D89840' : '') +
+      aKpi('Aguardando', pendentes.length, 'dia 15 ao 44 ou dia 45 ao 74 de casa', pendentes.length ? '#D89840' : '') +
       aKpi('Com sinal de alerta', comAl, '"difícil" ou dúvida sobre continuar', comAl ? '#B4462B' : '') +
       aKpi('Gerente e pessoa discordam', comDiv, 'olhar com atenção', comDiv ? '#B4462B' : '');
     const cel = v => `<span class="farol-cel"><i class="fdot" style="background:${A_COR[v] || '#CFC8B8'}"></i>${PM_ROT[v] || '—'}</span>`;
     const ger = (g, r) => (r && r.Local && r.Local !== 'Loja') ? '<span class="muted">não se aplica (fora de loja)</span>' : g ? `<span class="farol-cel"><i class="fdot" style="background:${A_COR[g.Integracao] || '#CFC8B8'}"></i><i class="fdot" style="background:${A_COR[g.Treinamento] || '#CFC8B8'}"></i><i class="fdot" style="background:${A_COR[g.Comportamento] || '#CFC8B8'}"></i> ${aEsc(A_POT_ROT[g.Potencial] || '')}</span>` : '<span class="muted">ainda não registrou</span>';
     corpo.innerHTML = lista.length ? lista.map(r => `<tr${r._div ? ' style="background:#FBEDE8;"' : ''}>
-        <td><b>${aEsc(r.Nome)}</b>${r._div ? '<br><small style="color:#B4462B; font-weight:700;">gerente e pessoa discordam</small>' : ''}${r.Comentario ? `<br><small class="muted" title="${aEsc(r.Comentario)}">“${aEsc(String(r.Comentario).slice(0, 90))}${String(r.Comentario).length > 90 ? '…' : ''}”</small>` : ''}</td>
+        <td><b>${aEsc(r.Nome)}</b> <span class="cnt-pill">${r._marco} dias</span>${r._div ? '<br><small style="color:#B4462B; font-weight:700;">gerente e pessoa discordam</small>' : ''}${r.Comentario ? `<br><small class="muted" title="${aEsc(r.Comentario)}">“${aEsc(String(r.Comentario).slice(0, 90))}${String(r.Comentario).length > 90 ? '…' : ''}”</small>` : ''}</td>
         <td>${aEsc([r.Loja, r.Local].filter((v, i, a) => v && a.indexOf(v) === i).join(' · '))}</td><td>${r._em ? r._em.toLocaleDateString('pt-BR') : '—'}</td>
         <td>${cel(r.Chegada)}</td><td>${cel(r.Seguranca)}</td><td>${cel(r.Tratamento)}</td>
         <td><span class="farol-cel"><i class="fdot" style="background:${PM_FUT_COR[r.Futuro] || '#CFC8B8'}"></i>${PM_FUT[r.Futuro] || '—'}</span></td>
