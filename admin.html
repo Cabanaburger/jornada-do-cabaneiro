@@ -5164,7 +5164,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     try {
       const wb = XLSX.read(await arquivoLojasEscolhido.arrayBuffer(), { type: 'array' });
       const linhas = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: '' });
-      const pegar = (l, ks) => { for (const k of Object.keys(l)) if (ks.includes(k.trim().toLowerCase())) return String(l[k]).replace(/\s+/g, ' ').trim(); return ''; };
+      const pegar = (l, ks) => { for (const ch of ks) for (const k of Object.keys(l)) if (k.trim().toLowerCase() === ch && String(l[k]).trim()) return String(l[k]).replace(/\s+/g, ' ').trim(); return ''; };
       const certoLoja = new Map(), certoReg = new Map();
       linhas.forEach(l => {
         const loja = pegar(l, ['loja', 'lojas', 'unidade', 'nome da loja']), reg = pegar(l, ['regional', 'setor regional']);
@@ -5176,10 +5176,10 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
       const mapaReg = v => certoReg.get(chaveNome(v)) || v;
       // 1. cadastro de lojas
       const snapLojas = await getDocs(collection(db, 'lojas'));
-      const ops = [], vistas = new Set(); let renomeadas = 0, apagadas = 0, criadas = 0;
+      const ops = [], vistas = new Set(), nomesApagar = []; let renomeadas = 0, apagadas = 0, criadas = 0;
       snapLojas.forEach(d => {
         const k = chaveNome(d.data().Nome), certo = certoLoja.get(k);
-        if (!certo || vistas.has(k)) { ops.push(b => b.delete(d.ref)); apagadas++; return; }   // fora da planilha, ou repetida
+        if (!certo || vistas.has(k)) { ops.push(b => b.delete(d.ref)); apagadas++; nomesApagar.push(d.data().Nome); return; }   // fora da planilha, ou repetida
         vistas.add(k);
         const reg = certo.regional || mapaReg(d.data().Regional || '');
         if (d.data().Nome !== certo.nome || (d.data().Regional || '') !== reg) { ops.push(b => b.update(d.ref, { Nome: certo.nome, Regional: reg })); renomeadas++; }
@@ -5204,7 +5204,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
           if (Object.keys(upd).length) { ops.push(b => b.update(d.ref, upd)); publicos++; }
         });
       }
-      const resumo = `A planilha tem ${certoLoja.size} lojas e ${certoReg.size} regionais.\n\nVou:\n• renomear ${renomeadas} loja(s) do cadastro, criar ${criadas} e apagar ${apagadas} (repetidas ou fora da planilha);\n• corrigir a loja/regional de ${colabsCorrigidos} colaborador(es);\n• ajustar o público de ${publicos} trilha(s), material(is) ou programa(s).` +
+      const resumo = `A planilha tem ${certoLoja.size} lojas e ${certoReg.size} regionais.\n\nVou:\n• renomear ${renomeadas} loja(s) do cadastro, criar ${criadas} e apagar ${apagadas} (repetidas ou fora da planilha${nomesApagar.length ? ', por exemplo: ' + nomesApagar.slice(0, 6).join(', ') + (nomesApagar.length > 6 ? '…' : '') : ''});\n• corrigir a loja/regional de ${colabsCorrigidos} colaborador(es);\n• ajustar o público de ${publicos} trilha(s), material(is) ou programa(s).` +
         (semLoja.size ? `\n\nAtenção: ${semLoja.size} loja(s) dos colaboradores não estão na planilha e ficam como estão: ${[...semLoja].slice(0, 12).join(', ')}${semLoja.size > 12 ? '…' : ''}` : '') + `\n\nConfirmar?`;
       if (!ops.length) { res.textContent = '✅ Tudo já está escrito como na planilha. Nada para mudar.'; res.style.color = 'var(--green-dark)'; res.style.display = 'block'; return; }
       if (!confirm(resumo)) { res.textContent = 'Nada foi alterado.'; res.style.color = 'var(--ink-soft)'; res.style.display = 'block'; return; }
@@ -5242,9 +5242,14 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
       const nomesJaExistentes = new Set(lojasCache.map(l => l.nome.toLowerCase()));
       const novasNesseArquivo = new Set(); // evita duplicar se o próprio arquivo repetir a loja
 
+      // procura a coluna pela ordem de preferência (não pela ordem da planilha); "Nome" só vale se for uma planilha só de lojas
+      const colunas = linhas.length ? Object.keys(linhas[0]).map(k => k.trim().toLowerCase()) : [];
+      const ehPlanilhaDePessoas = colunas.includes('cpf') || colunas.includes('cargo');
+      const pegarPrioridade = (linha, chaves) => { for (const ch of chaves) for (const k of Object.keys(linha)) if (k.trim().toLowerCase() === ch && String(linha[k]).trim()) return String(linha[k]).trim(); return ''; };
+      if (ehPlanilhaDePessoas && !colunas.some(c => ['lojas', 'loja', 'unidade'].includes(c))) throw new Error('planilha de pessoas sem coluna de loja');
       for (const linha of linhas) {
-        const nome = pegar(linha, ['lojas', 'loja', 'nome']);
-        const regional = pegar(linha, ['setor regional', 'regional']);
+        const nome = pegarPrioridade(linha, ehPlanilhaDePessoas ? ['loja', 'lojas', 'unidade'] : ['lojas', 'loja', 'unidade', 'nome']);
+        const regional = pegarPrioridade(linha, ['setor regional', 'regional']);
         if (!nome) continue;
         const chave = nome.toLowerCase();
         if (nomesJaExistentes.has(chave) || novasNesseArquivo.has(chave)) { ignoradas++; continue; }
