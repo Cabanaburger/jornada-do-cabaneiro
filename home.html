@@ -1768,6 +1768,41 @@ window.cdDataExtenso = function(d){ try { return d.toLocaleDateString('pt-BR', {
 window.cdSemPrefixo = function(t){ return String(t || '').replace(/^\s*Jornada do Cabaneiro\s*-\s*/i, ''); };
 
 window.LL = function(pt, es){ return (typeof IDIOMA !== 'undefined' && IDIOMA === 'es') ? es : pt; };
+(function(){
+  var HOSTS = ['firebasestorage.googleapis.com', 'firebasestorage.app', 'cabanaburger.github.io'];
+  function podeAbrirDentro(url){
+    try { var u = new URL(url, location.href); if (/\.pdf($|\?)/i.test(u.pathname)) return false; return HOSTS.some(function(h){ return u.hostname === h || u.hostname.endsWith('.' + h); }); } catch (e) { return false; }
+  }
+  function montar(){
+    var m = document.getElementById('modalCursoTela'); if (m) return m;
+    m = document.createElement('div'); m.id = 'modalCursoTela'; m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true'); m.setAttribute('aria-label', 'Conteúdo da trilha');
+    m.style.cssText = 'display:none; position:fixed; inset:0; z-index:2147483000; background:#fff; flex-direction:column;';
+    m.innerHTML = '<div class="ct-barra"><span class="ct-titulo" id="ctTitulo"></span><button type="button" class="ct-fechar" onclick="window.fecharCursoTela()">Fechar e voltar</button></div>' +
+      '<iframe id="ctFrame" title="Conteúdo da trilha" allow="fullscreen; autoplay; encrypted-media; clipboard-write" allowfullscreen referrerpolicy="no-referrer"></iframe>';
+    document.body.appendChild(m); return m;
+  }
+  window.abrirCursoTela = function(url, titulo){
+    if (!podeAbrirDentro(url)) { window.open(url, '_blank'); return; }
+    var m = montar();
+    document.getElementById('ctTitulo').textContent = titulo || 'Trilha da Jornada';
+    document.getElementById('ctFrame').src = url;
+    m.style.display = 'flex'; document.documentElement.style.overflow = 'hidden';
+  };
+  window.fecharCursoTela = function(){
+    var m = document.getElementById('modalCursoTela'); if (!m) return;
+    m.style.display = 'none'; document.getElementById('ctFrame').src = 'about:blank'; document.documentElement.style.overflow = '';
+    try { document.dispatchEvent(new Event('visibilitychange')); } catch (e) {}   // atualiza o progresso, como quando a guia voltava
+  };
+  // links de conteúdo dentro da tela da trilha: abrem na janela da Jornada
+  document.addEventListener('click', function(ev){
+    var a = ev.target.closest && ev.target.closest('#screen-curso a[target="_blank"][href]');
+    if (!a || !podeAbrirDentro(a.href)) return;
+    ev.preventDefault();
+    var t = document.querySelector('#screen-curso h1, #screen-curso h2');
+    window.abrirCursoTela(a.href, t ? t.textContent.trim() : '');
+  }, false);
+  document.addEventListener('keydown', function(ev){ if (ev.key === 'Escape') { var m = document.getElementById('modalCursoTela'); if (m && m.style.display === 'flex') window.fecharCursoTela(); } });
+})();
 window.cdEsquilo = function(){ var M = window.MARCA || {}; return (M.layout === 'cd' && M.esquilo) ? '<img class="cd-esquilo-vazio" src="' + M.esquilo + '" alt="">' : ''; };
 window.corTextoCert = function(){ return (window.MARCA && window.MARCA.certCor) || '#1E1A14'; };
 window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && String(c).toUpperCase() === '#4F9C40') ? window.MARCA.cor : c; };
@@ -3479,6 +3514,12 @@ window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && S
   @media (max-width:760px){ .fr-lado{ grid-template-columns:1fr; } .fr-dl4{ grid-template-columns:1fr 1fr; } }
 
   #modalEquipe .fr-abrir{ margin-left:auto; }
+
+  /* conteúdo da trilha aberto dentro da Jornada */
+  #modalCursoTela .ct-barra{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:calc(10px + env(safe-area-inset-top, 0px)) 16px 10px; background:#00630F; color:#FAF4E9; font-family:var(--font-sans, system-ui); flex:none; }
+  #modalCursoTela .ct-titulo{ font-weight:700; font-size:15px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  #modalCursoTela .ct-fechar{ border:0; border-radius:999px; background:#FAF4E9; color:#00630F; font:inherit; font-weight:700; font-size:14px; padding:9px 16px; cursor:pointer; flex:none; }
+  #modalCursoTela iframe{ flex:1; width:100%; border:0; display:block; background:#fff; }
 </style>
 </head>
 <body>
@@ -5318,7 +5359,7 @@ function reabrirConteudoProva(cursoId){
   if(!c || !c.link) return;
   const separador = c.link.includes('?') ? '&' : '?';
   const url = `${c.link}${separador}cpf=${encodeURIComponent(window.currentCpf || '')}&cursoId=${encodeURIComponent(c.id)}`;
-  window.open(url, '_blank');
+  window.abrirCursoTela(url, c.titulo);
 }
 function abrirCurso(cursoId){
   const c = CURSOS.find(x=>x.id===cursoId);
