@@ -5027,8 +5027,11 @@ function renderFasesOnboarding(){
         h += '<div class="fp-linha ' + (r90c ? 'ok' : '') + '">' + ico(r90c, String(numPesq - 1)) + '<div class="fp-txt">' + L('Seus 90 dias', 'Tus 90 días') + '<small>' + sub + '</small></div><div class="fp-acoes">' + ac + '</div></div>';
       }
       window.__numPesq = numPesq;
-      h += linhaPesq(r45, lib45, 45, E.link45, dias === null ? 0 : 45 - dias);
-      h += linhaPesq(r90, lib90, 90, E.link90, dias === null ? 0 : 90 - dias);
+      const noPeriodo = dias !== null && dias <= 134;   // fora dos primeiros meses (ou sem data de admissão), não mostra as pesquisas
+      if (noPeriodo) {
+        h += linhaPesq(r45, lib45, 45, E.link45, 45 - dias);
+        h += linhaPesq(r90, lib90, 90, E.link90, 90 - dias);
+      }
       if (m4) h += '<button class="fp-btn fp-cert" onclick="gerarCertificadoCabaneiro()">🏆 ' + L('Baixar meu certificado','Descargar mi certificado') + '</button>';
       box.innerHTML = h;
       box.style.display = 'flex';
@@ -6912,6 +6915,19 @@ function configurarGateConclusao(c){
   window.dispensarDesligamento = async function(){
     closeModal('modalDesligadoPergunta');
     const c = filaDesligadosPendentes[0];
+    if (c) {   // abre o e-mail na hora do clique (antes de qualquer espera, para o navegador não bloquear)
+      const assunto = `Erro de cadastro na Jornada: ${c.Nome || c.cpf}`;
+      const corpo = `Olá, DHO.
+
+O cadastro de ${c.Nome || ''} (CPF ${c.cpf}${c.Loja ? ', ' + c.Loja : ''}) aparece como desligado na Jornada, mas a pessoa continua no time.
+Podem reativar o cadastro, por favor?
+
+Obrigado,
+${(typeof nomeColaboradorAtual !== 'undefined' && nomeColaboradorAtual) || ''}`;
+      const a = document.createElement('a');
+      a.href = 'mailto:treinamento@cabanaburger.com.br?subject=' + encodeURIComponent(assunto) + '&body=' + encodeURIComponent(corpo);
+      document.body.appendChild(a); a.click(); a.remove();
+    }
     if (c) {
       try {
         await setDoc(doc(db, 'desligamentos', c.cpf), {
