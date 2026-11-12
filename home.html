@@ -3520,6 +3520,12 @@ window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && S
   #modalCursoTela .ct-titulo{ font-weight:700; font-size:15px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   #modalCursoTela .ct-fechar{ border:0; border-radius:999px; background:#FAF4E9; color:#00630F; font:inherit; font-weight:700; font-size:14px; padding:9px 16px; cursor:pointer; flex:none; }
   #modalCursoTela iframe{ flex:1; width:100%; border:0; display:block; background:#fff; }
+
+  /* o que é do gestor e o que é do colaborador */
+  html.cd .eq-tag.colab, .eq-tag.colab{ background:#E3EEFB; color:#1F4E8C; }
+  html.cd .eq-quem{ margin:var(--espaco-2,8px) 0 4px; font-size:0.8125rem; font-weight:700; }
+  html.cd .eq-quem.voce{ color:#00630F; } html.cd .eq-quem.colab{ color:#1F4E8C; }
+  .cd-avise{ border-left:4px solid #3F73B5; } .cd-avise-txt{ margin:0 0 10px; font-size:13.5px; color:#1F4E8C; }
 </style>
 </head>
 <body>
@@ -4027,7 +4033,7 @@ window.corMarca = function(c){ return (window.MARCA_ATIVA !== 'school' && c && S
         <div id="pendNovatosLista"><p class="jornada-vazio">Carregando…</p></div>
       </div>
       <div class="jornada-bloco">
-        <div class="jornada-section-label">🚦 Feedbacks · 15 e 45 dias <span class="contagem" id="pendCheckinContagem" style="display:none;">0</span></div>
+        <div class="jornada-section-label">🚦 Sua pendência · feedbacks para registrar (15, 45 e 90 dias) <span class="contagem" id="pendCheckinContagem" style="display:none;">0</span></div>
         <div id="pendCheckinLista"><p class="jornada-vazio">Carregando…</p></div>
       </div>
       <div class="jornada-bloco">
@@ -5000,6 +5006,7 @@ function renderFasesOnboarding(){
         else { subPm = L('4 perguntas rápidas', '4 preguntas rápidas'); acPm = '<button class="fp-btn" onclick="window.abrirPrimeiroMes(15)">' + L('Responder', 'Responder') + '</button>'; }
         h += '<div class="fp-linha ' + (pmOk ? 'ok' : '') + '">' + ico(pmOk, '2') + '<div class="fp-txt">' + L('Seus primeiros 15 dias', 'Tus primeros 15 días') + '<small>' + subPm + '</small></div><div class="fp-acoes">' + acPm + '</div></div>';
       }
+      const r90c = !!(window.__pmResp && window.__pmResp[90]);
       const r45c = !!(window.__pmResp && window.__pmResp[45]);
       if (dias !== null && (dias <= 74 || r45c)) {
         numPesq += 1;
@@ -5009,6 +5016,15 @@ function renderFasesOnboarding(){
         else if (!lib) sub = L('Libera em ' + dp(45 - dias), 'Se libera en ' + dp(45 - dias));
         else { sub = L('4 perguntas rápidas', '4 preguntas rápidas'); ac = '<button class="fp-btn" onclick="window.abrirPrimeiroMes(45)">' + L('Responder', 'Responder') + '</button>'; }
         h += '<div class="fp-linha ' + (r45c ? 'ok' : '') + '">' + ico(r45c, String(numPesq - 1)) + '<div class="fp-txt">' + L('Seus 45 dias', 'Tus 45 días') + '<small>' + sub + '</small></div><div class="fp-acoes">' + ac + '</div></div>';
+      }
+      if (dias !== null && dias >= 60 && (dias <= 100 || r90c)) {
+        numPesq += 1;
+        const lib = dias >= 80;
+        let sub, ac = '';
+        if (r90c) sub = L('Respondido. Obrigado!', 'Respondido. ¡Gracias!');
+        else if (!lib) sub = L('Libera em ' + dp(80 - dias), 'Se libera en ' + dp(80 - dias));
+        else { sub = L('4 perguntas rápidas', '4 preguntas rápidas'); ac = '<button class="fp-btn" onclick="window.abrirPrimeiroMes(90)">' + L('Responder', 'Responder') + '</button>'; }
+        h += '<div class="fp-linha ' + (r90c ? 'ok' : '') + '">' + ico(r90c, String(numPesq - 1)) + '<div class="fp-txt">' + L('Seus 90 dias', 'Tus 90 días') + '<small>' + sub + '</small></div><div class="fp-acoes">' + ac + '</div></div>';
       }
       window.__numPesq = numPesq;
       h += linhaPesq(r45, lib45, 45, E.link45, dias === null ? 0 : 45 - dias);
@@ -5790,7 +5806,7 @@ function configurarGateConclusao(c){
     m.setAttribute('role', 'dialog'); m.setAttribute('aria-modal', 'true'); m.setAttribute('aria-labelledby', 'pm2Titulo');
     m.style.cssText = 'display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:1000; align-items:center; justify-content:center; padding:16px;';
     m.innerHTML = `<div class="pm2">
-      <div class="pm2-topo"><span class="pm2-rot">${pmMarco === 45 ? LL('Seus 45 dias', 'Tus 45 días') : LL('Seus primeiros 15 dias', 'Tus primeros 15 días')}</span>
+      <div class="pm2-topo"><span class="pm2-rot">${pmMarco === 90 ? LL('Seus 90 dias', 'Tus 90 días') : pmMarco === 45 ? LL('Seus 45 dias', 'Tus 45 días') : LL('Seus primeiros 15 dias', 'Tus primeros 15 días')}</span>
         <button type="button" class="pm2-x" aria-label="${LL('Fechar', 'Cerrar')}" onclick="closeModal('modalPrimeiroMes')">✕</button>
         <div class="pm2-barra" aria-hidden="true"><i id="pm2Barra"></i></div></div>
       <div class="pm2-corpo" id="pm2Corpo" aria-live="polite"></div>
@@ -5804,7 +5820,7 @@ function configurarGateConclusao(c){
     barra.style.width = Math.round(Math.min(pmEtapa, 5) / 5 * 100) + '%';
     if (pmEtapa === 0) {
       corpo.innerHTML = `${M.esquilo ? `<img class="pm2-esq" src="${M.esquilo}" alt="">` : ''}
-        <h3 id="pm2Titulo">${pmMarco === 45 ? LL('Como estão sendo seus 45 dias', 'Cómo van tus 45 días') : LL('Como estão sendo seus primeiros dias', 'Cómo van tus primeros días')}${nome ? ', <span class="pm2-nome">' + nome + '</span>' : ''}?</h3>
+        <h3 id="pm2Titulo">${pmMarco === 90 ? LL('Como foram seus 90 dias', 'Cómo fueron tus 90 días') : pmMarco === 45 ? LL('Como estão sendo seus 45 dias', 'Cómo van tus 45 días') : LL('Como estão sendo seus primeiros dias', 'Cómo van tus primeros días')}${nome ? ', <span class="pm2-nome">' + nome + '</span>' : ''}?</h3>
         <p>${LL('São 4 perguntas rápidas, uma de cada vez. Responda com sinceridade: as respostas são lidas pelo seu gestor, pela liderança da regional e pelo DHO, para acompanhar a sua chegada e te apoiar.', 'Son 4 preguntas rápidas, una a la vez. Responde con sinceridad: las respuestas las leen tu gestor, el liderazgo de la regional y DHO, para acompañar tu llegada y apoyarte.')}</p>`;
       rod.innerHTML = `<button type="button" class="btn-secondary" onclick="closeModal('modalPrimeiroMes')">${LL('Agora não', 'Ahora no')}</button><button type="button" class="btn-primary" onclick="window.pmIr(1)">${LL('Começar', 'Empezar')}</button>`;
     } else if (pmEtapa <= 4) {
@@ -5838,17 +5854,18 @@ function configurarGateConclusao(c){
   }
   // feedback do colaborador: dia 15 (do 15 ao 44) e dia 45 (do 45 ao 74)
   let pmMarco = 15;
-  const PM_JANELA = { 15: [15, 44], 45: [45, 74] };
-  const colPm = m => m === 45 ? 'checkins45Colab' : 'checkins30Colab';
-  const campoPm = m => m === 45 ? 'Checkin45ColabEm' : 'Checkin30ColabEm';
+  const PM_JANELA = { 15: [15, 44], 45: [45, 74], 90: [80, 100] };
+  window.PM_JANELA = PM_JANELA;
+  const colPm = m => m === 90 ? 'checkins90Colab' : m === 45 ? 'checkins45Colab' : 'checkins30Colab';
+  const campoPm = m => m === 90 ? 'Checkin90ColabEm' : m === 45 ? 'Checkin45ColabEm' : 'Checkin30ColabEm';
   async function verificarPrimeiroMes(cpf, dados){
     try {
-      window.__pmResp = { 15: !!(dados && dados.Checkin30ColabEm), 45: !!(dados && dados.Checkin45ColabEm) };
+      window.__pmResp = { 15: !!(dados && dados.Checkin30ColabEm), 45: !!(dados && dados.Checkin45ColabEm), 90: !!(dados && dados.Checkin90ColabEm) };
       window.__pmRespondido = window.__pmResp[15];
       window.__pmAdm = dados && dados.Admissao && dados.Admissao.toDate ? dados.Admissao.toDate() : null;
       if (!dados || dados.Status === 'inativo' || !dados.Admissao || !dados.Admissao.toDate) return;
       const d = Math.floor((Date.now() - dados.Admissao.toDate().getTime()) / 86400000);
-      const m = [15, 45].find(x => d >= PM_JANELA[x][0] && d <= PM_JANELA[x][1] && !window.__pmResp[x]);
+      const m = [15, 45, 90].find(x => d >= PM_JANELA[x][0] && d <= PM_JANELA[x][1] && !window.__pmResp[x]);
       pmDados = dados; pmCpf = cpf;
       if (window.renderFasesOnboarding) try { window.renderFasesOnboarding(); } catch (e) {}
       if (!m) return;
@@ -5865,7 +5882,7 @@ function configurarGateConclusao(c){
     } catch (e) { console.error('Feedback do colaborador:', e); }
   }
   window.abrirPrimeiroMes = function(m){
-    if (m === 15 || m === 45) { if (m !== pmMarco) { pmRespostas = {}; pmEtapa = 0; } pmMarco = m; }
+    if (m === 15 || m === 45 || m === 90) { if (m !== pmMarco) { pmRespostas = {}; pmEtapa = 0; } pmMarco = m; }
     const ant = document.getElementById('modalPrimeiroMes'); if (ant) ant.remove();
     montarModalPrimeiroMes(); if (pmEtapa >= 6) { pmEtapa = 0; pmRespostas = {}; } pmDesenhar(); openModal('modalPrimeiroMes');
   };
@@ -6859,6 +6876,18 @@ function configurarGateConclusao(c){
     }
   }
   window.renderDesligadosListas = renderDesligadosListas;
+  function renderAviseColab(){
+    const pend = document.getElementById('pendChecklistLista'); if (!pend) return;
+    const bloco = pend.closest('.jornada-bloco');
+    let alvo = document.getElementById('pendAviseColab');
+    if (!alvo && bloco) { alvo = document.createElement('div'); alvo.id = 'pendAviseColab'; bloco.parentNode.insertBefore(alvo, bloco.nextSibling); }
+    if (!alvo) return;
+    const lista = (window.MINHA_EQUIPE || []).map(c => ({ c, ms: colabPendencias(c, false) })).filter(x => x.ms.length);
+    alvo.innerHTML = lista.length ? `<div class="jornada-bloco cd-avise"><div class="jornada-section-label">📣 Pendência do colaborador · avise a pessoa <span class="contagem">${lista.length}</span></div>
+      <p class="cd-avise-txt">Estas respostas são da própria pessoa, não suas. Avise para ela entrar na Jornada e responder o feedback dela.</p>` +
+      lista.map(({ c, ms }) => `<div class="pendencia-card"><div class="pendencia-info"><b>${c.Nome || '—'}</b><span>${ms.map(m => '"' + NOME_COLAB[m] + '" disponível até o dia ' + JAN_COLAB[m][1]).join(' · ')}</span></div><span class="eq-tag colab">Colaborador</span></div>`).join('') + `</div>` : '';
+  }
+  window.renderAviseColab = renderAviseColab;
   window.mostrarAvisoDesligamento = function(){ mostrarProximoDesligadoPendente(); };
   window.abrirDesligamentoDe = function(cpf){
     const i = filaDesligadosPendentes.findIndex(c => c.cpf === cpf);
@@ -6971,6 +7000,7 @@ function configurarGateConclusao(c){
       renderPendChecklist(equipe)
     ]);
     renderFasesTime(equipe);
+    try { renderAviseColab(); } catch (e) {}
     const qtdCursos = renderPendCursosGeral(window.__equipeDetalhada || []);
     const total = (qtdNovatos || 0) + (qtdCheckin || 0) + (qtdPesquisa || 0) + (qtdCursos || 0) + (qtdChecklist || 0);
     const status = document.getElementById('atalhoPendenciasStatus');
@@ -7081,7 +7111,7 @@ function configurarGateConclusao(c){
     const candidatos = equipe.filter(c => {
       if (!c.Admissao || !c.Admissao.toDate) return false;
       const dias = Math.floor((agora - c.Admissao.toDate()) / (1000 * 60 * 60 * 24));
-      return dias >= 15 && dias <= 90 && MARCOS_PONTO.some(m => dias >= m && diasAntesInicio(c) <= m);
+      return dias >= 15 && dias <= 90 && MARCOS_PONTO.some(m => dias >= LIB_PONTO[m] && diasAntesInicio(c) <= LIB_PONTO[m]);
     });
     if (!candidatos.length) {
       lista.innerHTML = `<p class="jornada-vazio">Nenhum feedback pendente agora.</p>`;
@@ -7092,10 +7122,10 @@ function configurarGateConclusao(c){
       const pendentes = [];
       await Promise.all(candidatos.flatMap(c => MARCOS_PONTO.map(async m => {
         const dias = Math.floor((agora - c.Admissao.toDate()) / 86400000);
-        if (dias < m || diasAntesInicio(c) > m) return;
+        if (dias < LIB_PONTO[m] || diasAntesInicio(c) > LIB_PONTO[m]) return;
         let existe = false; try { existe = (await getDoc(doc(db, colPonto(m), c.cpf))).exists(); } catch (e) {}
         cachePonto(m)[c.cpf] = existe ? (cachePonto(m)[c.cpf] || {}) : null;
-        if (!existe) pendentes.push({ cpf: c.cpf, nome: c.Nome || '—', loja: c.Loja || c.Local || '—', marco: m, diasAtraso: dias - (m + PRAZO_PONTO) });
+        if (!existe) pendentes.push({ cpf: c.cpf, nome: c.Nome || '—', loja: c.Loja || c.Local || '—', marco: m, diasAtraso: dias - VENCE_PONTO[m] });
       })));
       pendentes.sort((a, b) => b.diasAtraso - a.diasAtraso);
 
@@ -7211,7 +7241,10 @@ function configurarGateConclusao(c){
       { id: 'd2', auto: 'primeiroMes', t: 'Colaborador respondeu "Seus primeiros 15 dias" na Jornada', d: 'Entre o dia 15 e o 44 de casa, a Jornada pede para a pessoa contar como estão sendo os primeiros dias. Você vê as respostas em Minha equipe, no botão Ver feedbacks, para comparar com o seu feedback. Se ainda não respondeu, lembre a pessoa.' } ] },
     { id: 'd45', titulo: '45 dias', sub: 'Segunda conversa de acompanhamento', prazo: 55, itens: [
       { id: 'e1', t: 'Conversa de 45 dias realizada', d: 'Nova conversa a sós, com as mesmas perguntas da de 15 dias, para ver como a pessoa evoluiu. O resumo é registrado no feedback, logo abaixo.' },
-      { id: 'e2', auto: 'colab45', t: 'Colaborador respondeu "Seus 45 dias" na Jornada', d: 'Entre o dia 45 e o 74 de casa, a Jornada pede para a pessoa contar como estão sendo os 45 dias, com as mesmas perguntas do dia 15. Você vê as respostas em Minha equipe, no botão Ver feedbacks.' } ] }
+      { id: 'e2', auto: 'colab45', t: 'Colaborador respondeu "Seus 45 dias" na Jornada', d: 'Entre o dia 45 e o 74 de casa, a Jornada pede para a pessoa contar como estão sendo os 45 dias, com as mesmas perguntas do dia 15. Você vê as respostas em Minha equipe, no botão Ver feedbacks.' } ] },
+    { id: 'd90', titulo: '90 dias', sub: 'Fechamento da experiência', prazo: 90, itens: [
+      { id: 'g1', t: 'Conversa de 90 dias realizada', d: 'Última conversa de acompanhamento, com as mesmas perguntas das de 15 e 45 dias, antes do fim da experiência. Libera no dia 80. O resumo é registrado no feedback, logo abaixo.' },
+      { id: 'g2', auto: 'colab90', t: 'Colaborador respondeu "Seus 90 dias" na Jornada', d: 'Do dia 80 ao 100 de casa, a Jornada pede para a pessoa contar como foram os 90 dias. É uma pendência do colaborador: avise a pessoa para entrar e responder.' } ] }
   ];
   window.CHECKLIST_BLOCOS = CHECKLIST_BLOCOS;
   window.__checklistCache = window.__checklistCache || {};
@@ -7262,9 +7295,9 @@ function configurarGateConclusao(c){
       let f = 0;
       let fObrig = 0, tObrig = 0;
       b.itens.forEach(it => {
-        const ok = (itens[it.id] && itens[it.id].feito) || (it.auto === 'trilhas' && trilhasOk) || (it.auto === 'primeiroMes' && !!c.Checkin30ColabEm) || (it.auto === 'colab45' && !!c.Checkin45ColabEm);
+        const ok = (itens[it.id] && itens[it.id].feito) || (it.auto === 'trilhas' && trilhasOk) || (it.auto === 'primeiroMes' && !!c.Checkin30ColabEm) || (it.auto === 'colab45' && !!c.Checkin45ColabEm) || (it.auto === 'colab90' && !!c.Checkin90ColabEm);
         if (ok) f++;
-        if (it.auto !== 'primeiroMes' && it.auto !== 'colab45') { tObrig++; if (ok) fObrig++; }
+        if (it.auto !== 'primeiroMes' && it.auto !== 'colab45' && it.auto !== 'colab90') { tObrig++; if (ok) fObrig++; }
       });
       const conta = diasAntesInicio(c) <= Math.min(b.prazo, 30);   // etapa vencida antes da Jornada, ou pessoa que já tinha mais de 30 dias, não é cobrada
       blocos[b.id] = { feitos: f, total: b.itens.length, atrasa: conta && fObrig < tObrig };
@@ -7316,16 +7349,16 @@ function configurarGateConclusao(c){
       h += `<div class="ck-bloco"><div class="ck-bloco-h"><div><b>${b.titulo}</b><small>${b.sub}</small></div><span class="ck-cont ${bl.feitos === bl.total ? 'ok' : atrasado ? 'atraso' : ''}">${bl.feitos === bl.total ? '✓ ' : ''}${bl.feitos}/${bl.total}${atrasado ? ' · atrasado' : ''}</span></div>`;
       b.itens.forEach(it => {
         const x = itens[it.id];
-        const auto = (it.auto === 'trilhas' && r.trilhasOk) || (it.auto === 'primeiroMes' && !!c.Checkin30ColabEm) || (it.auto === 'colab45' && !!c.Checkin45ColabEm);
+        const auto = (it.auto === 'trilhas' && r.trilhasOk) || (it.auto === 'primeiroMes' && !!c.Checkin30ColabEm) || (it.auto === 'colab45' && !!c.Checkin45ColabEm) || (it.auto === 'colab90' && !!c.Checkin90ColabEm);
         const feito = !!(x && x.feito) || auto;
-        const meta = auto ? '<span class="ck-auto">Automático</span>' : (feito && x && x.em ? `<span class="ck-meta">${dataCurta(x.em)}${x.por ? '<br>' + String(x.por).split(' ')[0] : ''}</span>` : (it.auto === 'trilhas' ? '<span class="ck-meta">marca sozinho quando<br>concluir na Jornada</span>' : (it.auto === 'primeiroMes' || it.auto === 'colab45') ? '<span class="ck-meta">marca sozinho quando<br>a pessoa responder</span>' : ''));
+        const meta = auto ? '<span class="ck-auto">Automático</span>' : (feito && x && x.em ? `<span class="ck-meta">${dataCurta(x.em)}${x.por ? '<br>' + String(x.por).split(' ')[0] : ''}</span>` : (it.auto === 'trilhas' ? '<span class="ck-meta">marca sozinho quando<br>concluir na Jornada</span>' : (it.auto === 'primeiroMes' || it.auto === 'colab45' || it.auto === 'colab90') ? '<span class="ck-meta">marca sozinho quando<br>a pessoa responder</span>' : ''));
         const clicavel = ckEditavel && !auto;
         h += `<${clicavel ? 'button' : 'div'} class="ck-item ${feito ? 'feito' : ''} ${clicavel ? '' : 'somente'}" ${clicavel ? `onclick="window.alternarItemChecklist('${it.id}')"` : ''}><span class="ck-box">${feito ? '✓' : ''}</span><span class="ck-txt"><b class="ck-tit">${it.t}</b>${it.d ? `<span class="ck-det">${it.d}</span>` : ''}</span>${meta}</${clicavel ? 'button' : 'div'}>`;
       });
-      if (b.id === 'd30' || b.id === 'd45') {
-        const d = r.dias, m = b.id === 'd45' ? 45 : 15, feitoM = (ckCheckinFeito || {})[m];
+      if (b.id === 'd30' || b.id === 'd45' || b.id === 'd90') {
+        const d = r.dias, m = b.id === 'd90' ? 90 : b.id === 'd45' ? 45 : 15, feitoM = (ckCheckinFeito || {})[m];
         h += `<div class="ck-item somente" style="flex-wrap:wrap;"><span class="ck-txt" style="flex:1;"><b class="ck-tit">Feedback: resumo da conversa de ${m} dias</b><span class="ck-det">Aqui você registra o que foi conversado: farol de cada tema, se a pessoa tem potencial para seguir no Cabana e o resumo do feedback.</span></span>` +
-          (feitoM ? `<span class="ck-auto">Registrado</span>` : (ckEditavel && d !== null && d >= m ? `<button class="btn-secondary" style="padding:7px 14px; font-size:12px;" onclick="window.fecharChecklist(); window.abrirCheckin30('${c.cpf}', ${m})">Preencher →</button>` : `<span class="ck-meta">disponível a partir do dia ${m}</span>`)) + `</div>`;
+          (feitoM ? `<span class="ck-auto">Registrado</span>` : (ckEditavel && d !== null && d >= LIB_PONTO[m] ? `<button class="btn-secondary" style="padding:7px 14px; font-size:12px;" onclick="window.fecharChecklist(); window.abrirCheckin30('${c.cpf}', ${m})">Preencher →</button>` : `<span class="ck-meta">disponível a partir do dia ${LIB_PONTO[m]}</span>`)) + `</div>`;
       }
       h += `</div>`;
     });
@@ -7422,9 +7455,12 @@ function configurarGateConclusao(c){
   // feedback de 30 dias de cada pessoa do time (só loja): 'antes' (dia < 30), 'pendente' (30 a 90 sem registro), 'feito', ou '' (não se aplica)
   window.__checkin30Cache = window.__checkin30Cache || {};   // ponto do dia 15 (coleção checkins30)
   window.__checkin45Cache = window.__checkin45Cache || {};   // ponto do dia 45 (coleção checkins45)
-  const MARCOS_PONTO = [15, 45], PRAZO_PONTO = 10;
-  const colPonto = m => m === 45 ? 'checkins45' : 'checkins30';
-  const cachePonto = m => m === 45 ? window.__checkin45Cache : window.__checkin30Cache;
+  const MARCOS_PONTO = [15, 45, 90], PRAZO_PONTO = 10;
+  const LIB_PONTO = { 15: 15, 45: 45, 90: 80 }, VENCE_PONTO = { 15: 25, 45: 55, 90: 90 };   // dia em que libera e dia em que vence
+  window.__checkin90Cache = window.__checkin90Cache || {};
+  window.LIB_PONTO = LIB_PONTO;
+  const colPonto = m => m === 90 ? 'checkins90' : m === 45 ? 'checkins45' : 'checkins30';
+  const cachePonto = m => m === 90 ? window.__checkin90Cache : m === 45 ? window.__checkin45Cache : window.__checkin30Cache;
   window.MARCOS_PONTO = MARCOS_PONTO;
   async function carregarCheckin30Equipe(equipe){
     const alvos = (equipe || []).filter(c => { const d = diasDeCasa(c); return d !== null && d >= 15 && d <= 90; });
@@ -7437,14 +7473,30 @@ function configurarGateConclusao(c){
   // situação de um ponto: '' (não se aplica), 'antes', 'pendente' (liberado e sem registro) ou 'feito'
   function statusPontoM(c, m){
     const d = diasDeCasa(c);
-    if (d === null || d < -15 || d > 90 || diasAntesInicio(c) > m) return '';
-    if (d < m) return 'antes';
+    if (d === null || d < -15 || d > 90 || diasAntesInicio(c) > LIB_PONTO[m]) return '';
+    if (d < LIB_PONTO[m]) return 'antes';
     const reg = cachePonto(m)[c.cpf];
     if (reg) return 'feito';
     if (reg === null) return 'pendente';
     return '';
   }
-  function atrasoPonto(c, m){ const d = diasDeCasa(c); return d === null ? 0 : Math.max(0, d - (m + PRAZO_PONTO)); }
+  // feedbacks que o PRÓPRIO colaborador tem para responder agora (o gerente só avisa)
+  const CAMPO_COLAB = { 15: 'Checkin30ColabEm', 45: 'Checkin45ColabEm', 90: 'Checkin90ColabEm' };
+  const JAN_COLAB = { 15: [15, 44], 45: [45, 74], 90: [80, 100] };
+  const NOME_COLAB = { 15: 'Seus primeiros 15 dias', 45: 'Seus 45 dias', 90: 'Seus 90 dias' };
+  function colabPendencias(c, html){
+    const d = diasDeCasa(c); if (d === null || !c) return html ? '' : [];
+    const ms = [15, 45, 90].filter(m => d >= JAN_COLAB[m][0] - 7 && d <= JAN_COLAB[m][1] && diasAntesInicio(c) <= JAN_COLAB[m][1]);
+    if (!html) return ms.filter(m => d >= JAN_COLAB[m][0] && !c[CAMPO_COLAB[m]]);
+    return ms.map(m => {
+      if (c[CAMPO_COLAB[m]]) return `<div class="eq-ponto30"><span>"${NOME_COLAB[m]}"</span><span class="eq-tag ok">Respondido</span></div>`;
+      if (d < JAN_COLAB[m][0]) { const f = JAN_COLAB[m][0] - d; return `<div class="eq-ponto30"><span>"${NOME_COLAB[m]}": libera para a pessoa em ${f} ${f === 1 ? 'dia' : 'dias'}.</span></div>`; }
+      return `<div class="eq-ponto30"><span>"${NOME_COLAB[m]}" está disponível para a pessoa. <b>Avise para ela entrar na Jornada e responder</b> (até o dia ${JAN_COLAB[m][1]}).</span><span class="eq-tag colab">Pendência do colaborador</span></div>`;
+    }).join('');
+  }
+  window.colabPendencias = colabPendencias;
+  window.listaDias = ms => ms.length > 1 ? ms.slice(0, -1).join(', ') + ' e ' + ms[ms.length - 1] : String(ms[0] || '');
+  function atrasoPonto(c, m){ const d = diasDeCasa(c); return d === null ? 0 : Math.max(0, d - VENCE_PONTO[m]); }
   window.statusPontoM = statusPontoM; window.atrasoPonto = atrasoPonto;
   // resumo dos dois pontos (para chips e contagens): pendente se algum estiver pendente
   function statusPonto30(c){
@@ -7469,7 +7521,8 @@ function configurarGateConclusao(c){
     if (r && r.atraso) chips.push('<span class="eq-tag alerta">Checklist atrasado</span>');
     if (x.trAt) chips.push(`<span class="eq-tag alerta">${pl(falta.length, 'trilha atrasada', 'trilhas atrasadas')}</span>`);
     else if (l.cursosPendentes.length && x.novo) chips.push(`<span class="eq-tag">${pl(l.cursosPendentes.length, 'trilha a fazer', 'trilhas a fazer')}</span>`);
-    if (x.p30 === 'pendente') chips.push(`<span class="eq-tag alerta">Feedback de ${MARCOS_PONTO.filter(m => statusPontoM(x.c, m) === 'pendente').join(' e ')} dias pendente</span>`);
+    if (x.p30 === 'pendente') chips.push(`<span class="eq-tag alerta">Feedback de ${window.listaDias(MARCOS_PONTO.filter(m => statusPontoM(x.c, m) === 'pendente'))} dias pendente</span>`);
+    { const cp = colabPendencias(x.c, false); if (cp.length) chips.push(`<span class="eq-tag colab">Colaborador: responder feedback de ${window.listaDias(cp)} dias</span>`); }
     if (x.novo && !fase) chips.push('<span class="eq-tag">Ainda não acessou</span>');
     if (!x.atencao && !l.cursosPendentes.length) chips.push('<span class="eq-tag ok">Em dia</span>');
     const tagFase = x.novo && fase ? `<span class="eq-tag ${fase === 4 ? 'ok' : ''}">Fase ${fase} de 4 · ${nomeNivel(nomesFase[fase - 1])}</span>` : '';
@@ -7485,9 +7538,10 @@ function configurarGateConclusao(c){
       const reg = cachePonto(m)[l.cpf], at = atrasoPonto(x.c, m);
       if (st === 'feito') return `<div class="eq-ponto30"><span>Feedback de ${m} dias</span><span class="eq-tag ok">Registrado${reg && reg.DataConversa ? ' · conversa em ' + String(reg.DataConversa).split('-').reverse().slice(0, 2).join('/') : ''}</span></div>`;
       if (st === 'pendente') return `<div class="eq-ponto30"><span>Feedback de ${m} dias: ${at ? `<b style="color:var(--erro,#C2321A)">atrasado há ${at} ${at === 1 ? 'dia' : 'dias'}</b>` : 'já pode fazer a conversa e registrar'}.</span><button class="btn-primary" style="padding:8px 14px; font-size:12.5px;" onclick="window.abrirCheckin30('${l.cpf}', ${m})">Preencher feedback de ${m} dias</button></div>`;
-      const f = m - Math.max(x.dias || 0, 0); return `<div class="eq-ponto30"><span>Feedback de ${m} dias: libera em ${f} ${f === 1 ? 'dia' : 'dias'}.</span></div>`;
+      const f = LIB_PONTO[m] - Math.max(x.dias || 0, 0); return `<div class="eq-ponto30"><span>Feedback de ${m} dias: libera em ${f} ${f === 1 ? 'dia' : 'dias'}.</span></div>`;
     };
-    const ponto = !x.p30 ? '' : `<h5>Conversas de acompanhamento</h5>${contou}${MARCOS_PONTO.map(linhaPonto).join('')}`;
+    const colabLinhas = colabPendencias(x.c, true);
+    const ponto = (!x.p30 && !colabLinhas) ? '' : `<h5>Conversas de acompanhamento</h5>${x.p30 ? `<p class="eq-quem voce">Sua parte: registrar os feedbacks</p>${MARCOS_PONTO.map(linhaPonto).join('')}` : ''}${colabLinhas ? `<p class="eq-quem colab">Parte do colaborador: responder na Jornada (avise a pessoa)</p>${colabLinhas}` : ''}`;
     return `<details class="eq-linha ${x.atencao ? 'aten' : ''}">
       <summary><div class="ck-avatar">${iniciaisDe(l.nome)}</div>
         <div class="nm"><b>${l.nome}</b><span>${[l.cargo, x.dias !== null ? textoDias(x.dias) : ''].filter(Boolean).join(' · ')}</span></div>
@@ -7632,10 +7686,10 @@ function configurarGateConclusao(c){
 
   let checkinMarcoAtual = 15;
   window.abrirCheckin30 = function(cpf, marco){
-    checkinMarcoAtual = marco === 45 ? 45 : (marco === 15 ? 15 : (statusPontoM((window.MINHA_EQUIPE || []).find(x => x.cpf === cpf) || {}, 15) === 'pendente' ? 15 : (statusPontoM((window.MINHA_EQUIPE || []).find(x => x.cpf === cpf) || {}, 45) === 'pendente' ? 45 : 15)));
+    checkinMarcoAtual = (marco === 90 || marco === 45) ? marco : marco === 15 ? 15 : (statusPontoM((window.MINHA_EQUIPE || []).find(x => x.cpf === cpf) || {}, 90) === 'pendente') ? 90 : (marco === 15 ? 15 : (statusPontoM((window.MINHA_EQUIPE || []).find(x => x.cpf === cpf) || {}, 15) === 'pendente' ? 15 : (statusPontoM((window.MINHA_EQUIPE || []).find(x => x.cpf === cpf) || {}, 45) === 'pendente' ? 45 : 15)));
     const mx = checkinMarcoAtual;
     const tit = document.querySelector('#modalCheckin30 h3'); if (tit) tit.textContent = `Feedback · ${mx} dias`;
-    const p1 = document.querySelector('#modalCheckin30 .ck30-passo span'); if (p1) p1.innerHTML = `<strong>Conversa de ${mx} dias.</strong> Ao completar ${mx === 15 ? 'as duas primeiras semanas' : 'os 45 dias'}, você conversa a sós com a pessoa e dá um feedback: o que está indo bem, o que melhorar e como ela se sente.`;
+    const p1 = document.querySelector('#modalCheckin30 .ck30-passo span'); if (p1) p1.innerHTML = `<strong>Conversa de ${mx} dias.</strong> Ao completar ${mx === 15 ? 'as duas primeiras semanas' : mx === 45 ? 'os 45 dias' : 'o período de experiência (até o dia 90)'}, você conversa a sós com a pessoa e dá um feedback: o que está indo bem, o que melhorar e como ela se sente.`;
     document.querySelectorAll('#modalCheckin30 label').forEach(lb => { lb.innerHTML = lb.innerHTML.replace(/conversa de (15|30|45) dias/g, `conversa de ${mx} dias`); });
     const c = (window.MINHA_EQUIPE || []).find(x => x.cpf === cpf);
     if (!c) return;
@@ -7791,9 +7845,9 @@ function configurarGateConclusao(c){
       else await Promise.all(cpfs.map(async cpf => { try { const d = await getDoc(doc(db, col, cpf)); if (d.exists()) out[cpf] = d.data(); } catch (e) {} }));
       return out;
     };
-    const cols = ['checkins30', 'checkins45', 'checkins30Colab', 'checkins45Colab'].concat(frModo === 'equipe' ? [] : ['desligamentos']);
+    const cols = ['checkins30', 'checkins45', 'checkins30Colab', 'checkins45Colab', 'checkins90', 'checkins90Colab'].concat(frModo === 'equipe' ? [] : ['desligamentos']);
     const res = await Promise.all(cols.map(ler));
-    return { pessoas, f15: res[0], f45: res[1], c15: res[2], c45: res[3], desl: res[4] || {} };
+    return { pessoas, f15: res[0], f45: res[1], c15: res[2], c45: res[3], f90: res[4], c90: res[5], desl: res[6] || {} };
   }
   function frPreparar(){
     const sel = (id, vals, todos) => { const el = document.getElementById(id); el.innerHTML = `<option value="">${todos}</option>` + vals.map(v => `<option>${frEsc(v)}</option>`).join(''); };
@@ -7856,16 +7910,17 @@ function configurarGateConclusao(c){
     document.getElementById('frSit').style.display = frAbaAtual === 'fb' ? '' : 'none';
     if (frAbaAtual === 'fb') {
       const D = frDados;
-      const lista = D.pessoas.filter(c => ok(c) && (D.f15[c.cpf] || D.f45[c.cpf] || D.c15[c.cpf] || D.c45[c.cpf]))
-        .filter(c => !fS || (fS === 'div' ? (frDiscorda(D.f15[c.cpf], D.c15[c.cpf]) || frDiscorda(D.f45[c.cpf], D.c45[c.cpf])) : (frAlerta(D.f15[c.cpf], D.c15[c.cpf]) || frAlerta(D.f45[c.cpf], D.c45[c.cpf]))))
+      const par = c => [[D.f15[c.cpf], D.c15[c.cpf]], [D.f45[c.cpf], D.c45[c.cpf]], [D.f90[c.cpf], D.c90[c.cpf]]];
+      const lista = D.pessoas.filter(c => ok(c) && par(c).some(([g, k]) => g || k))
+        .filter(c => !fS || (fS === 'div' ? par(c).some(([g, k]) => frDiscorda(g, k)) : par(c).some(([g, k]) => frAlerta(g, k))))
         .sort((a, b) => String(a.Nome || '').localeCompare(String(b.Nome || ''), 'pt-BR'));
       corpo.innerHTML = lista.length ? lista.map((c, i) => {
-        const marco = m => { const fg = m === 45 ? D.f45[c.cpf] : D.f15[c.cpf], fc = m === 45 ? D.c45[c.cpf] : D.c15[c.cpf]; if (!fg && !fc) return '';
+        const marco = m => { const fg = (m === 90 ? D.f90 : m === 45 ? D.f45 : D.f15)[c.cpf], fc = (m === 90 ? D.c90 : m === 45 ? D.c45 : D.c15)[c.cpf]; if (!fg && !fc) return '';
           return `<section class="fr-marco"><h5>${m} dias ${frDiscorda(fg, fc) ? '<span class="fr-div">gestor e colaborador discordam</span>' : ''}</h5><div class="fr-lado">${frGestor(fg)}${frColab(fc)}</div></section>`; };
-        const tem = [D.f15[c.cpf] || D.c15[c.cpf] ? '15 dias' : '', D.f45[c.cpf] || D.c45[c.cpf] ? '45 dias' : ''].filter(Boolean);
-        const alerta = frAlerta(D.f15[c.cpf], D.c15[c.cpf]) || frAlerta(D.f45[c.cpf], D.c45[c.cpf]);
+        const tem = [D.f15[c.cpf] || D.c15[c.cpf] ? '15 dias' : '', D.f45[c.cpf] || D.c45[c.cpf] ? '45 dias' : '', D.f90[c.cpf] || D.c90[c.cpf] ? '90 dias' : ''].filter(Boolean);
+        const alerta = par(c).some(([g, k]) => frAlerta(g, k));
         return `<details class="fr-pessoa"${i === 0 ? ' open' : ''}><summary><b>${frEsc(nomeC(c.Nome))}</b><span>${frEsc([c.Cargo, c.Loja].filter(Boolean).join(' · '))}</span>
-          <span class="fr-tags">${alerta ? '<em class="al">com alerta</em>' : ''}${tem.map(t => `<em>${t}</em>`).join('')}</span></summary>${marco(15)}${marco(45)}</details>`; }).join('')
+          <span class="fr-tags">${alerta ? '<em class="al">com alerta</em>' : ''}${tem.map(t => `<em>${t}</em>`).join('')}</span></summary>${marco(15)}${marco(45)}${marco(90)}</details>`; }).join('')
         : '<p class="jornada-vazio">Nenhum feedback registrado com esses filtros.</p>';
     } else {
       const D = frDados;
@@ -7902,7 +7957,7 @@ function configurarGateConclusao(c){
     await carregarChecklists(colabs.filter(c => emIntegracao(c) && !ehLideranca(c)).map(c => c.cpf));
     // feedbacks dos dias 15 e 45 (todos os locais, até o dia 90)
     const cand = colabs.filter(c => { const d = diasDeCasa(c); return d !== null && d >= 15 && d <= 90; });
-    const feitosM = { 15: new Set(), 45: new Set() };
+    const feitosM = { 15: new Set(), 45: new Set(), 90: new Set() };
     for (const m of MARCOS_PONTO) for (let i = 0; i < cand.length; i += 30) {
       try { const snap = await getDocs(query(collection(db, colPonto(m)), where('Cpf', 'in', cand.slice(i, i + 30).map(c => c.cpf))));
         snap.forEach(d => { feitosM[m].add(d.id); cachePonto(m)[d.id] = d.data(); }); } catch (e) {}
@@ -7971,7 +8026,7 @@ function configurarGateConclusao(c){
   // acompanhamento de quem responde diretamente: as trilhas da própria pessoa e o feedback de 30 dias (que o gestor dela registra)
   function euTexto(p, rotulo){
     if (!p) return '';
-    const x = []; if (p.trAt) x.push('trilha atrasada'); if (p.pendCheckin) x.push('feedback de ' + (p.pendMarcos || []).join(' e ') + ' dias pendente');
+    const x = []; if (p.trAt) x.push('trilha atrasada'); if (p.pendCheckin) x.push('feedback de ' + window.listaDias(p.pendMarcos || []) + ' dias pendente');
     return x.length ? `<span class="pend">${rotulo}: ${x.join(' · ')}</span>` : '';
   }
   function blocoProprioHtml(p, rotulo){
@@ -7984,7 +8039,7 @@ function configurarGateConclusao(c){
     const barra = l && l.total ? `<div class="eq-bar" style="margin-top:8px;"><label>Trilhas <b>${l.concluidos} de ${l.total} concluídas</b></label><div class="ck-prog"><i style="width:${l.pct}%"></i></div></div>` : `<p class="jornada-vazio" style="text-align:left; padding:6px 0 0;">Nenhuma trilha obrigatória para este cargo.</p>`;
     const lista = falta.length ? `<ul class="eq-falta">${falta.map(f => `<li><span>${nomeTrilhaCurto(f.n)}</span><span class="eq-tag ${f.k}">${f.t}</span></li>`).join('')}</ul>` : '';
     let ponto;
-    if (p.pendCheckin) ponto = `<span class="eq-tag alerta">Feedback de ${(p.pendMarcos || []).join(' e ')} dias sem registro</span><span class="espaco"></span><button class="btn-secondary" style="padding:8px 14px; font-size:12.5px;" onclick="window.registrarCheckinDireto('${c.cpf}', ${(p.pendMarcos || [15])[0]})">Registrar feedback de ${(p.pendMarcos || [15])[0]} dias →</button>`;
+    if (p.pendCheckin) ponto = `<span class="eq-tag alerta">Feedback de ${window.listaDias(p.pendMarcos || [])} dias sem registro</span><span class="espaco"></span><button class="btn-secondary" style="padding:8px 14px; font-size:12.5px;" onclick="window.registrarCheckinDireto('${c.cpf}', ${(p.pendMarcos || [15])[0]})">Registrar feedback de ${(p.pendMarcos || [15])[0]} dias →</button>`;
     else if (p.checkinFeito) ponto = `<span class="eq-tag ok">Feedbacks registrados</span>`;
     else if (dias !== null && dias < 15) ponto = `<span class="eq-tag">O feedback de 15 dias libera em ${15 - dias} dia${15 - dias === 1 ? '' : 's'}</span>`;
     else ponto = '';

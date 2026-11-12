@@ -631,6 +631,7 @@ window.MARCA_ATIVA = 'jornada';
               <button class="ghost-btn" onclick="document.getElementById('lojasFileInput').click()">📎 <span id="lojasFileNome">Escolher arquivo</span></button>
               <input type="file" id="lojasFileInput" accept=".xlsx,.xls,.csv" style="display:none;" onchange="onLojasExcelEscolhido(this)">
               <button class="new-btn" id="btnImportarLojas" onclick="importarLojasPlanilha()" disabled>Importar lojas</button>
+              <button class="new-btn" id="btnPadronizarLojas" onclick="padronizarLojasPlanilha()" disabled style="background:#00630F;">Padronizar nomes pela planilha</button>
             </div>
           </div>
           <div id="importarLojasResultado" style="display:none; margin:-6px 0 18px; font-size:13px; font-weight:600;"></div>
@@ -991,7 +992,7 @@ window.MARCA_ATIVA = 'jornada';
 
       <!-- ===== 1º MÊS NA VISÃO DO COLABORADOR (só o DHO vê) ===== -->
       <div id="relSub-primeiroMes" class="rel-subview" style="display:none;">
-        <p class="muted" style="margin:0 0 14px; font-size:13px; color:var(--ink-soft);">O que a própria pessoa respondeu nos dias 15 e 45, ao lado do feedback do gestor do mesmo dia. Veem estas respostas: o DHO, o gestor direto, o coordenador da regional e o gerente de operações.</p>
+        <p class="muted" style="margin:0 0 14px; font-size:13px; color:var(--ink-soft);">O que a própria pessoa respondeu nos dias 15, 45 e 90, ao lado do feedback do gestor do mesmo dia. Veem estas respostas: o DHO, o gestor direto, o coordenador da regional e o gerente de operações.</p>
         <div class="kpi-row" id="pmKpis" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin-bottom:18px;"></div>
         <div class="filtros-linha" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px;">
           <select id="pmFLocal" onchange="renderPrimeiroMes()"><option value="">Local: todos</option><option>Loja</option><option>Casa Cabana</option><option>Cozinha Central</option></select>
@@ -5150,6 +5151,71 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     arquivoLojasEscolhido = input.files[0] || null;
     document.getElementById('lojasFileNome').textContent = arquivoLojasEscolhido ? arquivoLojasEscolhido.name : 'Escolher arquivo';
     document.getElementById('btnImportarLojas').disabled = !arquivoLojasEscolhido;
+    const bp = document.getElementById('btnPadronizarLojas'); if (bp) bp.disabled = !arquivoLojasEscolhido;
+  };
+
+  // Usa a planilha (de colaboradores ou de lojas) como o jeito certo de escrever cada loja e regional:
+  // renomeia o cadastro de lojas, apaga as que não estão na planilha, corrige a loja/regional de cada colaborador
+  // e o público das trilhas, materiais, programas e banners. Mostra o resumo e só grava depois de confirmar.
+  window.padronizarLojasPlanilha = async function(){
+    if (!arquivoLojasEscolhido) return;
+    const btn = document.getElementById('btnPadronizarLojas'), res = document.getElementById('importarLojasResultado');
+    btn.disabled = true; const txt = btn.textContent; btn.textContent = 'Lendo…'; res.style.display = 'none';
+    try {
+      const wb = XLSX.read(await arquivoLojasEscolhido.arrayBuffer(), { type: 'array' });
+      const linhas = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: '' });
+      const pegar = (l, ks) => { for (const k of Object.keys(l)) if (ks.includes(k.trim().toLowerCase())) return String(l[k]).replace(/\s+/g, ' ').trim(); return ''; };
+      const certoLoja = new Map(), certoReg = new Map();
+      linhas.forEach(l => {
+        const loja = pegar(l, ['loja', 'lojas', 'unidade', 'nome da loja']), reg = pegar(l, ['regional', 'setor regional']);
+        if (loja && !certoLoja.has(chaveNome(loja))) certoLoja.set(chaveNome(loja), { nome: loja, regional: reg });
+        if (reg && !certoReg.has(chaveNome(reg))) certoReg.set(chaveNome(reg), reg);
+      });
+      if (!certoLoja.size) throw new Error('sem coluna de loja');
+      const mapaLoja = v => { const x = certoLoja.get(chaveNome(v)); return x ? x.nome : v; };
+      const mapaReg = v => certoReg.get(chaveNome(v)) || v;
+      // 1. cadastro de lojas
+      const snapLojas = await getDocs(collection(db, 'lojas'));
+      const ops = [], vistas = new Set(); let renomeadas = 0, apagadas = 0, criadas = 0;
+      snapLojas.forEach(d => {
+        const k = chaveNome(d.data().Nome), certo = certoLoja.get(k);
+        if (!certo || vistas.has(k)) { ops.push(b => b.delete(d.ref)); apagadas++; return; }   // fora da planilha, ou repetida
+        vistas.add(k);
+        const reg = certo.regional || mapaReg(d.data().Regional || '');
+        if (d.data().Nome !== certo.nome || (d.data().Regional || '') !== reg) { ops.push(b => b.update(d.ref, { Nome: certo.nome, Regional: reg })); renomeadas++; }
+      });
+      certoLoja.forEach((v, k) => { if (!vistas.has(k)) { ops.push(b => b.set(doc(collection(db, 'lojas')), { Nome: v.nome, Regional: v.regional, CriadoEm: serverTimestamp() })); criadas++; } });
+      // 2. colaboradores
+      let colabsCorrigidos = 0; const semLoja = new Set();
+      colaboradoresCache.forEach(c => {
+        const upd = {};
+        if (c.Loja) { const n = mapaLoja(c.Loja); if (n !== c.Loja) upd.Loja = n; if (!certoLoja.has(chaveNome(c.Loja)) && (c.Local || 'Loja') === 'Loja') semLoja.add(c.Loja); }
+        if (c.Regional) { const n = mapaReg(c.Regional); if (n !== c.Regional) upd.Regional = n; }
+        if (Object.keys(upd).length) { ops.push(b => b.update(doc(db, 'colaboradores', c.cpf), upd)); colabsCorrigidos++; }
+      });
+      // 3. público de trilhas, biblioteca, programas e banners
+      let publicos = 0;
+      for (const col of ['cursos', 'trilhas', 'biblioteca', 'programas', 'banners']) {
+        let sn; try { sn = await getDocs(collection(db, col)); } catch (e) { continue; }
+        sn.forEach(d => {
+          const x = d.data(), upd = {};
+          if (Array.isArray(x.LojasPermitidas)) { const n = [...new Set(x.LojasPermitidas.map(mapaLoja))]; if (JSON.stringify(n) !== JSON.stringify(x.LojasPermitidas)) upd.LojasPermitidas = n; }
+          if (Array.isArray(x.RegionaisPermitidas)) { const n = [...new Set(x.RegionaisPermitidas.map(mapaReg))]; if (JSON.stringify(n) !== JSON.stringify(x.RegionaisPermitidas)) upd.RegionaisPermitidas = n; }
+          if (Object.keys(upd).length) { ops.push(b => b.update(d.ref, upd)); publicos++; }
+        });
+      }
+      const resumo = `A planilha tem ${certoLoja.size} lojas e ${certoReg.size} regionais.\n\nVou:\n• renomear ${renomeadas} loja(s) do cadastro, criar ${criadas} e apagar ${apagadas} (repetidas ou fora da planilha);\n• corrigir a loja/regional de ${colabsCorrigidos} colaborador(es);\n• ajustar o público de ${publicos} trilha(s), material(is) ou programa(s).` +
+        (semLoja.size ? `\n\nAtenção: ${semLoja.size} loja(s) dos colaboradores não estão na planilha e ficam como estão: ${[...semLoja].slice(0, 12).join(', ')}${semLoja.size > 12 ? '…' : ''}` : '') + `\n\nConfirmar?`;
+      if (!ops.length) { res.textContent = '✅ Tudo já está escrito como na planilha. Nada para mudar.'; res.style.color = 'var(--green-dark)'; res.style.display = 'block'; return; }
+      if (!confirm(resumo)) { res.textContent = 'Nada foi alterado.'; res.style.color = 'var(--ink-soft)'; res.style.display = 'block'; return; }
+      btn.textContent = 'Gravando…';
+      for (let i = 0; i < ops.length; i += 400) { const b = writeBatch(db); ops.slice(i, i + 400).forEach(f => f(b)); await b.commit(); }
+      res.textContent = `✅ Padronizado: ${renomeadas} loja(s) renomeada(s), ${criadas} criada(s), ${apagadas} apagada(s); ${colabsCorrigidos} colaborador(es) e ${publicos} público(s) corrigidos.` + (semLoja.size ? ` Ficaram fora da planilha: ${[...semLoja].join(', ')}.` : '');
+      res.style.color = 'var(--green-dark)'; res.style.display = 'block';
+    } catch (e) {
+      console.error('Padronizar lojas:', e);
+      res.textContent = 'Não consegui ler essa planilha. Ela precisa ter uma coluna "Loja" (ou "LOJAS") e, se tiver, "Regional".'; res.style.color = '#B4462B'; res.style.display = 'block';
+    } finally { btn.textContent = txt; btn.disabled = !arquivoLojasEscolhido; }
   };
 
   window.importarLojasPlanilha = async function(){
@@ -5548,6 +5614,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
   let desligamentosCache = [];
   let checkins30Cache = [];   // feedback do dia 15 (coleção checkins30, nome mantido)
   let checkins45Cache = [];   // feedback do dia 45 (coleção checkins45)
+  let checkins90Cache = [];   // feedback do dia 90 (coleção checkins90)
 
   function iniciarDesligamentos(){
     onSnapshot(collection(db, 'desligamentos'), (snapshot) => {
@@ -5568,6 +5635,11 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
       renderCheckin30Relatorio();
       if (window.renderIndicadoresSeAberto) window.renderIndicadoresSeAberto();
     }, (err) => console.error('Erro ao carregar pontos de 45 dias:', err));
+    onSnapshot(collection(db, 'checkins90'), (snapshot) => {
+      checkins90Cache = snapshot.docs.map(d => ({ cpf: d.id, ...d.data() }));
+      renderCheckin30Relatorio();
+      if (window.renderIndicadoresSeAberto) window.renderIndicadoresSeAberto();
+    }, (err) => console.error('Erro ao carregar pontos de 90 dias:', err));
   }
 
   function formatarDataHora(ts){
@@ -5764,7 +5836,8 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     { id: 'dia1', prazo: 3, itens: ['b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7'], auto: { b3: 'trilhas' } },
     { id: 'semana', prazo: 8, itens: ['c1', 'c2'] },
     { id: 'd30', prazo: 25, itens: ['d1'] },   // conversa de 15 dias (o item automático do colaborador não deixa atrasado)
-    { id: 'd45', prazo: 55, itens: ['e1'] }    // conversa de 45 dias
+    { id: 'd45', prazo: 55, itens: ['e1'] },   // conversa de 45 dias
+    { id: 'd90', prazo: 90, itens: ['g1'] }    // conversa de 90 dias
   ];
   const IJ_COR = { ink: '#121A14', mut: '#575F56', sub: '#6B7269', bd: '#E9E6DF', br: '#00630F', brs: '#E8F2E5', ac: '#FF5D31', aci: '#C23A12', pos: '#17762A', neg: '#C2321A', amb: '#D89840', s3: '#3F73B5', prev: '#A3A8A0', trk: '#EFEDE7' };
   const IJ_MOTIVOS_INICIATIVA = { colaborador: 'Colaborador', empresa: 'Empresa', fim_contrato: 'Fim de contrato', outro: 'Outro' };
@@ -5836,6 +5909,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     const prog = {}; progressoCache.forEach(p => { if (p && p.Cpf && p.CursoId) (prog[p.Cpf] = prog[p.Cpf] || {})[p.CursoId] = p; });
     const c30 = {}; checkins30Cache.forEach(x => { c30[x.cpf] = x; });   // feedback de 15 dias
     const c45 = {}; (typeof checkins45Cache !== 'undefined' ? checkins45Cache : []).forEach(x => { c45[x.cpf] = x; });   // feedback de 45 dias
+    const c90 = {}; (typeof checkins90Cache !== 'undefined' ? checkins90Cache : []).forEach(x => { c90[x.cpf] = x; });   // feedback de 90 dias
     const desl = {}; desligamentosCache.forEach(x => { desl[x.cpf] = x; });
     const pm = {}; primeiroMesCache.forEach(x => { pm[x.cpf] = x; });
     const porCpf = {}; colaboradoresCache.forEach(c => { porCpf[c.cpf] = c; });
@@ -5879,7 +5953,8 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
       const reg = c30[c.cpf] || null;
       // feedbacks dos dias 15 e 45 (todos os locais): só entram depois do prazo (dia + 10) e se a pessoa não tinha passado do dia no início da Jornada
       const iniOk = Date.now() > (new Date(ijInicio + 'T00:00:00').getTime() || 0);
-      const pts = [15, 45].map(m => (iniOk && d > m + 10 && ijAntesInicio(c) <= m) ? { m, feito: !!(m === 45 ? c45 : c30)[c.cpf], atraso: d - (m + 10) } : null).filter(Boolean);
+      const VENCE = { 15: 25, 45: 55, 90: 90 }, LIB = { 15: 15, 45: 45, 90: 80 };
+      const pts = [15, 45, 90].map(m => (iniOk && d > VENCE[m] && ijAntesInicio(c) <= LIB[m]) ? { m, feito: !!(m === 90 ? c90 : m === 45 ? c45 : c30)[c.cpf], atraso: d - VENCE[m] } : null).filter(Boolean);
       const p30 = pts.length ? (pts.some(x => !x.feito) ? 'pendente' : 'feito') : null;
       const temTrilha = obrig.some(cu => ijPodeVer(cu, c));
       const trSt = !temTrilha ? null : tr.ok ? (tr.ate7 ? 'ok_prazo' : 'ok_fora') : (dp !== null && dp > 7 ? 'atrasada' : 'andamento');
@@ -5899,7 +5974,11 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     // indicadores gerais
     const ckBase = linhas.filter(l => l.ck && l.ck.devido);   // só quem já tem etapa com prazo vencido
     const ckNoPrazo = ckBase.filter(l => !l.ck.emAtraso).length;
-    const p30Base = linhas.flatMap(l => l.pts);   // cada ponto vencido conta uma vez
+    // feedback de 90 dias: vence no dia 90, então conta para quem já passou dele (até o dia 130)
+    const iniOk90 = Date.now() > (new Date(ijInicio + 'T00:00:00').getTime() || 0);
+    const pos90 = ativos.filter(c => { const d = ijDias(c); return iniOk90 && d !== null && d > 90 && d <= 130 && ijAntesInicio(c) <= 80; })
+      .map(c => ({ c, pt: { m: 90, feito: !!c90[c.cpf], atraso: ijDias(c) - 90 } }));
+    const p30Base = linhas.flatMap(l => l.pts).concat(pos90.map(x => x.pt));   // cada ponto vencido conta uma vez
     const p30Feitos = p30Base.filter(x => x.feito).length;
     const t7Base = admPeriodo.filter(c => c.Status !== 'inativo' && ijDiasPrazo(c) > 7);
     // trilhas concluídas, sem olhar prazo, de quem está em integração
@@ -5913,6 +5992,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     linhas.forEach(l => { if (!ijLoja(l.c) || !l.c.Loja) return; const L = pegaLoja(l.c.Loja); L.regional = ijNomeLoja(l.c.Regional) || L.regional;
       if (l.ck && l.ck.devido) { L.ck[1]++; if (!l.ck.emAtraso) L.ck[0]++; }
       l.pts.forEach(x => { L.p30[1]++; if (x.feito) L.p30[0]++; }); });
+    pos90.forEach(({ c, pt }) => { if (!ijLoja(c) || !c.Loja) return; const L = pegaLoja(c.Loja); L.p30[1]++; if (pt.feito) L.p30[0]++; });
     t7Base.forEach(c => { if (!ijLoja(c) || !c.Loja) return; const L = pegaLoja(c.Loja); L.t7[1]++; if (trilhas(c).ate7) L.t7[0]++; });
     comTrilha.forEach(l => { if (!ijLoja(l.c) || !l.c.Loja) return; const L = pegaLoja(l.c.Loja); L.cc = L.cc || [0, 0]; L.cc[1]++; if (l.tr.ok) L.cc[0]++; });
     desligParecer.forEach(c => { if (!c.Loja) return; const L = pegaLoja(c.Loja); L.par[1]++; if (desl[c.cpf]) L.par[0]++; });
@@ -5943,7 +6023,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     const pegaGes = c => { const k = c.CpfGestor || 'sem'; const g = porCpf[c.CpfGestor];
       return (ges[k] = ges[k] || { cpf: k, nome: g ? g.Nome : (c.Gestor || 'Sem gestor no cadastro'), loja: ijNomeLoja(g ? g.Loja : c.Loja), ck: [0, 0], p30: [0, 0], par: [0, 0], pessoas: [] }); };
     linhas.forEach(l => { if (l.ck && l.ck.emAtraso) { const g = pegaGes(l.c); g.ck[0]++; g.ck[1] = Math.max(g.ck[1], l.ck.atraso); g.pessoas.push([l.c, 'Checklist atrasado há ' + l.ck.atraso + ' dias']); }
-      if (l.p30 === 'pendente') { const g = pegaGes(l.c); g.p30[0]++; g.p30[1] = Math.max(g.p30[1], l.p30Atraso); g.pessoas.push([l.c, 'Feedback de ' + l.p30Marcos.join(' e ') + ' dias atrasado há ' + l.p30Atraso + ' dias']); } });
+      if (l.p30 === 'pendente') { const g = pegaGes(l.c); g.p30[0]++; g.p30[1] = Math.max(g.p30[1], l.p30Atraso); g.pessoas.push([l.c, 'Feedback de ' + (l.p30Marcos.length > 1 ? l.p30Marcos.slice(0, -1).join(', ') + ' e ' + l.p30Marcos[l.p30Marcos.length - 1] : l.p30Marcos[0]) + ' dias atrasado há ' + l.p30Atraso + ' dias']); } });
     parecerPend.forEach(c => { const g = pegaGes(c); const d = Math.floor((agora - ijData(c.InativadoEm)) / IJ_DIA); g.par[0]++; g.par[1] = Math.max(g.par[1], d); g.pessoas.push([c, 'Parecer de desligamento esperando há ' + d + ' dias']); });
     const listaGes = Object.values(ges).map(g => ({ ...g, max: Math.max(g.ck[1], g.p30[1], g.par[1]) })).sort((a, b) => b.max - a.max);
 
@@ -6023,7 +6103,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
         ${ijKpi('Lojas em conformidade', R.listaLojas.length ? ijFmtPct(ijPct(R.lojasConf, R.listaLojas.length)) : '—', R.listaLojas.length ? `${R.lojasConf} de ${R.listaLojas.length} lojas com índice de 80% ou mais` : 'nenhum prazo venceu ainda')}
         ${ijKpi('Trilhas concluídas', ijFmtPct(ijPct(R.concl, R.comTrilha.length)), `${R.concl} de ${R.comTrilha.length} em integração · ${R.linhas.filter(l => l.trSt === 'ok_prazo').length} no prazo`)}
         ${ijKpi('Checklists no prazo', ijFmtPct(ijPct(R.ckNoPrazo, R.ckBase.length)), R.ckBase.length ? `${R.ckNoPrazo} de ${R.ckBase.length} pessoas com etapa vencida` : 'nenhuma etapa venceu ainda')}
-        ${ijKpi('Feedbacks registrados', ijFmtPct(ijPct(R.p30Feitos, R.p30Base.length)), R.p30Base.length ? `${R.p30Feitos} de ${R.p30Base.length} feedbacks de 15 e 45 dias com prazo vencido` : 'nenhum feedback venceu ainda')}
+        ${ijKpi('Feedbacks registrados', ijFmtPct(ijPct(R.p30Feitos, R.p30Base.length)), R.p30Base.length ? `${R.p30Feitos} de ${R.p30Base.length} feedbacks de 15, 45 e 90 dias com prazo vencido` : 'nenhum feedback venceu ainda')}
         ${ijKpi('Pareceres pendentes', R.parecerPend.length, R.parecerPend.length ? 'selecione para ver a lista' : 'nenhum desligamento sem parecer', R.parecerPend.length ? C.aci : '', R.parecerPend.length ? "ijLista('pareceres')" : '')}
       </div>
       <div class="ij-g3">
@@ -6136,7 +6216,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
       titulo = D.loja;
       const cab = ['Nome', 'Cargo', 'Dias de casa', 'Trilhas', 'Checklist', 'Feedbacks'];
       linhas = D.pessoas.sort((a, b) => (b.trSt === 'atrasada') - (a.trSt === 'atrasada') || b.d - a.d)
-        .map(l => [ijNomeCurto(l.c.Nome), l.c.Cargo || '', String(l.d), TRT[l.trSt] || '—', CKT[l.ckSt] || '—', l.p30 === 'feito' ? 'Registrados' : l.p30 === 'pendente' ? 'Feedback de ' + l.p30Marcos.join(' e ') + ' dias atrasado há ' + l.p30Atraso + ' dias' : '—']);
+        .map(l => [ijNomeCurto(l.c.Nome), l.c.Cargo || '', String(l.d), TRT[l.trSt] || '—', CKT[l.ckSt] || '—', l.p30 === 'feito' ? 'Registrados' : l.p30 === 'pendente' ? 'Feedback de ' + (l.p30Marcos.length > 1 ? l.p30Marcos.slice(0, -1).join(', ') + ' e ' + l.p30Marcos[l.p30Marcos.length - 1] : l.p30Marcos[0]) + ' dias atrasado há ' + l.p30Atraso + ' dias' : '—']);
       const m = document.getElementById('ijModal');
       document.getElementById('ijModalTitulo').textContent = titulo;
       document.getElementById('ijModalCorpo').innerHTML = linhas.length ? `<table class="ij-tb"><tr>${cab.map(h => `<th>${h}</th>`).join('')}</tr>${linhas.map(l => `<tr>${l.map((x, k) => `<td${/Atrasad/.test(x) ? ` style="color:${IJ_COR.aci};font-weight:600"` : ''}>${ijEsc(x)}</td>`).join('')}</tr>`).join('')}</table>` : ijVazio('Ninguém em integração nesta loja.');
@@ -6180,8 +6260,10 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
   const PM_FUT = { sim: 'Sim', talvez: 'Talvez', nao: 'Não' };
   const PM_FUT_COR = { sim: '#4F9C40', talvez: '#D89840', nao: '#B4462B' };
   function iniciarPrimeiroMes(){
-    let c15 = [], c45 = [];
-    const juntar = () => { primeiroMesCache = [...c15, ...c45]; renderPrimeiroMes(); };
+    let c15 = [], c45 = [], c90 = [];
+    const juntar = () => { primeiroMesCache = [...c15, ...c45, ...c90]; renderPrimeiroMes(); };
+    onSnapshot(collection(db, 'checkins90Colab'), (snapshot) => { c90 = snapshot.docs.map(d => ({ cpf: d.id, ...d.data(), _marco: 90 })); juntar(); },
+      (err) => console.error('Erro ao carregar a visão do colaborador (90 dias):', err));
     onSnapshot(collection(db, 'checkins30Colab'), (snapshot) => { c15 = snapshot.docs.map(d => ({ cpf: d.id, ...d.data(), _marco: 15 })); juntar(); },
       (err) => console.error('Erro ao carregar a visão do colaborador (15 dias):', err));
     onSnapshot(collection(db, 'checkins45Colab'), (snapshot) => { c45 = snapshot.docs.map(d => ({ cpf: d.id, ...d.data(), _marco: 45 })); juntar(); },
@@ -6191,7 +6273,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
   function pmEnriquecer(){
     return primeiroMesCache.map(r => {
       const col = colaboradoresCache.find(x => x.cpf === r.cpf) || {};
-      const g = (r._marco === 45 ? checkins45Cache : checkins30Cache).find(x => x.cpf === r.cpf) || null;
+      const g = (r._marco === 90 ? checkins90Cache : r._marco === 45 ? checkins45Cache : checkins30Cache).find(x => x.cpf === r.cpf) || null;
       const alertas = [];
       [['Chegada', 'chegada'], ['Seguranca', 'segurança no trabalho'], ['Tratamento', 'como é tratado(a)']].forEach(([k, n]) => { if (r[k] === 'vermelho') alertas.push(n + ': difícil'); });
       if (r.Futuro === 'nao') alertas.push('não se vê no Cabana'); else if (r.Futuro === 'talvez') alertas.push('talvez continue');
@@ -6217,20 +6299,21 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     const lista = todos.filter(r => (!fLocal || r.Local === fLocal) && (!fAl || r._alertas.length) && (!fDiv || r._div) && (!fBusca || String(r.Nome).toLowerCase().includes(fBusca)))
       .sort((a, b) => (b._em || 0) - (a._em || 0));
     const agora = new Date();
-    const feitosM = { 15: new Set(primeiroMesCache.filter(r => r._marco === 15).map(r => r.cpf)), 45: new Set(primeiroMesCache.filter(r => r._marco === 45).map(r => r.cpf)) };
+    const feitosM = { 15: new Set(primeiroMesCache.filter(r => r._marco === 15).map(r => r.cpf)), 45: new Set(primeiroMesCache.filter(r => r._marco === 45).map(r => r.cpf)), 90: new Set(primeiroMesCache.filter(r => r._marco === 90).map(r => r.cpf)) };
     const pendentes = [];
     colaboradoresCache.forEach(c => {
       if (c.Status === 'inativo' || !c.Admissao || !c.Admissao.toDate || c.Nivel === 'Admin') return;
       const d = Math.floor((agora - c.Admissao.toDate()) / 86400000);
       if (d >= 15 && d <= 44 && !feitosM[15].has(c.cpf)) pendentes.push({ ...c, Nome: (c.Nome || c.cpf) + ' (15 dias)' });
       if (d >= 45 && d <= 74 && !feitosM[45].has(c.cpf)) pendentes.push({ ...c, Nome: (c.Nome || c.cpf) + ' (45 dias)' });
+      if (d >= 80 && d <= 100 && !feitosM[90].has(c.cpf)) pendentes.push({ ...c, Nome: (c.Nome || c.cpf) + ' (90 dias)' });
     });
     document.getElementById('pmPendentes').innerHTML = renderListaCard(pendentes.map(c => linhaSimples(c.Nome || c.cpf, [c.Loja, c.Local || 'Loja'].filter(Boolean).join(' · '))), 'Ninguém aguardando agora.', 12);
     document.getElementById('pmPendCnt').textContent = pendentes.length;
     const comAl = lista.filter(r => r._alertas.length).length, comDiv = lista.filter(r => r._div).length;
     document.getElementById('pmKpis').innerHTML =
       aKpi('Respostas', lista.length, lista.length !== todos.length ? `de ${todos.length} no total` : 'pessoas que responderam') +
-      aKpi('Aguardando', pendentes.length, 'dia 15 ao 44 ou dia 45 ao 74 de casa', pendentes.length ? '#D89840' : '') +
+      aKpi('Aguardando', pendentes.length, 'janelas dos dias 15, 45 e 90', pendentes.length ? '#D89840' : '') +
       aKpi('Com sinal de alerta', comAl, '"difícil" ou dúvida sobre continuar', comAl ? '#B4462B' : '') +
       aKpi('Gerente e pessoa discordam', comDiv, 'olhar com atenção', comDiv ? '#B4462B' : '');
     const cel = v => `<span class="farol-cel"><i class="fdot" style="background:${A_COR[v] || '#CFC8B8'}"></i>${PM_ROT[v] || '—'}</span>`;
@@ -6255,7 +6338,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
 
   /* ================== PONTO DE CHECAGEM · 30 DIAS ================== */
   function aChkEnriquecidos(){
-    return [...checkins30Cache.map(c => ({ ...c, _marco: 15 })), ...checkins45Cache.map(c => ({ ...c, _marco: 45 }))].map(c => {
+    return [...checkins30Cache.map(c => ({ ...c, _marco: 15 })), ...checkins45Cache.map(c => ({ ...c, _marco: 45 })), ...checkins90Cache.map(c => ({ ...c, _marco: 90 }))].map(c => {
       const col = colaboradoresCache.find(x => x.cpf === c.cpf);
       const reg = aTs(c.RegistradoEm);
       const conv = c.DataConversa ? new Date(c.DataConversa + 'T12:00:00') : reg;
@@ -6294,13 +6377,14 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
 
     // pendentes: todos os locais, ponto de 15 (a partir do dia 15) e de 45 (a partir do dia 45), até o dia 90; prazo de 10 dias cada
     const agora = new Date();
-    const feitosM = { 15: new Set(checkins30Cache.map(c => c.cpf)), 45: new Set(checkins45Cache.map(c => c.cpf)) };
+    const feitosM = { 15: new Set(checkins30Cache.map(c => c.cpf)), 45: new Set(checkins45Cache.map(c => c.cpf)), 90: new Set(checkins90Cache.map(c => c.cpf)) };
+    const LIBM = { 15: 15, 45: 45, 90: 80 }, VENM = { 15: 25, 45: 55, 90: 90 };
     const iniJ = new Date((typeof ijInicio !== 'undefined' ? ijInicio : '2026-11-11') + 'T00:00:00');
     const pendentes = [];
     colaboradoresCache.forEach(c => {
       if (c.Status === 'inativo' || c.Nivel === 'Admin' || !c.Admissao || !c.Admissao.toDate) return;
       const adm = c.Admissao.toDate(), dias = Math.floor((agora - adm) / 86400000), antes = Math.max(0, Math.floor((iniJ - adm) / 86400000));
-      [15, 45].forEach(m => { if (dias >= m && dias <= 90 && antes <= m && !feitosM[m].has(c.cpf)) pendentes.push({ ...c, _marco: m, diasAtraso: dias - (m + 10) }); });
+      [15, 45, 90].forEach(m => { if (dias >= LIBM[m] && dias <= 90 && antes <= LIBM[m] && !feitosM[m].has(c.cpf)) pendentes.push({ ...c, _marco: m, diasAtraso: dias - VENM[m] }); });
     });
     pendentes.sort((a, b) => b.diasAtraso - a.diasAtraso);
     document.getElementById('relCheckin30Pendentes').innerHTML = renderListaCard(
@@ -6318,8 +6402,8 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     const pos = comPot.filter(c => c.Potencial === 'sim' || c.Potencial === 'sim_desenvolver').length;
     const comAlerta = lista.filter(c => c._alertas.length).length;
     document.getElementById('chkKpis').innerHTML =
-      aKpi('Feedbacks registrados' + (filtrado ? ' (filtrados)' : ''), lista.length, filtrado ? `de ${todos.length} no total` : 'conversas de 15 e 45 dias') +
-      aKpi('Aguardando', pendentes.length, 'feedbacks de 15 ou 45 dias sem registro', pendentes.length ? '#D89840' : '') +
+      aKpi('Feedbacks registrados' + (filtrado ? ' (filtrados)' : ''), lista.length, filtrado ? `de ${todos.length} no total` : 'conversas de 15, 45 e 90 dias') +
+      aKpi('Aguardando', pendentes.length, 'feedbacks de 15, 45 ou 90 dias sem registro', pendentes.length ? '#D89840' : '') +
       aKpi('Potencial positivo', comPot.length ? Math.round((pos / comPot.length) * 100) + '%' : '—', comPot.length ? `${pos} de ${comPot.length} respostas` : 'sem respostas ainda', '#4F9C40') +
       aKpi('Com sinal de alerta', comAlerta, 'preocupante ou dúvida sobre continuar', comAlerta ? '#B4462B' : '');
 
