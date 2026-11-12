@@ -632,6 +632,7 @@ window.MARCA_ATIVA = 'jornada';
               <input type="file" id="lojasFileInput" accept=".xlsx,.xls,.csv" style="display:none;" onchange="onLojasExcelEscolhido(this)">
               <button class="new-btn" id="btnImportarLojas" onclick="importarLojasPlanilha()" disabled>Importar lojas</button>
               <button class="new-btn" id="btnPadronizarLojas" onclick="padronizarLojasPlanilha()" disabled style="background:#00630F;">Padronizar nomes pela planilha</button>
+              <button class="ghost-btn" type="button" onclick="removerLojasComNomeDePessoa()">Remover lojas com nome de pessoa</button>
             </div>
           </div>
           <div id="importarLojasResultado" style="display:none; margin:-6px 0 18px; font-size:13px; font-weight:600;"></div>
@@ -5157,6 +5158,21 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
   // Usa a planilha (de colaboradores ou de lojas) como o jeito certo de escrever cada loja e regional:
   // renomeia o cadastro de lojas, apaga as que não estão na planilha, corrige a loja/regional de cada colaborador
   // e o público das trilhas, materiais, programas e banners. Mostra o resumo e só grava depois de confirmar.
+  // não precisa de planilha: apaga do cadastro de lojas só o que for igual ao nome de algum colaborador
+  window.removerLojasComNomeDePessoa = async function(){
+    const res = document.getElementById('importarLojasResultado');
+    try {
+      const nomes = new Set(colaboradoresCache.map(c => chaveNome(c.Nome)).filter(Boolean));
+      const usadas = new Set(colaboradoresCache.map(c => chaveNome(c.Loja)).filter(Boolean));   // nunca apaga loja que algum colaborador usa
+      const snap = await getDocs(collection(db, 'lojas'));
+      const alvo = snap.docs.filter(d => nomes.has(chaveNome(d.data().Nome)) && !usadas.has(chaveNome(d.data().Nome)));
+      if (!alvo.length) { res.textContent = '✅ Nenhuma loja com nome de pessoa no cadastro.'; res.style.color = 'var(--green-dark)'; res.style.display = 'block'; return; }
+      if (!confirm(`Encontrei ${alvo.length} "loja(s)" com nome de colaborador, por exemplo: ${alvo.slice(0, 6).map(d => d.data().Nome).join(', ')}${alvo.length > 6 ? '…' : ''}.\n\nSó essas serão apagadas do cadastro de lojas. Nenhum colaborador é alterado.\n\nConfirmar?`)) return;
+      for (let i = 0; i < alvo.length; i += 400) { const b = writeBatch(db); alvo.slice(i, i + 400).forEach(d => b.delete(d.ref)); await b.commit(); }
+      res.textContent = `✅ ${alvo.length} loja(s) com nome de pessoa removida(s) do cadastro.`; res.style.color = 'var(--green-dark)'; res.style.display = 'block';
+    } catch (e) { console.error(e); res.textContent = 'Não consegui remover agora. Tente de novo.'; res.style.color = '#B4462B'; res.style.display = 'block'; }
+  };
+
   window.padronizarLojasPlanilha = async function(){
     if (!arquivoLojasEscolhido) return;
     const btn = document.getElementById('btnPadronizarLojas'), res = document.getElementById('importarLojasResultado');
@@ -5165,15 +5181,39 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
       const wb = XLSX.read(await arquivoLojasEscolhido.arrayBuffer(), { type: 'array' });
       const linhas = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: '' });
       const pegar = (l, ks) => { for (const ch of ks) for (const k of Object.keys(l)) if (k.trim().toLowerCase() === ch && String(l[k]).trim()) return String(l[k]).replace(/\s+/g, ' ').trim(); return ''; };
-      const certoLoja = new Map(), certoReg = new Map();
+      const certoLoja = new Map(), certoReg = new Map(), porCpf = new Map();
+      const cpfDe = v => { const d = String(v || '').replace(/\D/g, ''); return d ? d.padStart(11, '0') : ''; };
       linhas.forEach(l => {
-        const loja = pegar(l, ['loja', 'lojas', 'unidade', 'nome da loja']), reg = pegar(l, ['regional', 'setor regional']);
+        const loja = pegar(l, ['loja', 'lojas', 'unidade', 'nome da loja']), reg = pegar(l, ['regional', 'setor regional']), cpf = cpfDe(pegar(l, ['cpf']));
         if (loja && !certoLoja.has(chaveNome(loja))) certoLoja.set(chaveNome(loja), { nome: loja, regional: reg });
         if (reg && !certoReg.has(chaveNome(reg))) certoReg.set(chaveNome(reg), reg);
+        if (cpf && loja) porCpf.set(cpf, { loja, reg });
       });
       if (!certoLoja.size) throw new Error('sem coluna de loja');
-      const mapaLoja = v => { const x = certoLoja.get(chaveNome(v)); return x ? x.nome : v; };
-      const mapaReg = v => certoReg.get(chaveNome(v)) || v;
+      // de-para aprendido pelas pessoas: quem está em "Botafogo" no sistema e em "23- CABANA BOTAFOGO" na base ensina que um é o outro
+      const votos = new Map(), votosReg = new Map();
+      const votar = (m, de, para) => { if (!de || !para || chaveNome(de) === chaveNome(para)) return; const k = chaveNome(de); const x = m.get(k) || new Map(); x.set(para, (x.get(para) || 0) + 1); m.set(k, x); };
+      colaboradoresCache.forEach(c => { const b = porCpf.get(cpfDe(c.cpf)); if (!b) return; votar(votos, c.Loja, b.loja); votar(votosReg, c.Regional, b.reg); });
+      const maisVotado = x => [...x.entries()].sort((p, q) => q[1] - p[1])[0][0];
+      const deParaLoja = new Map([...votos].map(([k, x]) => [k, maisVotado(x)])), deParaReg = new Map([...votosReg].map(([k, x]) => [k, maisVotado(x)]));
+      // semelhança: "Campo Belo" = "19-CABANA CAMPO BELO"; "Internacional de Guarulhos" = "26-CABANA GUARULHOS"; "Barra Shopping" = "05-CABANA BARRA SHOP"
+      const VAZIAS = new Set(['cabana', 'burger', 'shop', 'shopping', 'loja', 'de', 'da', 'do', 'das', 'dos', 'e', 'unidade', 'plaza', 'internacional']);
+      const palavras = v => new Set(chaveNome(v).replace(/[^a-z0-9 ]/g, ' ').split(' ').map(p => p === 'vl' ? 'villa' : p).filter(p => p && !/^\d+$/.test(p) && !VAZIAS.has(p)));
+      const lojasBase = [...certoLoja.values()].map(x => ({ nome: x.nome, p: palavras(x.nome) })).filter(x => x.p.size);
+      const porSemelhanca = new Map();
+      const semelhante = v => {
+        const k = chaveNome(v); if (porSemelhanca.has(k)) return porSemelhanca.get(k);
+        const pv = palavras(v); let melhor = null, nota = 0, empate = false;
+        if (pv.size) lojasBase.forEach(x => {
+          const comum = [...x.p].filter(p => pv.has(p)).length;
+          if (!comum || (comum < x.p.size && comum < pv.size)) return;   // uma tem de conter a outra
+          const n = comum * 10 + (comum === x.p.size && comum === pv.size ? 5 : 0);
+          if (n > nota) { nota = n; melhor = x.nome; empate = false; } else if (n === nota) empate = true;
+        });
+        const r = melhor && !empate ? melhor : null; porSemelhanca.set(k, r); return r;
+      };
+      const mapaLoja = v => { const x = certoLoja.get(chaveNome(v)); if (x) return x.nome; return deParaLoja.get(chaveNome(v)) || semelhante(v) || v; };
+      const mapaReg = v => certoReg.get(chaveNome(v)) || deParaReg.get(chaveNome(v)) || v;
       // 1. cadastro de lojas
       const snapLojas = await getDocs(collection(db, 'lojas'));
       const ops = [], vistas = new Set(), nomesApagar = []; let renomeadas = 0, apagadas = 0, criadas = 0;
@@ -5188,9 +5228,13 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
       // 2. colaboradores
       let colabsCorrigidos = 0; const semLoja = new Set();
       colaboradoresCache.forEach(c => {
-        const upd = {};
-        if (c.Loja) { const n = mapaLoja(c.Loja); if (n !== c.Loja) upd.Loja = n; if (!certoLoja.has(chaveNome(c.Loja)) && (c.Local || 'Loja') === 'Loja') semLoja.add(c.Loja); }
-        if (c.Regional) { const n = mapaReg(c.Regional); if (n !== c.Regional) upd.Regional = n; }
+        const upd = {}, b = porCpf.get(cpfDe(c.cpf));
+        const novaLoja = b ? b.loja : mapaLoja(c.Loja || '');
+        const regDaLoja = (certoLoja.get(chaveNome(novaLoja)) || {}).regional;   // a regional vem junto com a loja da base
+        const novaReg = b && b.reg ? b.reg : (regDaLoja || mapaReg(c.Regional || ''));
+        if (novaLoja && novaLoja !== c.Loja) upd.Loja = novaLoja;
+        if (novaReg && novaReg !== c.Regional) upd.Regional = novaReg;
+        if (c.Loja && !b && !certoLoja.has(chaveNome(novaLoja)) && (c.Local || 'Loja') === 'Loja') semLoja.add(c.Loja);
         if (Object.keys(upd).length) { ops.push(b => b.update(doc(db, 'colaboradores', c.cpf), upd)); colabsCorrigidos++; }
       });
       // 3. público de trilhas, biblioteca, programas e banners
@@ -5204,7 +5248,12 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
           if (Object.keys(upd).length) { ops.push(b => b.update(d.ref, upd)); publicos++; }
         });
       }
-      const resumo = `A planilha tem ${certoLoja.size} lojas e ${certoReg.size} regionais.\n\nVou:\n• renomear ${renomeadas} loja(s) do cadastro, criar ${criadas} e apagar ${apagadas} (repetidas ou fora da planilha${nomesApagar.length ? ', por exemplo: ' + nomesApagar.slice(0, 6).join(', ') + (nomesApagar.length > 6 ? '…' : '') : ''});\n• corrigir a loja/regional de ${colabsCorrigidos} colaborador(es);\n• ajustar o público de ${publicos} trilha(s), material(is) ou programa(s).` +
+      // lojas novas da pesquisa de 20 dias também passam para o nome novo
+      let p20 = null;
+      try { const cp = await getDoc(doc(db, 'configuracoes', 'pesquisas')); const ant = (cp.exists() && cp.data().LojasPesquisa20) || []; const nov = [...new Set(ant.map(mapaLoja))]; if (JSON.stringify(nov) !== JSON.stringify(ant)) { p20 = nov; ops.push(b => b.set(doc(db, 'configuracoes', 'pesquisas'), { LojasPesquisa20: nov }, { merge: true })); } } catch (e) {}
+      const exDePara = [...deParaLoja].slice(0, 5).map(([k, v]) => { const orig = (colaboradoresCache.find(c => chaveNome(c.Loja) === k) || {}).Loja || k; return orig + ' → ' + v; });
+      const exSemelhanca = [...porSemelhanca].filter(([k, v]) => v && !deParaLoja.has(k)).map(([k, v]) => { const orig = (colaboradoresCache.find(c => chaveNome(c.Loja) === k) || {}).Loja || k; return orig + ' → ' + v; });
+      const resumo = `A planilha tem ${certoLoja.size} lojas e ${certoReg.size} regionais.` + (deParaLoja.size ? `\n\nPelos CPFs, entendi que ${deParaLoja.size} nome(s) antigo(s) viram o nome da base, por exemplo: ${exDePara.join('; ')}${deParaLoja.size > 5 ? '…' : ''}.` : '') + (exSemelhanca.length ? `\n\nPela semelhança do nome: ${exSemelhanca.slice(0, 8).join('; ')}${exSemelhanca.length > 8 ? '…' : ''}.` : '') + `\n\nVou:\n• renomear ${renomeadas} loja(s) do cadastro, criar ${criadas} e apagar ${apagadas} (repetidas ou fora da planilha${nomesApagar.length ? ', por exemplo: ' + nomesApagar.slice(0, 6).join(', ') + (nomesApagar.length > 6 ? '…' : '') : ''});\n• corrigir a loja/regional de ${colabsCorrigidos} colaborador(es);\n• ajustar o público de ${publicos} trilha(s), material(is) ou programa(s).` +
         (semLoja.size ? `\n\nAtenção: ${semLoja.size} loja(s) dos colaboradores não estão na planilha e ficam como estão: ${[...semLoja].slice(0, 12).join(', ')}${semLoja.size > 12 ? '…' : ''}` : '') + `\n\nConfirmar?`;
       if (!ops.length) { res.textContent = '✅ Tudo já está escrito como na planilha. Nada para mudar.'; res.style.color = 'var(--green-dark)'; res.style.display = 'block'; return; }
       if (!confirm(resumo)) { res.textContent = 'Nada foi alterado.'; res.style.color = 'var(--ink-soft)'; res.style.display = 'block'; return; }
