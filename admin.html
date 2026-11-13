@@ -1032,11 +1032,13 @@ window.MARCA_ATIVA = 'jornada';
         <div class="ij-pg ij-p2" id="ijP2" style="display:none"></div>
         <div class="ij-pg ij-p3" id="ijP3" style="display:none"></div>
         <div class="ij-pg ij-p4" id="ijP4" style="display:none"></div>
+        <div class="ij-pg ij-p4" id="ijP5" style="display:none"></div>
         <div class="ij-tabs">
           <button type="button" class="ij-tab on" onclick="ijIrPagina(0)">Visão geral</button>
           <button type="button" class="ij-tab" onclick="ijIrPagina(1)">Integração</button>
           <button type="button" class="ij-tab" onclick="ijIrPagina(2)">Desligamentos e tendência</button>
           <button type="button" class="ij-tab" onclick="ijIrPagina(3)">Detalhe por loja</button>
+          <button type="button" class="ij-tab" onclick="ijIrPagina(4)">Pendências por tipo</button>
           <span class="ij-atual" id="ijAtualizado"></span>
         </div>
       </div>
@@ -6109,8 +6111,10 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
 
     // desligamentos
     const inic = {}, mot = {}, tempo = [0, 0, 0];
-    deslig90.forEach(c => { const p = desl[c.cpf]; const i = p && p.Iniciativa ? (IJ_MOTIVOS_INICIATIVA[p.Iniciativa] || 'Outro') : 'Sem parecer'; inic[i] = (inic[i] || 0) + 1;
-      const m = p && p.Motivo ? p.Motivo : 'Sem parecer'; mot[m] = (mot[m] || 0) + 1;
+    deslig90.forEach(c => { const p = desl[c.cpf];
+      const semP = ((ijData(c.InativadoEm) || new Date()).getTime() < iniJ || !ijLoja(c)) ? 'Parecer não exigido' : 'Sem parecer';   // saídas antes da Jornada ou fora de loja não pedem parecer
+      const i = p && p.Iniciativa ? (IJ_MOTIVOS_INICIATIVA[p.Iniciativa] || 'Outro') : semP; inic[i] = (inic[i] || 0) + 1;
+      const m = p && p.Motivo ? p.Motivo : semP; mot[m] = (mot[m] || 0) + 1;
       const d = (ijData(c.InativadoEm) - ijData(c.Admissao)) / IJ_DIA; tempo[d <= 30 ? 0 : d <= 60 ? 1 : 2]++; });
     // alertas do feedback de 30 dias x desligamento até o 90º dia (todos que tiveram o ponto registrado, dentro dos filtros)
     const comPonto = base.filter(c => c30[c.cpf]);
@@ -6121,7 +6125,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     const meses = [];
     for (let k = 5; k >= 0; k--) { const d = new Date(); d.setDate(1); d.setHours(0, 0, 0, 0); d.setMonth(d.getMonth() - k); meses.push(d); }
     const evol = meses.map((m, idx) => {
-      const fim = idx < meses.length - 1 ? meses[idx + 1] : new Date(9e15);
+      const fim = idx < meses.length - 1 ? meses[idx + 1] : new Date(Date.now() + 366 * IJ_DIA);   // (antes: data inválida, que zerava o mês atual)
       const admM = base.filter(c => { const a = ijData(c.Admissao); return a && a >= m && a < fim; });
       const deslM = base.filter(c => { const t = ijData(c.InativadoEm), a = ijData(c.Admissao); return c.Status === 'inativo' && t && t >= m && t < fim && a && (t - a) / IJ_DIA <= 90; });
       const ckM = admM.filter(c => !ijLider(c) && ijLoja(c) && ijDiasPrazo(c) > 8);
@@ -6131,7 +6135,28 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
         ck: ckM.length ? Math.round(ckOk / ckM.length * 100) : null, t7: t7M.length ? Math.round(t7M.filter(c => trilhas(c).ate7).length / t7M.length * 100) : null };
     });
 
-    return { P, integ, linhas, conclLojas, detalheLojas, comTrilha, concl, ckBase, ckNoPrazo, p30Base, p30Feitos, t7Base, t7Ok, listaLojas, lojasConf, itensMedia, listaGes, parecerPend,
+    // ---------- resumo por tipo: elegíveis x realizaram x pendentes no prazo x atrasados ----------
+    const ativosT = ativos;
+    const linhaTipo = (tipo, quem, itens, rotAtraso) => {   // itens: [{ c, st: 'feito' | 'prazo' | 'atrasado', obs }]
+      const n = st => itens.filter(x => x.st === st).length;
+      return { tipo, quem, eleg: itens.length, feito: n('feito'), prazo: n('prazo'), atrasado: n('atrasado'), rotAtraso: rotAtraso || 'Atrasados', pend: itens.filter(x => x.st !== 'feito') };
+    };
+    const tipos = [];
+    tipos.push(linhaTipo('Trilhas da Jornada (até o 7º dia)', 'Colaborador', linhas.filter(l => l.trSt).map(l => ({ c: l.c, st: l.tr.ok ? 'feito' : l.trSt === 'atrasada' ? 'atrasado' : 'prazo', obs: l.trSt === 'atrasada' ? 'trilha atrasada' : 'no prazo' }))));
+    tipos.push(linhaTipo('Checklist de integração (só loja)', 'Gerente', linhas.filter(l => l.ck && l.ckSt !== 'na').map(l => ({ c: l.c, st: l.ckSt === 'atrasado' ? 'atrasado' : l.ckSt === 'em_dia' ? 'feito' : 'prazo', obs: l.ckSt === 'atrasado' ? 'etapa vencida sem marcar' : 'etapas ainda no prazo' }))));
+    const LIBG = { 15: 15, 45: 45, 90: 80 }, VENG = { 15: 25, 45: 55, 90: 90 }, regG = { 15: c30, 45: c45, 90: c90 };
+    [15, 45, 90].forEach(m => tipos.push(linhaTipo(`Feedback de ${m} dias`, 'Gerente', ativosT.filter(c => { const d = ijDias(c); return d !== null && d >= LIBG[m] && d <= (m === 90 ? 120 : 90) && ijAntesInicio(c) <= LIBG[m]; })
+      .map(c => { const d = ijDias(c), f = !!regG[m][c.cpf]; return { c, st: f ? 'feito' : d > VENG[m] ? 'atrasado' : 'prazo', obs: f ? '' : d > VENG[m] ? `venceu no dia ${VENG[m]}` : `vence no dia ${VENG[m]}` }; }))));
+    const JANC = { 15: [15, 44], 45: [45, 74], 90: [80, 100] }, CAMPOC = { 15: 'Checkin30ColabEm', 45: 'Checkin45ColabEm', 90: 'Checkin90ColabEm' }, NOMEC = { 15: '"Seus primeiros 15 dias"', 45: '"Seus 45 dias"', 90: '"Seus 90 dias"' };
+    [15, 45, 90].forEach(m => tipos.push(linhaTipo(`${NOMEC[m]} (colaborador)`, 'Colaborador', ativosT.filter(c => { const d = ijDias(c); return d !== null && d >= JANC[m][0] && d <= JANC[m][1] + 30 && ijAntesInicio(c) <= JANC[m][1]; })
+      .map(c => { const d = ijDias(c), f = !!c[CAMPOC[m]]; return { c, st: f ? 'feito' : d > JANC[m][1] ? 'atrasado' : 'prazo', obs: f ? '' : d > JANC[m][1] ? 'janela encerrada sem resposta' : `aberto até o dia ${JANC[m][1]}` }; }), 'Não responderam')));
+    const l20 = new Set((typeof lojasPesquisa20 !== 'undefined' ? lojasPesquisa20 : []).map(ijChave));
+    const JANP = { 20: [20, 44], 45: [45, 89], 90: [90, 134] };
+    [20, 45, 90].forEach(m => tipos.push(linhaTipo(`Pesquisa de ${m} dias${m === 20 ? ' (lojas novas)' : ''}`, 'Colaborador', ativosT.filter(c => { const d = ijDias(c); return d !== null && d >= JANP[m][0] && d <= JANP[m][1] + 15 && (m !== 20 || l20.has(ijChave(c.Loja))); })
+      .map(c => { const d = ijDias(c), f = !!c['Pesquisa' + m + 'Respondida']; return { c, st: f ? 'feito' : d > JANP[m][1] ? 'atrasado' : 'prazo', obs: f ? '' : d > JANP[m][1] ? 'janela encerrada sem confirmar' : `aberta até o dia ${JANP[m][1]}` }; }), 'Não responderam')));
+    tipos.push(linhaTipo('Parecer de desligamento (loja)', 'Gerente', desligParecer.map(c => { const p = desl[c.cpf], f = !!(p && !p.Descartado && p.Motivo); return { c, st: f ? 'feito' : 'atrasado', obs: f ? '' : 'saiu sem parecer' }; }), 'Pendentes'));
+
+    return { P, integ, linhas, tipos, conclLojas, detalheLojas, comTrilha, concl, ckBase, ckNoPrazo, p30Base, p30Feitos, t7Base, t7Ok, listaLojas, lojasConf, itensMedia, listaGes, parecerPend,
       fases, funilBase, acesso1, semAvanco, eleg45, elegPm, respPm, percep, comAlerta, deslig90, admPeriodo, inic, mot, tempo, grpA, grpS, saiu90, evol };
   }
 
@@ -6198,7 +6223,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
         ${ijKpi('Pesquisa de 45 dias confirmada', ijFmtPct(ijPct(R.eleg45.filter(c => c.Pesquisa45Respondida).length, R.eleg45.length)), `${R.eleg45.filter(c => c.Pesquisa45Respondida).length} de ${R.eleg45.length} elegíveis`)}
       </div>`;
     // ===== página 3 =====
-    const tot90 = R.deslig90.length, coresI = { Colaborador: C.br, Empresa: C.ac, 'Fim de contrato': C.s3, Outro: C.prev, 'Sem parecer': '#CFC8B8' };
+    const tot90 = R.deslig90.length, coresI = { Colaborador: C.br, Empresa: C.ac, 'Fim de contrato': C.s3, Outro: C.prev, 'Sem parecer': '#CFC8B8', 'Parecer não exigido': '#E5E1D6' };
     const motivos = Object.entries(R.mot).sort((a, b) => b[1] - a[1]);
     const taxa = g => g.length ? Math.round(g.filter(R.saiu90).length / g.length * 100) : null;
     const tA = taxa(R.grpA), tS = taxa(R.grpS), poucos = (R.grpA.length + R.grpS.length) < 20;
@@ -6250,6 +6275,15 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
             <td class="num">${D.pessoas.length}</td><td>${mini(D)}</td>
             <td>${par2(D.ck.em_dia, D.ck.atrasado, ['em dia', 'em dia'], ['atrasado', 'atrasados'])}</td><td>${par2(D.p30.feito, D.p30.pendente, ['registrado', 'registrados'], ['atrasado', 'atrasados'])}</td>
             <td class="num">${D.par ? `<b style="color:${C.aci}">${D.par}</b>` : '0'}</td><td class="num">${D.indice === null ? '—' : D.indice + '%'}</td></tr>`).join('')}</table>` : ijVazio('Nenhuma loja com gente em integração no período.')}</div></div>`;
+    const pct = (a, b) => b ? Math.round(a / b * 100) + '%' : '—';
+    document.getElementById('ijP5').innerHTML = `
+      <div class="ij-v"><div class="ij-vt">Pendências por tipo</div><div class="ij-vs">Quem precisa fazer cada coisa, quantos já fizeram e quantos faltam · selecione a linha para ver as pessoas pendentes</div>
+        <div class="ij-rol" style="max-height:none;"><table class="ij-tb"><tr><th>Tipo</th><th>Quem faz</th><th class="num">Elegíveis</th><th class="num">Realizaram</th><th class="num">%</th><th class="num">Pendentes no prazo</th><th class="num">Atrasados / sem resposta</th></tr>
+        ${R.tipos.map((t, i) => `<tr role="button" tabindex="0" onclick="ijLista('tipo',${i})" style="cursor:pointer">
+          <td><b>${ijEsc(t.tipo)}</b></td><td><span class="ij-tag ${t.quem === 'Gerente' ? 'ok' : 'cinza'}">${t.quem}</span></td>
+          <td class="num">${t.eleg}</td><td class="num">${t.feito}</td><td class="num"><b>${pct(t.feito, t.eleg)}</b></td>
+          <td class="num">${t.prazo}</td><td class="num">${t.atrasado ? `<b style="color:${C.aci}">${t.atrasado}</b>` : '0'}</td></tr>`).join('')}</table></div>
+        <div class="ij-ins" style="margin-top:12px">Elegíveis: quem já chegou na hora daquele item dentro do período e dos filtros. Para quem entrou antes do início da Jornada, só contam os itens que ainda estavam no prazo. "Sem resposta" no colaborador: a janela fechou e a pessoa não respondeu.</div></div>`;
     window.ijIrPagina(ijPagina);
     document.getElementById('ijAtualizado').textContent = 'Atualizado às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
   }
@@ -6262,6 +6296,16 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     if (tipo === 'gestor') { const g = R.listaGes[i]; titulo = 'Pendências de ' + ijNomeCurto(g.nome); linhas = g.pessoas.map(([c, t]) => lin(c, t)); }
     if (tipo === 'pareceres') { titulo = 'Desligamentos sem parecer'; linhas = R.parecerPend.map(c => lin(c, 'Gestor: ' + ijNomeCurto(c.Gestor || ''))); }
     if (tipo === 'semavanco') { titulo = 'Sem avanço na fase 1 há mais de 14 dias'; linhas = R.semAvanco.map(c => lin(c, ijDias(c) + ' dias de casa')); }
+    if (tipo === 'tipo') {
+      const T = R.tipos[i], m = document.getElementById('ijModal');
+      const cab = ['Nome', 'Loja', 'Cargo', 'Dias de casa', 'Situação'];
+      const linhasT = T.pend.slice().sort((a, b) => (b.st === 'atrasado') - (a.st === 'atrasado') || (ijDias(b.c) || 0) - (ijDias(a.c) || 0))
+        .map(x => [ijNomeCurto(x.c.Nome), ijNomeLoja(x.c.Loja) || x.c.Local || '', x.c.Cargo || '', String(ijDias(x.c)), (x.st === 'atrasado' ? (T.rotAtraso === 'Atrasados' ? 'Atrasado: ' : '') : 'No prazo: ') + x.obs]);
+      document.getElementById('ijModalTitulo').textContent = T.tipo + ' · pendentes';
+      document.getElementById('ijModalCorpo').innerHTML = linhasT.length ? `<table class="ij-tb"><tr>${cab.map(h => `<th>${h}</th>`).join('')}</tr>${linhasT.map(l => `<tr>${l.map((x, k) => `<td${k === 4 && !/^No prazo/.test(x) ? ` style="color:${IJ_COR.aci};font-weight:600"` : ''}>${ijEsc(x)}</td>`).join('')}</tr>`).join('')}</table>` : ijVazio('Ninguém pendente neste item.');
+      window.__ijListaAtual = { titulo: T.tipo, linhas: linhasT, cab };
+      m.style.display = 'flex'; return;
+    }
     if (tipo === 'loja') {
       const D = R.detalheLojas[i];
       const TRT = { ok_prazo: 'Concluídas no prazo', ok_fora: 'Concluídas fora do prazo', andamento: 'No prazo, a fazer', atrasada: 'Atrasadas' };
@@ -6296,6 +6340,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     const R = ijUltimo; if (!R) return;
     baixarXLSXMultiAba([
       { nome: 'Lojas', linhas: [['Loja', 'Regional', 'Índice de conformidade', 'Trilhas concluídas', 'Checklist no prazo', 'Trilhas até o 7º dia', 'Feedbacks', 'Parecer em dia'], ...R.listaLojas.map(L => [L.loja, L.regional, L.indice + '%', ...['cc', 'ck', 't7', 'p30', 'par'].map(k => L.det[k] === null || L.det[k] === undefined ? '' : L.det[k] + '%')])] },
+      { nome: 'Pendências por tipo', linhas: [['Tipo', 'Quem faz', 'Elegíveis', 'Realizaram', 'Pendentes no prazo', 'Atrasados / sem resposta'], ...R.tipos.map(t => [t.tipo, t.quem, t.eleg, t.feito, t.prazo, t.atrasado])] },
       { nome: 'Detalhe por loja', linhas: [['Loja', 'Regional', 'Situação', 'Em integração', 'Trilhas concluídas no prazo', 'Trilhas concluídas fora do prazo', 'Trilhas a fazer no prazo', 'Trilhas atrasadas', 'Checklists em dia', 'Checklists atrasados', 'Pontos de 30 dias registrados', 'Feedbacks atrasados', 'Pareceres pendentes', 'Índice'],
         ...R.detalheLojas.map(D => [D.loja, D.regional, D.status === 'fora' ? 'Fora do prazo' : D.status === 'em_dia' ? 'Em dia' : 'Dentro do prazo', D.pessoas.length, D.tr.ok_prazo, D.tr.ok_fora, D.tr.andamento, D.tr.atrasada, D.ck.em_dia, D.ck.atrasado, D.p30.feito, D.p30.pendente, D.par, D.indice === null ? '' : D.indice + '%'])] },
       { nome: 'Pessoas', linhas: [['Nome', 'Loja', 'Cargo', 'Dias de casa', 'Trilhas', 'Checklist', 'Feedbacks'], ...R.linhas.map(l => [ijNomeCurto(l.c.Nome), l.c.Loja || l.c.Local || '', l.c.Cargo || '', l.d,
