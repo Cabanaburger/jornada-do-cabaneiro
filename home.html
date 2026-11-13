@@ -7419,7 +7419,7 @@ ${(typeof nomeColaboradorAtual !== 'undefined' && nomeColaboradorAtual) || ''}`;
     const lista = document.getElementById('pendChecklistLista');
     const contagem = document.getElementById('pendChecklistContagem');
     if (!lista) return 0;
-    const novos = equipe.filter(emIntegracao);
+    const novos = equipe.filter(c => emIntegracao(c) && !semChecklist(c));
     if (!novos.length) {
       lista.innerHTML = `<p class="jornada-vazio">Ninguém em período de integração no seu time agora.</p>`;
       if (contagem) contagem.style.display = 'none';
@@ -7461,10 +7461,13 @@ ${(typeof nomeColaboradorAtual !== 'undefined' && nomeColaboradorAtual) || ''}`;
   window.trilhaAtrasada = trilhaAtrasada;
   // gerente de loja, coordenador e gerente de operações: o gestor deles só preenche o feedback de 30 dias (não há checklist de integração)
   function ehLideranca(c){ const k = String((c && c.Cargo) || '').trim(); return /^COORDENADOR/i.test(k) || /^GERENTE\b/i.test(k); }
+  // checklist de integração só para loja (fábrica e escritório não têm) e não para liderança
+  function semChecklist(c){ return ehLideranca(c) || ((c && c.Local) || 'Loja') !== 'Loja'; }
+  window.semChecklist = semChecklist;
   window.ehLideranca = ehLideranca;
   function precisaAtencaoPessoa(c, l){
     let ckAtraso = false;
-    if (emIntegracao(c) && window.__checklistCache && window.__checklistCache[c.cpf] !== undefined) ckAtraso = resumoChecklist(c, l).atraso;
+    if (emIntegracao(c) && !semChecklist(c) && window.__checklistCache && window.__checklistCache[c.cpf] !== undefined) ckAtraso = resumoChecklist(c, l).atraso;
     return ckAtraso || trilhaAtrasada(c, l);
   }
 
@@ -7563,7 +7566,7 @@ ${(typeof nomeColaboradorAtual !== 'undefined' && nomeColaboradorAtual) || ''}`;
         <div class="nm"><b>${l.nome}</b><span>${[l.cargo, x.dias !== null ? textoDias(x.dias) : ''].filter(Boolean).join(' · ')}</span></div>
         <div class="eq-chips">${chips.join('')}</div><i class="eq-seta"></i></summary>
       <div class="eq-det">${barras}${lista}${ponto}
-        <div class="eq-acoes">${tagFase}<span class="espaco"></span>${x.novo ? `<button class="btn-secondary" style="padding:8px 14px; font-size:12.5px;" onclick="window.abrirChecklist('${l.cpf}')">${r.feitos === r.total ? 'Ver checklist' : 'Abrir checklist'} →</button>` : ''}</div>
+        <div class="eq-acoes">${tagFase}<span class="espaco"></span>${x.novo && r ? `<button class="btn-secondary" style="padding:8px 14px; font-size:12.5px;" onclick="window.abrirChecklist('${l.cpf}')">${r.feitos === r.total ? 'Ver checklist' : 'Abrir checklist'} →</button>` : ''}</div>
       </div></details>`;
   }
 
@@ -7575,13 +7578,13 @@ ${(typeof nomeColaboradorAtual !== 'undefined' && nomeColaboradorAtual) || ''}`;
     const itens = linhas.map(l => {
       const c = porCpf[l.cpf] || {};
       const novo = emIntegracao(c);
-      const r = novo ? resumoChecklist(c, l) : null;
+      const r = (novo && !semChecklist(c)) ? resumoChecklist(c, l) : null;
       const trAt = trilhaAtrasada(c, l);
       const p30 = statusPonto30(c);
       return { l, c, novo, r, trAt, p30, atencao: !!((r && r.atraso) || trAt || p30 === 'pendente'), dias: diasDeCasa(c) };
     }).sort((a, b) => ((b.atencao ? 1 : 0) - (a.atencao ? 1 : 0)) || ((b.novo ? 1 : 0) - (a.novo ? 1 : 0)) || ((a.r ? a.r.pct : a.l.pct) - (b.r ? b.r.pct : b.l.pct)));
     const novos = itens.filter(x => x.novo);
-    const ckAtr = novos.filter(x => x.r.atraso).length;
+    const ckAtr = novos.filter(x => x.r && x.r.atraso).length;
     const trAtr = itens.filter(x => x.trAt).length;
     const p30Pend = itens.filter(x => x.p30 === 'pendente').length;
     if (resumo) resumo.innerHTML = `<div class="eq-kpis">
@@ -7970,7 +7973,7 @@ ${(typeof nomeColaboradorAtual !== 'undefined' && nomeColaboradorAtual) || ''}`;
   async function metricasPessoasJornada(colabs){
     const linhas = await calcularPendenciaCursosParaLista(colabs);
     const porCpf = {}; linhas.forEach(l => { porCpf[l.cpf] = l; });
-    await carregarChecklists(colabs.filter(c => emIntegracao(c) && !ehLideranca(c)).map(c => c.cpf));
+    await carregarChecklists(colabs.filter(c => emIntegracao(c) && !semChecklist(c)).map(c => c.cpf));
     // feedbacks dos dias 15 e 45 (todos os locais, até o dia 90)
     const cand = colabs.filter(c => { const d = diasDeCasa(c); return d !== null && d >= 15 && d <= 90; });
     const feitosM = { 15: new Set(), 45: new Set(), 90: new Set() };
@@ -7985,7 +7988,7 @@ ${(typeof nomeColaboradorAtual !== 'undefined' && nomeColaboradorAtual) || ''}`;
     return colabs.map(c => {
       const l = porCpf[c.cpf] || null;
       const novo = emIntegracao(c);
-      const r = (novo && !ehLideranca(c)) ? resumoChecklist(c, l) : null;
+      const r = (novo && !semChecklist(c)) ? resumoChecklist(c, l) : null;
       const trAt = trilhaAtrasada(c, l);
       const pendCheckin = candSet.has(c.cpf);
       return { c, l, novo, r, trAt, pendCheckin, pendMarcos: pendM(c), checkinFeito: feitos.has(c.cpf), pontoAplica: true, atencao: !!((r && r.atraso) || trAt || pendCheckin) };

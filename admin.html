@@ -6002,7 +6002,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     const ativos = base.filter(c => c.Status !== 'inativo');
     const integ = ativos.filter(c => { const d = ijDias(c); return d !== null && d >= 0 && d <= 90; });
     const linhas = integ.map(c => {
-      const d = ijDias(c), dp = ijDiasPrazo(c), tr = trilhas(c), ck = ijLider(c) ? null : checklist(c, tr);
+      const d = ijDias(c), dp = ijDiasPrazo(c), tr = trilhas(c), ck = (ijLider(c) || !ijLoja(c)) ? null : checklist(c, tr);   // checklist só para loja
       const reg = c30[c.cpf] || null;
       // feedbacks dos dias 15 e 45 (todos os locais): só entram depois do prazo (dia + 10) e se a pessoa não tinha passado do dia no início da Jornada
       const iniOk = Date.now() > (new Date(ijInicio + 'T00:00:00').getTime() || 0);
@@ -6075,7 +6075,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
     const ges = {};
     const pegaGes = c => { const k = c.CpfGestor || 'sem'; const g = porCpf[c.CpfGestor];
       return (ges[k] = ges[k] || { cpf: k, nome: g ? g.Nome : (c.Gestor || 'Sem gestor no cadastro'), loja: ijNomeLoja(g ? g.Loja : c.Loja), ck: [0, 0], p30: [0, 0], par: [0, 0], pessoas: [] }); };
-    linhas.forEach(l => { if (l.ck && l.ck.emAtraso) { const g = pegaGes(l.c); g.ck[0]++; g.ck[1] = Math.max(g.ck[1], l.ck.atraso); g.pessoas.push([l.c, 'Checklist atrasado há ' + l.ck.atraso + ' dias']); }
+    linhas.forEach(l => { if (l.ck && l.ck.emAtraso) { const g = pegaGes(l.c); g.ck[0]++; g.ck[1] = Math.max(g.ck[1], l.ck.atraso); g.pessoas.push([l.c, 'Checklist atrasado há ' + l.ck.atraso + (l.ck.atraso === 1 ? ' dia' : ' dias')]); }
       if (l.p30 === 'pendente') { const g = pegaGes(l.c); g.p30[0]++; g.p30[1] = Math.max(g.p30[1], l.p30Atraso); g.pessoas.push([l.c, 'Feedback de ' + (l.p30Marcos.length > 1 ? l.p30Marcos.slice(0, -1).join(', ') + ' e ' + l.p30Marcos[l.p30Marcos.length - 1] : l.p30Marcos[0]) + ' dias atrasado há ' + l.p30Atraso + ' dias']); } });
     parecerPend.forEach(c => { const g = pegaGes(c); const d = Math.floor((agora - ijData(c.InativadoEm)) / IJ_DIA); g.par[0]++; g.par[1] = Math.max(g.par[1], d); g.pessoas.push([c, 'Parecer de desligamento esperando há ' + d + ' dias']); });
     const listaGes = Object.values(ges).map(g => ({ ...g, max: Math.max(g.ck[1], g.p30[1], g.par[1]) })).sort((a, b) => b.max - a.max);
@@ -6124,7 +6124,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
       const fim = idx < meses.length - 1 ? meses[idx + 1] : new Date(9e15);
       const admM = base.filter(c => { const a = ijData(c.Admissao); return a && a >= m && a < fim; });
       const deslM = base.filter(c => { const t = ijData(c.InativadoEm), a = ijData(c.Admissao); return c.Status === 'inativo' && t && t >= m && t < fim && a && (t - a) / IJ_DIA <= 90; });
-      const ckM = admM.filter(c => !ijLider(c) && ijDiasPrazo(c) > 8);
+      const ckM = admM.filter(c => !ijLider(c) && ijLoja(c) && ijDiasPrazo(c) > 8);
       const ckOk = ckM.filter(c => checklist(c, trilhas(c)).noPrazoHist).length;
       const t7M = admM.filter(c => ijDiasPrazo(c) > 7);
       return { rot: ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'][m.getMonth()] + '/' + String(m.getFullYear()).slice(2), adm: admM.length, desl: deslM.length,
@@ -6139,7 +6139,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
   function ijKpi(rot, val, comp, cor, acao){ return `<div class="ij-v ij-k"${acao ? ` role="button" tabindex="0" onclick="${acao}" style="cursor:pointer"` : ''}><div class="ij-kl">${rot}</div><div class="ij-kv"${cor ? ` style="color:${cor}"` : ''}>${val}</div><div class="ij-kc">${comp}</div></div>`; }
   function ijBarra(rot, pct, cor, txt, acao){ return `<div class="ij-br"${acao ? ` role="button" tabindex="0" onclick="${acao}" style="cursor:pointer"` : ''}><span title="${ijEsc(rot)}">${ijEsc(rot)}</span><span class="ij-bt"><i style="width:${Math.max(0, Math.min(100, pct || 0))}%;background:${cor}"></i></span><b>${txt}</b></div>`; }
   function ijVazio(t){ return `<div class="ij-vazio">${t}</div>`; }
-  function ijTag(n, dias){ return n ? `<span class="ij-tag ${dias >= 10 ? 'neg' : 'amb'}">${n} · há ${dias} dias</span>` : '<span class="ij-mut">—</span>'; }
+  function ijTag(n, dias){ return n ? `<span class="ij-tag ${dias >= 10 ? 'neg' : 'amb'}">${n} · ${dias < 1 ? 'hoje' : 'há ' + dias + (dias === 1 ? ' dia' : ' dias')}</span>` : '<span class="ij-mut">—</span>'; }
   function ijDot(v){ return `<i class="ij-dot" style="background:${v === 'verde' ? IJ_COR.pos : v === 'amarelo' ? IJ_COR.amb : v === 'vermelho' ? IJ_COR.neg : '#CFC8B8'}"></i>`; }
 
   function renderIndicadores(){
@@ -6169,7 +6169,7 @@ document.querySelectorAll('.visib-chip').forEach(chip=>{
           ${pior ? `<div class="ij-ins">O item com menor resultado é <b>${pior[0]} (${ijFmtPct(pior[1])})</b>.</div>` : ''}</div>
         <div class="ij-v"><div class="ij-vt">Pendências por gestor</div><div class="ij-vs">Itens em atraso, ordenados pelo atraso mais antigo · selecione para ver as pessoas</div>
           <div class="ij-rol">${R.listaGes.length ? `<table class="ij-tb"><tr><th>Gestor · loja</th><th>Checklist</th><th>Feedbacks</th><th>Parecer</th><th class="num">Mais antigo</th></tr>
-            ${R.listaGes.map((g, i) => `<tr role="button" tabindex="0" onclick="ijLista('gestor',${i})" style="cursor:pointer"><td><b>${ijEsc(ijNomeCurto(g.nome))}</b> <span class="ij-mut">· ${ijEsc(g.loja)}</span></td><td>${ijTag(g.ck[0], g.ck[1])}</td><td>${ijTag(g.p30[0], g.p30[1])}</td><td>${ijTag(g.par[0], g.par[1])}</td><td class="num"><b>${g.max} dias</b></td></tr>`).join('')}</table>`
+            ${R.listaGes.map((g, i) => `<tr role="button" tabindex="0" onclick="ijLista('gestor',${i})" style="cursor:pointer"><td><b>${ijEsc(ijNomeCurto(g.nome))}</b> <span class="ij-mut">· ${ijEsc(g.loja)}</span></td><td>${ijTag(g.ck[0], g.ck[1])}</td><td>${ijTag(g.p30[0], g.p30[1])}</td><td>${ijTag(g.par[0], g.par[1])}</td><td class="num"><b>${(g.max) === 1 ? '1 dia' : (g.max) + ' dias'}</b></td></tr>`).join('')}</table>`
             : ijVazio('Nenhuma pendência em atraso.')}</div></div>
       </div>`;
     // ===== página 2 =====
